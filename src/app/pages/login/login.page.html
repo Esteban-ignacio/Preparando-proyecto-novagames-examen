@@ -7,11 +7,9 @@
   <ion-item >
     <ion-input label="Nombre de usuario" labelPlacement="floating" placeholder="Ingrese su nombre" [(ngModel)]="usuario"></ion-input>
   </ion-item>
-  <ion-item >
-    <ion-input label="Correo Electronico" labelPlacement="floating" placeholder="Ingrese su correo" ></ion-input>
-  </ion-item>
   <ion-item>
     <ion-input label="Contraseña" labelPlacement="floating" placeholder="Ingrese su contraseña"></ion-input>
   </ion-item >
   <ion-button color="primary" (click)="irPagina()">Ir al Home {{ usuario }}</ion-button>
+  <ion-button color="primary" (click)="irRegistro()">Registrarse </ion-button>
 </ion-content>

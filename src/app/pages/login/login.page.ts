@@ -24,5 +24,14 @@ export class LoginPage implements OnInit {
     //Puedo crear cualquier logica de programación
     this.router.navigate(['/home'], navigationextras);
   }
+  
+  irRegistro(){
+    let navigationextras: NavigationExtras={
+      state: {
+
+      }
+    }
+    this.router.navigate(['/registro'], navigationextras);
+  }
 
 }
