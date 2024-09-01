@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
+import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-registro',
@@ -7,6 +7,8 @@ import { NavigationExtras, Router } from '@angular/router';
   styleUrls: ['./registro.page.scss'],
 })
 export class RegistroPage implements OnInit {
+
+  Nombre: string = "";
 
   alertButtons = ['Listo'];
   constructor(private router: Router) { }
@@ -16,9 +18,17 @@ export class RegistroPage implements OnInit {
   irHome(){
     let navigationextras: NavigationExtras = {
 
-    }    
+      }   
     this.router.navigate(['/home'], navigationextras);
+    }
 
-  }
-
+  irPerfil(){
+    let navigationextras: NavigationExtras = {
+      state: {
+        nomb: this.Nombre
+      }
+    }
+    this.router.navigate(['/perfil'], navigationextras);
+  
+    }
 }

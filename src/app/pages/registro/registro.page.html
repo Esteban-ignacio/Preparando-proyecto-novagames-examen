@@ -8,7 +8,8 @@
 </ion-header>
 <ion-content [fullscreen]="true">
   <h2 class="ingresar-datos">Ingrese sus datos</h2>
-  <ion-textarea class="nombre" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"></ion-textarea>
+  <ion-textarea class="nombre" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"
+  [(ngModel)]="Nombre"></ion-textarea>
   <br>
   <ion-textarea label="Apellido" labelPlacement="floating" fill="solid" placeholder="Ingrese su apellido"></ion-textarea>
   <br>
@@ -25,4 +26,5 @@
   ></ion-alert>
   
   <ion-button color="primary" (click)="irHome()">Ir al Home</ion-button>
+  <ion-button color="primary" (click)="irPerfil()">Ir al Perfil</ion-button>
 </ion-content>

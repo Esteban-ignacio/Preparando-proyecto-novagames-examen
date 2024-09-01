@@ -1,0 +1,16 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title class="Titulo-perfil">Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <p class="Nombre-perfil">Nombre: {{ nombre | uppercase}}</p>
+  <p class="Apellido-perfil">Apellido:</p>
+  <p class="Correo-perfil">Correo:</p>
+  <p class="Telefono-perfil">Telefono:</p>
+  <ion-button class="Boton-home" color="primary" (click)="Home()">Ir al Home</ion-button>
+</ion-content>
