@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-registro',
@@ -8,10 +8,17 @@ import { NavigationExtras } from '@angular/router';
 })
 export class RegistroPage implements OnInit {
 
-  constructor() { }
+  alertButtons = ['Listo'];
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }
+  irHome(){
+    let navigationextras: NavigationExtras = {
 
+    }    
+    this.router.navigate(['/home'], navigationextras);
+
+  }
 
 }

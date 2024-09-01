@@ -4,12 +4,11 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <ion-item >
-    <ion-input label="Nombre de usuario" labelPlacement="floating" placeholder="Ingrese su nombre" [(ngModel)]="usuario"></ion-input>
-  </ion-item>
-  <ion-item>
-    <ion-input label="Contraseña" labelPlacement="floating" placeholder="Ingrese su contraseña"></ion-input>
-  </ion-item >
+  <ion-textarea label="Nombre usuario" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre" 
+  [(ngModel)]="usuario"></ion-textarea>
+  <br />
+  <ion-textarea label="Contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"
+  ></ion-textarea>
   <ion-button color="primary" (click)="irPagina()">Ir al Home {{ usuario }}</ion-button>
-  <ion-button color="primary" (click)="irRegistro()">Registrarse </ion-button>
+  <ion-button color="primary" (click)="irRegistro()">Registrate </ion-button>
 </ion-content>

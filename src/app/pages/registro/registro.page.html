@@ -7,7 +7,22 @@
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
-  <ion-item >
-    <ion-input label="Correo Electronico" labelPlacement="floating" placeholder="Ingrese su correo" ></ion-input>
-  </ion-item>
+  <h2 class="ingresar-datos">Ingrese sus datos</h2>
+  <ion-textarea class="nombre" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"></ion-textarea>
+  <br>
+  <ion-textarea label="Apellido" labelPlacement="floating" fill="solid" placeholder="Ingrese su apellido"></ion-textarea>
+  <br>
+  <ion-textarea label="Correo" labelPlacement="floating" fill="solid" placeholder="Ingrese su Correo"></ion-textarea>
+  <br>
+  <ion-textarea label="Numero telefonico" labelPlacement="floating" fill="solid" placeholder="Ingrese su numero de telefono"></ion-textarea>
+
+  <ion-button id="present-alert">Registrarme</ion-button>
+  <ion-alert
+    trigger="present-alert"
+    header="Registro completado"
+    message="Su registro ha sido realizado"
+    [buttons]="alertButtons"
+  ></ion-alert>
+  
+  <ion-button color="primary" (click)="irHome()">Ir al Home</ion-button>
 </ion-content>
