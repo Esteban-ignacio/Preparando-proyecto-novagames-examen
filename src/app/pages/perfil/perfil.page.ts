@@ -9,11 +9,17 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 export class PerfilPage implements OnInit {
 
   nombre: string = "";
+  apellido: string = "";
+  correo: string = "";
+  telefono: string = "";
 
   constructor(private router:Router, private activerouter: ActivatedRoute) { 
     this.activerouter.queryParams.subscribe(param =>{
       if(this.router.getCurrentNavigation()?.extras.state){
         this.nombre =  this.router.getCurrentNavigation()?.extras?.state?.['nomb'];
+        this.apellido = this.router.getCurrentNavigation()?.extras?.state?.['ape'];
+        this.correo = this.router.getCurrentNavigation()?.extras?.state?.['cor'];
+        this.telefono = this.router.getCurrentNavigation()?.extras?.state?.['tel'];
       }
     })
   }
@@ -26,5 +32,4 @@ export class PerfilPage implements OnInit {
     }
     this.router.navigate(['/home'], navigationextras);
   }
-
 }

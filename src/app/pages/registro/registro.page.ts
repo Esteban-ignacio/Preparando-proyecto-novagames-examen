@@ -9,6 +9,9 @@ import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 export class RegistroPage implements OnInit {
 
   Nombre: string = "";
+  Apellido: string = "";
+  Correo: string = "";
+  Telefono: string= "";
 
   alertButtons = ['Listo'];
   constructor(private router: Router) { }
@@ -25,7 +28,10 @@ export class RegistroPage implements OnInit {
   irPerfil(){
     let navigationextras: NavigationExtras = {
       state: {
-        nomb: this.Nombre
+        nomb: this.Nombre,
+        ape: this.Apellido,
+        cor: this.Correo,
+        tel: this.Telefono
       }
     }
     this.router.navigate(['/perfil'], navigationextras);
