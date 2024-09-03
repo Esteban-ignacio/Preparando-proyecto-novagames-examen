@@ -3,14 +3,20 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title class="Titulo-perfil">Perfil</ion-title>
+    <ion-title class="Titulo-perfil">
+      <ion-icon name="game-controller"></ion-icon>
+      Perfil de Usuario 
+      <ion-icon name="game-controller"></ion-icon>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <p class="Nombre-perfil">Nombre: {{ nombre | uppercase}}</p>
   <p class="Apellido-perfil">Apellido: {{ apellido | uppercase}}</p>
-  <p class="Correo-perfil">Correo: {{ correo | uppercase}}</p>
   <p class="Telefono-perfil">Telefono: {{ telefono }}</p>
+  <p class="Correo-perfil">Correo: {{ correo | uppercase}}</p>
   <ion-button class="Boton-home" color="primary" (click)="Home()">Ir al Home</ion-button>
+  <img class="imagen-niño" src="https://www.claro.com.co/portal/recursos/co/cpp/promociones/imagenes/1574872217257-interna-gamer-2.jpg">
+  <img src="https://th.bing.com/th/id/OIP.-gY7eZlRK6aIirhObCzI-wHaFO?rs=1&pid=ImgDetMain">
 </ion-content>

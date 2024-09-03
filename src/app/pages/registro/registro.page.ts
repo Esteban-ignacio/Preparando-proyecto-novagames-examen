@@ -15,7 +15,7 @@ export class RegistroPage implements OnInit {
 
   alertButtons = ['Listo'];
   constructor(private router: Router) { }
-
+  
   ngOnInit() {
   }
   irHome(){

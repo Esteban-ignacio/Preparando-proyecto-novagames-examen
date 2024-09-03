@@ -2,3 +2,23 @@
 .Carrito{
     text-align: center;
 }
+ion-toolbar{
+    --background: #b4f6a8;
+  }
+  ion-content{
+    --background: #a8f6c6;
+  }
+.menos{
+ padding-left: 60px;
+}
+.precio{
+  padding-left: 40px;
+  display: inline;
+}
+.imagen-xbox{
+  padding-top: 40px;
+}
+.boton-comprar{
+  margin-top: 30px;
+  margin-left: 150px;
+}

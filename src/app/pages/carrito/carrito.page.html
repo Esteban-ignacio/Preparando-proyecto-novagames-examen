@@ -4,14 +4,26 @@
       <ion-menu-button></ion-menu-button>
       <ion-back-button></ion-back-button>
     </ion-buttons>
-    <ion-title class="Carrito" >Carrito de compras</ion-title>
+    <ion-title class="Carrito">
+      <ion-icon name="cart"></ion-icon>
+      Carrito de compras
+      <ion-icon name="cart"></ion-icon>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">carrito</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <img src="https://th.bing.com/th/id/OIP.mF7H_I5aTatA0isO1BPjnAHaDV?w=667&h=300&rs=1&pid=ImgDetMain">
+     <ion-button class="menos">-</ion-button>
+     <ion-label>1</ion-label>
+     <ion-button>+</ion-button>
+     <p class="precio">Precio : $15.000</p>
+    
+     <img class="imagen-xbox" src="https://aqovwzqqqo.cloudimg.io/v7/www.technobaboy.com/wp-content/uploads/nba-2k24-kobe-bryant.jpg?w=768">
+     <ion-button class="menos">-</ion-button>
+     <ion-label>1</ion-label>
+     <ion-button>+</ion-button>
+     <p class="precio">Precio : $35.000</p>
+
+  <ion-button class="boton-comprar">Comprar</ion-button>
 </ion-content>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-playstation',
@@ -7,9 +8,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class PlaystationPage implements OnInit {
 
-  constructor() { }
+  constructor( private router: Router) { }
 
   ngOnInit() {
   }
+  irCarrito(){
+    let navigationextras: NavigationExtras = {
+
+    }
+
+    this.router.navigate(['/carrito'], navigationextras);
+  }
+
 
 }

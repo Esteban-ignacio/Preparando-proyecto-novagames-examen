@@ -3,7 +3,11 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title class="Crear-cuenta">Crea tu cuenta</ion-title>
+    <ion-title class="Crear-cuenta">
+      <ion-icon name="person-add"></ion-icon>
+      Crea tu cuenta
+      <ion-icon name="person-add"></ion-icon>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 <ion-content [fullscreen]="true">
@@ -13,19 +17,27 @@
   <br>
   <ion-textarea label="Apellido" labelPlacement="floating" fill="solid" placeholder="Ingrese su apellido"[(ngModel)]="Apellido"></ion-textarea>
   <br>
-  <ion-textarea label="Correo" labelPlacement="floating" fill="solid" placeholder="Ingrese su Correo"[(ngModel)]="Correo"></ion-textarea>
-  <br>
   <ion-textarea label="Numero telefonico" labelPlacement="floating" fill="solid" placeholder="Ingrese su numero de telefono"
   [(ngModel)]="Telefono"></ion-textarea>
+  <br>
+  <ion-input
+  type="email"
+  fill="solid"
+  label="Email"
+  labelPlacement="floating"
+  errorText="Correo Invalido"
+  ngModel
+  email
+  [(ngModel)]="Correo"></ion-input>
 
   <ion-button id="present-alert">Registrarme</ion-button>
-  <ion-alert
-    trigger="present-alert"
-    header="Registro completado"
-    message="Su registro ha sido realizado"
-    [buttons]="alertButtons"
-  ></ion-alert>
-  
-  <ion-button color="primary" (click)="irHome()">Ir al Home</ion-button>
-  <ion-button color="primary" (click)="irPerfil()">Ir al Perfil</ion-button>
+<ion-alert
+  trigger="present-alert"
+  header="Registro completado"
+  message="Su registro ha sido realizado."
+  [buttons]="alertButtons"
+></ion-alert>
+
+  <ion-button class="boton-casa" color="primary" (click)="irHome()">Ir al Home</ion-button>
+  <ion-button class="boton-perfil" color="primary" (click)="irPerfil()">Ir al Perfil</ion-button>
 </ion-content>

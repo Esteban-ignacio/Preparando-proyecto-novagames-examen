@@ -4,14 +4,31 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title class="tituloHome">
+      <ion-icon name="flash"></ion-icon>
       NovaGames
+      <ion-icon name="flash"></ion-icon>
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <p> Bienvenido {{ Usuario | uppercase}}</p>
+  <h2 class="titulo-home"><ion-icon name="game-controller"></ion-icon> Bienvenido {{ Usuario | uppercase}}</h2>
+   <h2 class="parte-titulo"> A NovaGames <ion-icon name="game-controller"></ion-icon></h2>
 
-  <ion-button color="primary" (click)="irPlaystation()">Playstation </ion-button>
-  <ion-button color="primary" (click)="irXbox()">Xbox </ion-button>
+   <h5 class="parte-subtitulo">Adentrate dentro del mundo gamer
+    y consigue los mejores juegos disponibles!!</h5>
+  
+      <img src="https://th.bing.com/th/id/OIP.90pMVftjz6eKXGzZqhSlYQAAAA?rs=1&pid=ImgDetMain">
+      <p>Demuestra de que estas hecho en Apex Legends, un juego en primera persona donde buscas a toda costa la victoria a base de la supervivencia.
+        Haz click aqui para mas.
+      </p>
+
+  <ion-button class="Llevame-ahi" color="primary" (click)="irPlaystation()">Llevame ahí </ion-button>
+
+  <img src="https://assets.nuuvem.com/image/upload/v1/products/6532dbafc97daf00181aee78/sharing_images/zilzlwtwbhtcf9urdbmp.jpg">
+  <p>Demuestra de que estas hecho en EA FC 24, desafia a tus amigos en partidos amistos, crea tu equipo en el modo Ultimate Team, juega a la par con tus amigos en Clubes Pro.
+    Haz click aqui para mas.
+  </p>
+  <ion-button class="Llevame-ahi" color="primary" (click)="irXbox()">Llevame ahí </ion-button>
 </ion-content>
+<

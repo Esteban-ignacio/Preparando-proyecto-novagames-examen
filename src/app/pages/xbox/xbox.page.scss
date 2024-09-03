@@ -2,6 +2,17 @@
 .tituloXbox{
     text-align: center;
 }
-
+ion-toolbar{
+    --background: #b4f6a8;
+  }
+  ion-content{
+    --background: #a8f6c6;
+  }
+  .precio{
+    text-align: center;
+  }
+  .boton-agregar{
+    display:flex;
+  }
 
   

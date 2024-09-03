@@ -2,4 +2,15 @@
 .TituloPlaystation{
     text-align: center;
 }
-
+ion-toolbar{
+    --background: #b4f6a8;
+  }
+  ion-content{
+    --background: #a8f6c6;
+  }
+  .boton-agregar{
+    display:flex;
+  }
+.precio{
+  text-align: center;
+}
