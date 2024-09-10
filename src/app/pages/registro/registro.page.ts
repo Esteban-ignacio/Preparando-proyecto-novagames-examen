@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-registro',
@@ -13,11 +14,21 @@ export class RegistroPage implements OnInit {
   Correo: string = "";
   Telefono: string= "";
 
-  alertButtons = ['Listo'];
-  constructor(private router: Router) { }
+  constructor(private router: Router, private alertController: AlertController) { }
   
   ngOnInit() {
   }
+
+  async presentAlert(titulo:string, msj:string) {
+    const alert = await this.alertController.create({
+      header: titulo,
+      message: msj,
+      buttons: ['Listo'],
+    });
+
+    await alert.present();
+  }
+
   irHome(){
     let navigationextras: NavigationExtras = {
 
@@ -36,5 +47,10 @@ export class RegistroPage implements OnInit {
     }
     this.router.navigate(['/perfil'], navigationextras);
   
+    }
+
+    registrar(){
+      //aqui hacemos las validaciones del formulario
+      this.presentAlert('Registro','Usuario Registrado');
     }
 }
