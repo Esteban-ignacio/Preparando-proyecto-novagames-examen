@@ -38,7 +38,23 @@ const routes: Routes = [
   {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
+  },  {
+    path: 'cambiarclave',
+    loadChildren: () => import('./pages/cambiarclave/cambiarclave.module').then( m => m.CambiarclavePageModule)
+  },
+  {
+    path: 'administrador',
+    loadChildren: () => import('./pages/administrador/administrador.module').then( m => m.AdministradorPageModule)
+  },
+  {
+    path: 'recuperarclave',
+    loadChildren: () => import('./pages/recuperarclave/recuperarclave.module').then( m => m.RecuperarclavePageModule)
+  },
+  {
+    path: 'modificarperfil',
+    loadChildren: () => import('./pages/modificarperfil/modificarperfil.module').then( m => m.ModificarperfilPageModule)
   }
+
 ];
 
 @NgModule({
