@@ -12,6 +12,7 @@ export class PerfilPage implements OnInit {
   apellido: string = "";
   correo: string = "";
   telefono: string = "";
+  contrasena: string = "";
 
   constructor(private router:Router, private activerouter: ActivatedRoute) { 
     this.activerouter.queryParams.subscribe(param =>{
@@ -20,6 +21,7 @@ export class PerfilPage implements OnInit {
         this.apellido = this.router.getCurrentNavigation()?.extras?.state?.['ape'];
         this.correo = this.router.getCurrentNavigation()?.extras?.state?.['cor'];
         this.telefono = this.router.getCurrentNavigation()?.extras?.state?.['tel'];
+        this.contrasena = this.router.getCurrentNavigation()?.extras?.state?.['cont'];
       }
     })
   }

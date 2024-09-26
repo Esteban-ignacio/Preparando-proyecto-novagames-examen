@@ -25,12 +25,19 @@
   fill="solid"
   label="Email"
   labelPlacement="floating"
+  placeholder="Ingrese su correo"
   errorText="Correo Invalido"
   ngModel
   email
   [(ngModel)]="Correo"></ion-input>
+  <br>
+  <ion-textarea label="Contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"
+  [(ngModel)]="Contrasena"></ion-textarea>
+  <br>
+  <ion-textarea label="Confirmar contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-textarea>
+  
 
-  <ion-button (click)="registrar()">Registrarme</ion-button>
+  <ion-button class="boton-registrarme" (click)="registrar()">Registrarme</ion-button>
   <!--
 
     <ion-alert

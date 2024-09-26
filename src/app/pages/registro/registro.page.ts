@@ -12,7 +12,8 @@ export class RegistroPage implements OnInit {
   Nombre: string = "";
   Apellido: string = "";
   Correo: string = "";
-  Telefono: string= "";
+  Telefono: string = "";
+  Contrasena: string = "";
 
   constructor(private router: Router, private alertController: AlertController) { }
   
@@ -42,7 +43,8 @@ export class RegistroPage implements OnInit {
         nomb: this.Nombre,
         ape: this.Apellido,
         cor: this.Correo,
-        tel: this.Telefono
+        tel: this.Telefono,
+        cont: this.Contrasena
       }
     }
     this.router.navigate(['/perfil'], navigationextras);

@@ -27,9 +27,6 @@ export class LoginPage implements OnInit {
   
   irRegistro(){
     let navigationextras: NavigationExtras={
-      state: {
-
-      }
     }
     this.router.navigate(['/registro'], navigationextras);
   }
