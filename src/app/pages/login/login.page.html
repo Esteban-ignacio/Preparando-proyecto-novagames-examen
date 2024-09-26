@@ -14,9 +14,8 @@
   </div>
   <ion-textarea class="Nombre-usuario" label="Nombre usuario" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre" 
   [(ngModel)]="usuario"></ion-textarea>
-  <br />
-  <ion-textarea label="Contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"
-  ></ion-textarea>
+  <br>
+  <ion-input label="Contraseña" type="password" label-placement="floating" fill="solid" placeholder="Enter text"></ion-input>
   <ion-button class="ircasa" color="primary" (click)="irPagina()">Ir al Home {{ usuario }}</ion-button>
   <ion-button class="registrate" color="primary" (click)="irRegistro()">Registrate </ion-button>
 </ion-content>
