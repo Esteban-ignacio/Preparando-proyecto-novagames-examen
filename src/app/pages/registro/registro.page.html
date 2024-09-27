@@ -31,11 +31,9 @@
   email
   [(ngModel)]="Correo"></ion-input>
   <br>
-  <ion-textarea label="Contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"
-  [(ngModel)]="Contrasena"></ion-textarea>
+  <ion-input label="Contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña" [(ngModel)]="Contrasena"></ion-input>
   <br>
-  <ion-textarea label="Confirmar contraseña" labelPlacement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-textarea>
-  
+  <ion-input label="Confirmar contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-input>
 
   <ion-button class="boton-registrarme" (click)="registrar()">Registrarme</ion-button>
   <!--
