@@ -31,4 +31,9 @@ export class LoginPage implements OnInit {
     this.router.navigate(['/registro'], navigationextras);
   }
 
+  irRecuperar(){
+    let navigationextras: NavigationExtras={
+    }
+    this.router.navigate(['/recuperarclave'], navigationextras);
+  }
 }
