@@ -5,7 +5,20 @@
     font-weight: bold;
 }
 .Nombre-usuario{
-    margin-top: 20px;
+    margin: auto;
+    width: 350px;
+    height: 60px;
+}
+.correo-login{
+    margin: auto;
+    width: 350px;
+    height: 60px;
+}
+.contraseña-login{
+    
+    margin: auto;
+    width: 350px;
+    height: 60px;
 }
 .Titulo-bienvenida{
     text-align: center;
@@ -18,10 +31,12 @@ ion-content{
 }
 .ircasa{
     margin-left: 30px;
+    padding-top: 10px;
 }
 .registrate{
     position: relative;
     padding-left: 80px;
+    padding-top: 10px;
 }
 .logo-novagames{
     padding-left: 10px;
