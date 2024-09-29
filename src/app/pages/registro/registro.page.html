@@ -12,15 +12,15 @@
 </ion-header>
 <ion-content [fullscreen]="true">
   <h2 class="ingresar-datos">Ingrese sus datos</h2>
-  <ion-textarea class="nombre" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"
+  <ion-textarea class="nombre-registro" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"
   [(ngModel)]="Nombre"></ion-textarea>
   <br>
-  <ion-textarea label="Apellido" labelPlacement="floating" fill="solid" placeholder="Ingrese su apellido"[(ngModel)]="Apellido"></ion-textarea>
+  <ion-textarea class="apellido-registro" label="Apellido" labelPlacement="floating" fill="solid" placeholder="Ingrese su apellido"[(ngModel)]="Apellido"></ion-textarea>
   <br>
-  <ion-textarea label="Numero telefonico" labelPlacement="floating" fill="solid" placeholder="Ingrese su numero de telefono"
+  <ion-textarea class="telefono-registro" label="Numero telefonico" labelPlacement="floating" fill="solid" placeholder="Ingrese su numero de telefono"
   [(ngModel)]="Telefono"></ion-textarea>
   <br>
-  <ion-input
+  <ion-input class="correo-registro"
   type="email"
   fill="solid"
   label="Email"
@@ -31,9 +31,9 @@
   email
   [(ngModel)]="Correo"></ion-input>
   <br>
-  <ion-input label="Contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña" [(ngModel)]="Contrasena"></ion-input>
+  <ion-input class="contraseña-registro" label="Contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña" [(ngModel)]="Contrasena"></ion-input>
   <br>
-  <ion-input label="Confirmar contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <ion-input class="confirmar-contraseña-registro" label="Confirmar contraseña" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-input>
 
   <ion-button class="boton-registrarme" (click)="registrar()">Registrarme</ion-button>
   
