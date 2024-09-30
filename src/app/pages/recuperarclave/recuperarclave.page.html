@@ -12,5 +12,23 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
+  <ion-input class="correo-recuperar-contra"
+  type="email"
+  fill="solid"
+  label="Correo"
+  labelPlacement="floating"
+  placeholder="Ingrese su correo"
+  errorText="Correo Invalido"
+  email
+  ="Correo"></ion-input>
+  <br>
+  <ion-input class="contraseña-recuperar-contra" label="Contraseña" type="password" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <br>
+  <ion-input class="confirmar-contraseña-recuperar-contra" label="Confirmar contraseña" type="password" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+
+  <ion-button class="boton-confirmar-contraseña" (click)="Confirmarcontra()">Confirmar</ion-button>
+  <ion-button class="Boton-regresar-inicio" color="primary" (click)="RegresarInicio()">Ir al inicio</ion-button>
+
 </ion-content>
