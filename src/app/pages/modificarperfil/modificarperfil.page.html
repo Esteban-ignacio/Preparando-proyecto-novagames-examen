@@ -1,5 +1,8 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
     <ion-title class="modificar-perfil">
       <ion-icon name="person-add"></ion-icon>
       Modificar perfil
@@ -9,5 +12,19 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
+  <h2 class="ingresar-datos-modificar-perfil">Ingrese sus datos</h2>
+  <ion-input class="nombre-modificar-perfil" label="Nombre" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su nombre"></ion-input>
+  <br>
+  <ion-input class="apellido-modificar-perfil" label="Apellido" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su apellido"></ion-input>
+  <br>
+  <ion-input class="telefono-modificar-perfil" label="Telefono" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su numero de telefono"></ion-input>
+  <br>
+  <ion-input class="correo-modificar-perfil" label="Correo" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su correo"></ion-input>
+
+  <ion-button class="boton-confirmar-cambios" (click)="Confirmarcambios()">Confirmar</ion-button>
+  <ion-button class="boton-volver-al-inicio" color="primary" (click)="VolveralInicio()">Ir al inicio</ion-button>
 </ion-content>

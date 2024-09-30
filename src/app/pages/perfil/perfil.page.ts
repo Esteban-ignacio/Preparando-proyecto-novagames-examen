@@ -34,4 +34,10 @@ export class PerfilPage implements OnInit {
     }
     this.router.navigate(['/home'], navigationextras);
   }
+  modificarperfil(){
+    let navigationextras: NavigationExtras = {
+
+    }
+    this.router.navigate(['/modificarperfil'], navigationextras);
+  }
 }
