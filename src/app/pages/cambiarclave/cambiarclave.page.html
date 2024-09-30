@@ -3,10 +3,32 @@
     <ion-buttons slot="start">
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
-    <ion-title>Cambiar contraseña</ion-title>
+    <ion-title class="titulo-cambiarcontra">
+      <ion-icon name="lock-closed"></ion-icon>
+      Cambiar contraseña
+      <ion-icon name="lock-closed"></ion-icon>
+    </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-input class="correo-cambiar-contra"
+  type="email"
+  fill="solid"
+  label="Correo"
+  labelPlacement="floating"
+  placeholder="Ingrese su correo"
+  errorText="Correo Invalido"
+  ngModel
+  email
+  ="Correo"></ion-input>
+  <br>
+  <ion-input class="cambiar-contraseña" label="Contraseña" type="password" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <br>
+  <ion-input class="confirmar-cambiar-contra" label="Confirmar contraseña" type="password" label-placement="floating" 
+  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <ion-button class="boton-confirmar-cambio-contra" (click)="Confirmarcambiocontra()">Confirmar</ion-button>
+  <ion-button class="boton-ir-al-inicio" color="primary" (click)="IrInicio()">Ir al inicio</ion-button>
   
 </ion-content>

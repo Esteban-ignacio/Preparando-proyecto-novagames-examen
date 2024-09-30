@@ -1,0 +1,36 @@
+
+.titulo-cambiarcontra{
+    text-align: center;
+    color: black;
+    font-weight: bold;
+}
+ion-toolbar{
+    --background: #b4f6a8;
+}
+ion-content{
+    --background: #a8f6c6;
+}
+.correo-cambiar-contra{
+    margin: auto;
+    width: 350px;
+    height: 60px;
+    margin-top: 40px;
+}
+.cambiar-contraseña{
+    margin: auto;
+    width: 350px;
+    height: 60px;
+}
+.confirmar-cambiar-contra{
+    margin: auto;
+    width: 350px;
+    height: 60px;
+}
+.boton-confirmar-cambio-contra{   
+    padding-left: 40px;
+    margin-top: 20px;
+}
+.boton-ir-al-inicio{
+    padding-left: 40px;
+    margin-top: 20px;
+}

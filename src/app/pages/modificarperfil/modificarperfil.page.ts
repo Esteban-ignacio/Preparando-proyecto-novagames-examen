@@ -32,5 +32,10 @@ export class ModificarperfilPage implements OnInit {
     }
     this.router.navigate(['/home'], navigationextras);
   }
+  irCambiarcontra(){
+    let navigationextras: NavigationExtras={
+    }
+    this.router.navigate(['/cambiarclave'], navigationextras);
+  }
 
 }
