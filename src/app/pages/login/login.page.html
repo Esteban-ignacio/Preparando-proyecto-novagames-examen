@@ -12,14 +12,20 @@
   <div class="logo-novagames">
     <img src="assets/img/logo.webp">
   </div>
-  <ion-textarea class="Nombre-usuario" label="Nombre usuario:" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre" 
-  [(ngModel)]="usuario"></ion-textarea>
+  <form class="Nombre-usuario" (ngSubmit)="ValidacionNombre()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="Nombre-usuario" label="Nombre de usuario" label-placement="floating" fill="solid" placeholder="Ingrese su nombre" [(ngModel)]="usuario" name="usuario" required></ion-input>
+    </ion-item>
+    
+  </form>
   <br>
   <ion-textarea class="correo-login" label="Correo:" labelPlacement="floating" fill="solid" placeholder="Ingrese su correo"></ion-textarea>
   <br>
   <ion-input class="contraseña-login" label="Contraseña:" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-input>
-  <ion-button class="ircasa" color="primary" (click)="irPagina()">Iniciar sesion {{ usuario }}</ion-button>
-  <ion-button class="registrate" color="primary" (click)="irRegistro()">Registrate </ion-button>
   <br>
+  <ion-button class="ircasa" color="primary" (click)="ValidacionNombre()">Inicia sesion {{ usuario }}</ion-button>
+  <br>
+  <a class="registrate" (click) = "irRegistro()">Registrate aqui</a>
   <a class="boton-recuperarcontra" (click) = "irRecuperar()">¿Olvido su contraseña?</a>
 </ion-content>

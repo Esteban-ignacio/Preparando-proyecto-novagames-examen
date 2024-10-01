@@ -13,6 +13,7 @@ export class CambiarclavePage implements OnInit {
 
   ngOnInit() {
   }
+  
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({
       header: titulo,
