@@ -39,13 +39,7 @@ export class RegistroPage implements OnInit {
 
   irPerfil(){
     let navigationextras: NavigationExtras = {
-      state: {
-        nomb: this.Nombre,
-        ape: this.Apellido,
-        cor: this.Correo,
-        tel: this.Telefono,
-        cont: this.Contrasena
-      }
+      
     }
     this.router.navigate(['/perfil'], navigationextras);
   

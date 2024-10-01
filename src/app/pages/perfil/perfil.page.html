@@ -12,11 +12,27 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <p class="Nombre-perfil">Nombre: {{ nombre | uppercase}}</p>
-  <p class="Apellido-perfil">Apellido: {{ apellido | uppercase}}</p>
-  <p class="Telefono-perfil">Telefono: {{ telefono }}</p>
-  <p class="Correo-perfil">Correo: {{ correo | uppercase}}</p>
-  <p class="Contraseña-perfil" >Contraseña: {{ contrasena }}</p>
+  <ion-item class="Nombre-perfil">
+    <ion-label position="floating">Nombre:</ion-label>
+    <ion-input type="text" [value]="nombre" readonly></ion-input>
+  </ion-item>
+  <ion-item class="Apellido-perfil">
+    <ion-label position="floating">Apellido:</ion-label>
+    <ion-input type="text" [value]="apellido" readonly></ion-input>
+  </ion-item>
+  <ion-item class="Telefono-perfil">
+    <ion-label position="floating">Telefono:</ion-label>
+    <ion-input type="tel" [value]="telefono" readonly></ion-input>
+  </ion-item>
+
+  <ion-item class="Correo-perfil">
+    <ion-label position="floating">Correo:</ion-label>
+    <ion-input type="email" [value]="correo" readonly></ion-input>
+  </ion-item>
+  <ion-item class="Contraseña-perfil">
+    <ion-label position="floating">Contraseña:</ion-label>
+    <ion-input type="password" [value]="contrasena" readonly></ion-input>
+  </ion-item>
 
   <ion-button class="Boton-home" color="primary" (click)="Home()">Ir al inicio</ion-button>
   <ion-button class="boton-modificar-perfil" (click)="modificarperfil()">Modificar Perfil</ion-button>
