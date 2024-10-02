@@ -15,20 +15,28 @@
   <form class="Nombre-usuario" (ngSubmit)="ValidacionLogin()">
     <ion-item>
       <ion-label position="floating"></ion-label>
-      <ion-input class="Nombre-usuario" label="Nombre de usuario" label-placement="floating" fill="solid" placeholder="Ingrese su nombre" [(ngModel)]="usuario" name="usuario" required></ion-input>
+      <ion-input class="Nombre-usuario" label="Nombre de usuario" label-placement="floating" fill="solid" placeholder="Ingrese su nombre" 
+      [(ngModel)]="usuariologin" name="usuariologin" required></ion-input>
     </ion-item>
     
   </form>
-  <br>
-  <ion-textarea class="correo-login" label="Correo:" labelPlacement="floating" fill="solid" placeholder="Ingrese su correo"></ion-textarea>
+
+  <form class="correo-login"(ngSubmit)="ValidacionLogin()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="correo-login" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese su correo" [(ngModel)]="correologin" name="correologin" required></ion-input>
+    </ion-item>
+  </form>
+
   <form class="contraseña-login"(ngSubmit)="ValidacionLogin()">
     <ion-item>
       <ion-label position="floating"></ion-label>
       <ion-input type="password" class="contraseña-login" label="Contraseña" label-placement="floating" fill="solid" 
-      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenal" name="contrasenal" required></ion-input>
+      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenalogin" name="contrasenalogin" required></ion-input>
     </ion-item>
   </form>
-  <ion-button class="ircasa" color="primary" (click)="ValidacionLogin()">Inicia sesion {{ usuario }}</ion-button>
+  <ion-button class="ircasa" color="primary" (click)="ValidacionLogin()">Inicia sesion {{ usuariologin }}</ion-button>
   <br>
   <a class="registrate" (click) = "irRegistro()">Registrate aqui</a>
   <a class="boton-recuperarcontra" (click) = "irRecuperar()">¿Olvido su contraseña?</a>
