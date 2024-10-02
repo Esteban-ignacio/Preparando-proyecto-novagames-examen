@@ -12,24 +12,31 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-input class="correo-cambiar-contra"
-  type="email"
-  fill="solid"
-  label="Correo"
-  labelPlacement="floating"
-  placeholder="Ingrese su correo"
-  errorText="Correo Invalido"
-  ngModel
-  email
-  ="Correo"></ion-input>
-  <br>
-  <ion-input class="cambiar-contraseña" label="Contraseña" type="password" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
-  <br>
-  <ion-input class="confirmar-cambiar-contra" label="Confirmar contraseña" type="password" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <form class="correo-cambiar-contra"(ngSubmit)="ValidacionCambiarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="correo-cambiar-contra" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese su correo" [(ngModel)]="correocambiarclave" name="correocambiarclave" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="cambiar-contraseña"(ngSubmit)="ValidacionCambiarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input type="password" class="cambiar-contraseña" label="Contraseña" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenacambiarclave" name="contrasenacambiarclave" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="confirmar-cambiar-contra"(ngSubmit)="ValidacionCambiarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+    <ion-input type="password" class="confirmar-cambiar-contra" label="Confirmar Contraseña" label-placement="floating" 
+      fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasenacambiarclave" name="confirmarContrasenacambiarclave" 
+      required></ion-input>
+    </ion-item>
+  </form>
   
-  <ion-button class="boton-confirmar-cambio-contra" (click)="Confirmarcambiocontra()">Confirmar</ion-button>
-  <ion-button class="boton-ir-al-inicio" color="primary" (click)="IrInicio()">Ir al inicio</ion-button>
-  
+  <ion-button class="boton-confirmar-cambio-contra" (click)="ValidacionCambiarClave()">Confirmar</ion-button>
+
 </ion-content>

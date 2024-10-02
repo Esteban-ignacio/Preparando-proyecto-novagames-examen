@@ -13,24 +13,25 @@ ion-content{
 .correo-cambiar-contra{
     margin: auto;
     width: 350px;
-    height: 60px;
-    margin-top: 40px;
+    padding-top: 20px;
+    --padding-start: 0;
 }
 .cambiar-contraseña{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 10px;
+    --padding-start: 0;
 }
 .confirmar-cambiar-contra{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 20px;
+    --padding-start: 0;
 }
 .boton-confirmar-cambio-contra{   
-    padding-left: 40px;
-    margin-top: 20px;
-}
-.boton-ir-al-inicio{
-    padding-left: 40px;
+    padding-top: 20px;
+    padding-left: 130px;
     margin-top: 20px;
 }

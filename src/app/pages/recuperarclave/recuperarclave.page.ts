@@ -28,7 +28,7 @@ export class RecuperarclavePage implements OnInit {
     if (this.isFormValid()) {
       // Si el formulario es válido, muestra un mensaje de éxito
       this.presentAlert('Logrado','Contraseña recuperada');
-      this.RegresarInicio(); // Navegar a la página de inicio si el registro es exitoso
+      this.RegresarLogin(); // Navegar a la página de inicio si el registro es exitoso
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
@@ -62,15 +62,10 @@ export class RecuperarclavePage implements OnInit {
     await alert.present();
   }
 
-  Confirmarcontra(){
-    //aqui hacemos las validaciones del formulario
-    this.presentAlert('Logrado','Contraseña recuperada');
-  }
-  
-  RegresarInicio(){
+  RegresarLogin(){
     let navigationextras: NavigationExtras = {
-
+      
     }
-    this.router.navigate(['/home'], navigationextras);
+    this.router.navigate(['/login'], navigationextras);
   }
 }
