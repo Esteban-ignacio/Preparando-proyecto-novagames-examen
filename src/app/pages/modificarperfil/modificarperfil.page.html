@@ -13,19 +13,38 @@
 
 <ion-content [fullscreen]="true">
   <h2 class="ingresar-datos-modificar-perfil">Ingrese sus datos</h2>
-  <ion-input class="nombre-modificar-perfil" label="Nombre" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su nombre"></ion-input>
-  <br>
-  <ion-input class="apellido-modificar-perfil" label="Apellido" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su apellido"></ion-input>
-  <br>
-  <ion-input class="telefono-modificar-perfil" label="Telefono" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su numero de telefono"></ion-input>
-  <br>
-  <ion-input class="correo-modificar-perfil" label="Correo" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su correo"></ion-input>
+  <form class="nombre-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="nombre-modificar-perfil" label="Nombre" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su nombre" [(ngModel)]="nombremodificarperfil" name="nombremodificarperfil" required></ion-input>
+    </ion-item>
+  </form>
 
-  <ion-button class="boton-confirmar-cambios" (click)="Confirmarcambios()">Confirmar</ion-button>
-  <ion-button class="boton-volver-al-inicio" color="primary" (click)="VolveralInicio()">Ir al inicio</ion-button>
+  <form class="apellido-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="apellido-modificar-perfil" label="Apellido" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su apellido" [(ngModel)]="apellidomodificarperfil" name="apellidomodificarperfil" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="telefono-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="telefono-modificar-perfil" label="Telefono" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su número de teléfono" [(ngModel)]="telefonomodificarperfil" name="telefonomodificarperfil" required></ion-input>
+    </ion-item>
+  </form>
+  
+  <form class="correo-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="correo-modificar-perfil" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese su correo" [(ngModel)]="correomodificarperfil" name="correomodificarperfil" required></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-button class="boton-confirmar-cambios" (click)="ValidacionModificarPerfil()">Confirmar</ion-button>
   <a class="boton-cambiarcontra" (click) = "irCambiarcontra()">Cambio de contraseña</a>
 </ion-content>

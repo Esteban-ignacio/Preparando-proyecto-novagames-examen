@@ -16,30 +16,32 @@ ion-content{
 .nombre-modificar-perfil{
     margin: auto;
     width: 350px;
-    height: 60px;
-    margin-top: 20px;
+    --padding-start: 0;
 }
 .apellido-modificar-perfil{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 10px;
+    --padding-start: 0;
 }
 .telefono-modificar-perfil{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 20px;
+    --padding-start: 0;
 }
 .correo-modificar-perfil{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 30px;
+    --padding-start: 0;
 }
 .boton-confirmar-cambios{
-    padding-left: 40px;
-    margin-top: 20px;
-}
-.boton-volver-al-inicio{
-    padding-left: 40px;
+    padding-top: 30px;
+    padding-left: 136px;
     margin-top: 20px;
 }
 .boton-cambiarcontra{
