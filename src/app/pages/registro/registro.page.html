@@ -12,32 +12,54 @@
 </ion-header>
 <ion-content [fullscreen]="true">
   <h2 class="ingresar-datos">Ingrese sus datos</h2>
-  <ion-textarea class="nombre-registro" label="Nombre" labelPlacement="floating" fill="solid" placeholder="Ingrese su nombre"></ion-textarea>
-  <br>
-  <ion-textarea class="apellido-registro" label="Apellido" labelPlacement="floating" fill="solid" 
-  placeholder="Ingrese su apellido"></ion-textarea>
-  <br>
-  <ion-textarea class="telefono-registro" label="Telefono" labelPlacement="floating" fill="solid" 
-  placeholder="Ingrese su numero de telefono"></ion-textarea>
-  <br>
-  <ion-input class="correo-registro"
-  type="email"
-  fill="solid"
-  label="Correo"
-  labelPlacement="floating"
-  placeholder="Ingrese su correo"
-  errorText="Correo Invalido"
-  ngModel
-  email></ion-input>
-  <br>
-  <ion-input class="contraseña-registro" label="Contraseña" type="password" label-placement="floating" fill="solid" 
-  placeholder="Ingrese su contraseña"></ion-input>
-  <br>
-  <ion-input class="confirmar-contraseña-registro" label="Confirmar contraseña" type="password" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <form class="nombre-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="nombre-registro" label="Nombre" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su nombre" [(ngModel)]="nombre" name="nombre" required></ion-input>
+    </ion-item>
+    
+  </form>
+  <form class="apellido-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="apellido-registro" label="Apellido" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su apellido" [(ngModel)]="apellido" name="apellido" required></ion-input>
+    </ion-item>
+  </form>
 
-  <ion-button class="boton-registrarme" (click)="registrar()">Registrarme</ion-button>
+  <form class="telefono-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="telefono-registro" label="Telefono" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su número de teléfono" [(ngModel)]="telefono" name="telefono" required></ion-input>
+    </ion-item>
+  </form>
   
-  <ion-button class="boton-casa" color="primary" (click)="irHome()">Ir a inicio</ion-button>
+  <form class="correo-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="correo-registro" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese su correo" [(ngModel)]="correo" name="correo" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="contraseña-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input type="password" class="contraseña-registro" label="Contraseña" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su contraseña" [(ngModel)]="contrasena" name="contrasena" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="confirmar-contraseña-registro"(ngSubmit)="ValidacionRegistro()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+    <ion-input type="password" class="confirmar-contraseña-registro" label="Confirmar Contraseña" label-placement="floating" 
+      fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasena" name="confirmarContrasena" required></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-button class="boton-registrarme" (click)="ValidacionRegistro()">Registrarme</ion-button>
   <ion-button class="boton-perfil" color="primary" (click)="irPerfil()">Ir al Perfil</ion-button>
 </ion-content>

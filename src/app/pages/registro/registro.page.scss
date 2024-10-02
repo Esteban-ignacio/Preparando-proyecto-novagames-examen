@@ -5,37 +5,45 @@
     font-weight: bold;
 }
 .contraseña-registro{
-    margin-top: 10px;
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 40px;
+    --padding-start: 0;
 }
 
 .nombre-registro{
-    margin-top: 10px;
     margin: auto;
     width: 350px;
-    height: 60px;
+    --padding-start: 0;
 }
 .apellido-registro{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 10px;
+    --padding-start: 0;
 }
 .telefono-registro{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 20px;
+    --padding-start: 0;
 }
 .correo-registro{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 30px;
+    --padding-start: 0;
 }
 .confirmar-contraseña-registro{
     margin: auto;
     width: 350px;
     height: 60px;
+    padding-top: 50px;
+    --padding-start: 0;
 }
 
 .ingresar-datos{
@@ -44,14 +52,15 @@
 #present-alert{
     margin-top: 30px;
 }
-.boton-casa{
-    margin-top: 30px;
-}
 .boton-perfil{
-    margin-top: 30px;
+    padding-top: 50px;
+    padding-left: 40px;
+    margin-top: 20px;
 }
 .boton-registrarme{
-    margin-top: 30px;
+    padding-top: 50px;
+    padding-left: 30px;
+    margin-top: 20px;
 }
 ion-toolbar{
     --background: #b4f6a8;
