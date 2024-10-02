@@ -12,7 +12,7 @@
   <div class="logo-novagames">
     <img src="assets/img/logo.webp">
   </div>
-  <form class="Nombre-usuario" (ngSubmit)="ValidacionNombre()">
+  <form class="Nombre-usuario" (ngSubmit)="ValidacionLogin()">
     <ion-item>
       <ion-label position="floating"></ion-label>
       <ion-input class="Nombre-usuario" label="Nombre de usuario" label-placement="floating" fill="solid" placeholder="Ingrese su nombre" [(ngModel)]="usuario" name="usuario" required></ion-input>
@@ -21,10 +21,14 @@
   </form>
   <br>
   <ion-textarea class="correo-login" label="Correo:" labelPlacement="floating" fill="solid" placeholder="Ingrese su correo"></ion-textarea>
-  <br>
-  <ion-input class="contraseña-login" label="Contraseña:" type="password" label-placement="floating" fill="solid" placeholder="Ingrese su contraseña"></ion-input>
-  <br>
-  <ion-button class="ircasa" color="primary" (click)="ValidacionNombre()">Inicia sesion {{ usuario }}</ion-button>
+  <form class="contraseña-login"(ngSubmit)="ValidacionLogin()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input type="password" class="contraseña-login" label="Contraseña" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenal" name="contrasenal" required></ion-input>
+    </ion-item>
+  </form>
+  <ion-button class="ircasa" color="primary" (click)="ValidacionLogin()">Inicia sesion {{ usuario }}</ion-button>
   <br>
   <a class="registrate" (click) = "irRegistro()">Registrate aqui</a>
   <a class="boton-recuperarcontra" (click) = "irRecuperar()">¿Olvido su contraseña?</a>

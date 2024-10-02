@@ -22,7 +22,8 @@ export class RegistroPage implements OnInit {
   }
 
   ValidacionRegistro(){
-    if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.telefono.trim() === '' ) {
+    if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.telefono.trim() === '' || this.correo.trim() === ''
+       || this.contrasena.trim() === '' || this.confirmarContrasena.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }

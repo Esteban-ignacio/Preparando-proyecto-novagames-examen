@@ -10,33 +10,45 @@ import { AlertController } from '@ionic/angular';
 export class LoginPage implements OnInit {
 
   usuario: string = "";
+  contrasenal: string = "";
 
   constructor(private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
   }
 
-  ValidacionNombre(){
-    // Hacemos la validación
+  ValidacionLogin(){
+    if (this.usuario.trim() === '' || this.contrasenal.trim() === '') {
+      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
+      return; // Salir de la función si algún campo está vacío
+    }
+  
+    // Hacemos la validación de los datos
     if (this.isFormValid()) {
-      // Si el formulario es válido, navega a la página de inicio
-      this.presentAlert('Iniciado', 'Inicio exitoso', true);
+      // Si el formulario es válido, muestra un mensaje de éxito
+      this.presentAlert('Iniciado', 'Inicio exitoso');
+      this.irPagina(); // Navegar a la página de inicio si el registro es exitoso
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
-      this.presentAlert('Error', 'Nombre de usuario inválido.', false);
+      this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
 
   isFormValid(): boolean {
     const regex = /^[a-zA-Z]+$/; // Solo letras
+    const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con mayúscula, número y símbolo
+
     return (
       this.usuario.trim() !== '' && // No debe estar vacío
       this.usuario.length >= 2 &&
       this.usuario.length <= 10 &&
-      regex.test(this.usuario)
+      regex.test(this.usuario) &&
+
+      this.contrasenal.trim() !== '' && // Contraseña no debe estar vacía
+      regexPassword.test(this.contrasenal) // Validación de la contraseña
     );
   }
-  async presentAlert(titulo: string, msj: string, navegar: boolean) {
+  async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({
       header: titulo,
       message: msj,
@@ -45,12 +57,8 @@ export class LoginPage implements OnInit {
 
     await alert.present();
 
-    // Aquí es donde realizamos la navegación si la validación es exitosa
-    if (navegar) {
-      this.irPagina();
-    }
   }
-
+  
   irPagina(){
     //creamos nuestra variable de contexto
     let navigationextras: NavigationExtras = {
