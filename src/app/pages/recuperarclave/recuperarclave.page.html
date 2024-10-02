@@ -12,24 +12,31 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-input class="correo-recuperar-contra"
-  type="email"
-  fill="solid"
-  label="Correo"
-  labelPlacement="floating"
-  placeholder="Ingrese su correo"
-  errorText="Correo Invalido"
-  ngModel
-  email
-  ="Correo"></ion-input>
-  <br>
-  <ion-input class="contraseña-recuperar-contra" label="Contraseña" type="password" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
-  <br>
-  <ion-input class="confirmar-contraseña-recuperar-contra" label="Confirmar contraseña" type="password" label-placement="floating" 
-  fill="solid" placeholder="Ingrese su contraseña"></ion-input>
+  <form class="correo-recuperar-contra"(ngSubmit)="ValidacionRecuperarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="correo-recuperar-contra" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese su correo" [(ngModel)]="correorecuperarclave" name="correorecuperarclave" required></ion-input>
+    </ion-item>
+  </form>
 
-  <ion-button class="boton-confirmar-contraseña" (click)="Confirmarcontra()">Confirmar</ion-button>
-  <ion-button class="Boton-regresar-inicio" color="primary" (click)="RegresarInicio()">Ir al inicio</ion-button>
+  <form class="contraseña-recuperar-contra"(ngSubmit)="ValidacionRecuperarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input type="password" class="contraseña-recuperar-contra" label="Contraseña" label-placement="floating" fill="solid" 
+      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenarecuperarclave" name="contrasenarecuperarclave" required></ion-input>
+    </ion-item>
+  </form>
+
+  <form class="confirmar-contraseña-recuperar-contra"(ngSubmit)="ValidacionRecuperarClave()">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+    <ion-input type="password" class="confirmar-contraseña-recuperar-contra" label="Confirmar Contraseña" label-placement="floating" 
+      fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasenarecuperarclave" name="confirmarContrasenarecuperarclave" 
+      required></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-button class="boton-confirmar-contraseña" (click)="ValidacionRecuperarClave()">Confirmar</ion-button>
 
 </ion-content>
