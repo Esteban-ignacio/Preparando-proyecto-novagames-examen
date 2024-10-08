@@ -23,6 +23,12 @@ export class ModificarperfilPage implements OnInit {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
+
+     // Validar nombre, apellido, teléfono y correo con alertas específicas
+     if (!this.isNombreApellidoModificarPerfilValido() || !this.isTelefonoModificarPerfilValido() 
+      || !this.isCorreoModificarPerfilValido()) {
+        return; // Si alguno de los campos es inválido, no continuar
+      }
   
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
@@ -34,6 +40,46 @@ export class ModificarperfilPage implements OnInit {
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
+
+   // Validación para el nombre y el apellido
+   isNombreApellidoModificarPerfilValido(): boolean {
+  const regexNombreApellido = /^[a-zA-Z]{2,9}$/; // Letras de 2 a 9 caracteres
+  let isValid = true;
+
+  // Validar nombre
+  if (!regexNombreApellido.test(this.nombremodificarperfil)) {
+    this.presentAlert('Error', 'El nombre debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
+    isValid = false;
+  }
+
+  // Validar apellido
+  if (!regexNombreApellido.test(this.apellidomodificarperfil)) {
+    this.presentAlert('Error', 'El apellido debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+// Validación para el teléfono
+isTelefonoModificarPerfilValido(): boolean {
+  const regexTelefono = /^\d{9}$/; // Solo números y exactamente 9 dígitos
+  if (!regexTelefono.test(this.telefonomodificarperfil)) {
+    this.presentAlert('Error', 'El teléfono debe contener exactamente 9 dígitos, no debe tener espacios ni simbolos y solo puede contener números.');
+    return false;
+  }
+  return true;
+}
+
+ // Validación para el correo
+ isCorreoModificarPerfilValido(): boolean {
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
+  if (!regexEmail.test(this.correomodificarperfil)) {
+    this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
+    return false;
+  }
+  return true;
+}
 
   isFormValid(): boolean {
     const regex = /^[a-zA-Z]+$/; // Solo letras
