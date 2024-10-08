@@ -23,6 +23,12 @@ export class RecuperarclavePage implements OnInit {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
+
+      // Validar correo, contraseña y confirmar contraseña con alertas específicas
+      if (!this.isCorreoRecuperarClaveValido() || !this.isContrasenaRecuperarClaveValida()
+        || !this.isConfirmarContrasenaRecuperarClaveValida()) {
+          return; // Si alguno de los campos es inválido, no continuar
+        }
   
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
@@ -34,6 +40,36 @@ export class RecuperarclavePage implements OnInit {
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
+
+  // Validación para el correo
+  isCorreoRecuperarClaveValido(): boolean {
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
+  if (!regexEmail.test(this.correorecuperarclave)) {
+    this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
+    return false;
+  }
+  return true;
+}
+
+ // Validación para la contraseña
+ isContrasenaRecuperarClaveValida(): boolean {
+  const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con al menos una mayúscula, un número y un símbolo
+
+  if (!regexPassword.test(this.contrasenarecuperarclave)) {
+    this.presentAlert('Error', 'La contraseña debe tener entre 5 y 10 caracteres, incluir al menos una letra mayúscula, un número y un símbolo.');
+    return false;
+  }
+  return true;
+}
+
+// Validación para confirmar contraseña
+isConfirmarContrasenaRecuperarClaveValida(): boolean {
+  if (this.confirmarContrasenarecuperarclave !== this.contrasenarecuperarclave) {
+    this.presentAlert('Error', 'La contraseña no coincide.');
+    return false;
+  }
+  return true;
+}
 
   isFormValid(): boolean {
     const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico

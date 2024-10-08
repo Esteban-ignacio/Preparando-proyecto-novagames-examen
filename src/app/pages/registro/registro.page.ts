@@ -28,7 +28,7 @@ export class RegistroPage implements OnInit {
       return; // Salir de la función si algún campo está vacío
     }
 
-      // Validar nombre, apellido y teléfono con alertas específicas
+      // Validar nombre, apellido, teléfono, correo, contraseña y confirmar contraseña con alertas específicas
     if (!this.isNombreApellidoValido() || !this.isTelefonoValido() || !this.isCorreoValido() || !this.isContrasenaValida()
     || !this.isConfirmarContrasenaValida()) {
       return; // Si alguno de los campos es inválido, no continuar

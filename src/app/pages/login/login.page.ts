@@ -24,7 +24,7 @@ export class LoginPage implements OnInit {
       return; // Salir de la función si algún campo está vacío
     }
 
-      // Validar nombre, apellido y teléfono con alertas específicas
+      // Validar nombre, correo y contraseña con alertas específicas
       if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
           return; // Si alguno de los campos es inválido, no continuar
         }
