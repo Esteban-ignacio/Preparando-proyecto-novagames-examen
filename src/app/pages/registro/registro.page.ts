@@ -27,7 +27,13 @@ export class RegistroPage implements OnInit {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
-  
+
+      // Validar nombre, apellido y teléfono con alertas específicas
+    if (!this.isNombreApellidoValido() || !this.isTelefonoValido() || !this.isCorreoValido() || !this.isContrasenaValida()
+    || !this.isConfirmarContrasenaValida()) {
+      return; // Si alguno de los campos es inválido, no continuar
+    }
+ 
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
       // Si el formulario es válido, muestra un mensaje de éxito
@@ -38,6 +44,66 @@ export class RegistroPage implements OnInit {
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
+
+  // Validación para el nombre y el apellido
+isNombreApellidoValido(): boolean {
+  const regexNombreApellido = /^[a-zA-Z]{2,9}$/; // Letras de 2 a 9 caracteres
+  let isValid = true;
+
+  // Validar nombre
+  if (!regexNombreApellido.test(this.nombre)) {
+    this.presentAlert('Error', 'El nombre debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
+    isValid = false;
+  }
+
+  // Validar apellido
+  if (!regexNombreApellido.test(this.apellido)) {
+    this.presentAlert('Error', 'El apellido debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
+    isValid = false;
+  }
+
+  return isValid;
+}
+
+// Validación para el teléfono
+isTelefonoValido(): boolean {
+  const regexTelefono = /^\d{9}$/; // Solo números y exactamente 9 dígitos
+  if (!regexTelefono.test(this.telefono)) {
+    this.presentAlert('Error', 'El teléfono debe contener exactamente 9 dígitos, no debe tener espacios ni simbolos y solo puede contener números.');
+    return false;
+  }
+  return true;
+}
+
+ // Validación para el correo
+ isCorreoValido(): boolean {
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
+  if (!regexEmail.test(this.correo)) {
+    this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
+    return false;
+  }
+  return true;
+}
+
+ // Validación para la contraseña
+ isContrasenaValida(): boolean {
+  const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con al menos una mayúscula, un número y un símbolo
+
+  if (!regexPassword.test(this.contrasena)) {
+    this.presentAlert('Error', 'La contraseña debe tener entre 5 y 10 caracteres, incluir al menos una letra mayúscula, un número y un símbolo.');
+    return false;
+  }
+  return true;
+}
+
+// Validación para confirmar contraseña
+isConfirmarContrasenaValida(): boolean {
+  if (this.confirmarContrasena !== this.contrasena) {
+    this.presentAlert('Error', 'La contraseña no coincide.');
+    return false;
+  }
+  return true;
+}
 
   isFormValid(): boolean {
     const regex = /^[a-zA-Z]+$/; // Solo letras
