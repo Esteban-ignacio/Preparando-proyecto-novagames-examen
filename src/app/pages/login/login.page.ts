@@ -23,6 +23,11 @@ export class LoginPage implements OnInit {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
+
+      // Validar nombre, apellido y teléfono con alertas específicas
+      if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
+          return; // Si alguno de los campos es inválido, no continuar
+        }
   
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
@@ -34,6 +39,41 @@ export class LoginPage implements OnInit {
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
+
+  // Validación para el nombre y el apellido
+  isUsuarioLoginValido(): boolean {
+  const regexUsuarioLoginValido = /^[a-zA-Z]{2,9}$/; // Letras de 2 a 9 caracteres
+  let isValid = true;
+
+  // Validar nombre
+  if (!regexUsuarioLoginValido.test(this.usuariologin)) {
+    this.presentAlert('Error', 'El nombre debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
+    isValid = false;
+    }
+
+    return isValid;
+  }
+
+  // Validación para el correo
+  isCorreoLoginValido(): boolean {
+  const regexCorreoLoginValido = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
+  if (!regexCorreoLoginValido.test(this.correologin)) {
+    this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
+    return false;
+  }
+  return true;
+}
+
+ // Validación para la contraseña
+ isContrasenaLoginValida(): boolean {
+  const regexContrasenaLoginValido = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con al menos una mayúscula, un número y un símbolo
+
+  if (!regexContrasenaLoginValido.test(this.contrasenalogin)) {
+    this.presentAlert('Error', 'La contraseña debe tener entre 5 y 10 caracteres, incluir al menos una letra mayúscula, un número y un símbolo.');
+    return false;
+  }
+  return true;
+}
 
   isFormValid(): boolean {
     const regex = /^[a-zA-Z]+$/; // Solo letras
