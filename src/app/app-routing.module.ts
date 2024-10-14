@@ -52,9 +52,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/modificarperfil/modificarperfil.module').then( m => m.ModificarperfilPageModule)
   },
   {
+    path: 'verificobd',
+    loadChildren: () => import('./pages/verificobd/verificobd.module').then( m => m.VerificobdPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
-  }
+  },
+
  
 ];
 
