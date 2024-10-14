@@ -43,7 +43,7 @@ async presentAlert(titulo: string, msj:string) {
   this.platform.ready().then(()=>{
     //crear la Base de Datos
     this.sqlite.create({
-      name: 'noticias.db',
+      name: 'novagames.db',
       location: 'default'
     }).then((db: SQLiteObject)=>{
       //capturar la conexion a la BD
@@ -60,13 +60,16 @@ async presentAlert(titulo: string, msj:string) {
   try{
     //ejecuto la creación de Tablas
     await this.database.executeSql(this.tablaRol, []);
+    await this.database.executeSql(this.tablaCategoria, []);
+    await this.database.executeSql(this.tablaUsuario, []);
+    await this.database.executeSql(this.tablaProducto, []);
+    await this.database.executeSql(this.tablaCompra, []);
+    await this.database.executeSql(this.tablaDetalle, []);
     
   }catch(e){
     this.presentAlert('Creación de Tablas', 'Error en crear las tablas: ' + JSON.stringify(e));
   }
 }
-
-
 
 
 }
