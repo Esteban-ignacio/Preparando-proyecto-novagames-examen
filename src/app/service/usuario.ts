@@ -5,5 +5,13 @@ export class Usuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: number;
-    
 }
+    
+export class Datoslogin {
+    nombrelogin!: string;
+    correologin!: string;
+    contrasenalogin!: string;
+
+}
+    
+

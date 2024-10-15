@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
+import { Usuario } from 'src/app/service/usuario';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +15,19 @@ export class LoginPage implements OnInit {
   correologin: string = "";
   contrasenalogin: string = "";
 
-  constructor(private router: Router, private alertController: AlertController) { }
+  usuarios: Usuario[] = [];
+
+  constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
+
+     // Suscribirse al observable para obtener la lista de usuarios
+     this.bdService.fetchNoticias().subscribe(data => {
+      this.usuarios = data;
+    });
+
+    // Llamar al método para obtener los usuarios desde la base de datos
+    this.bdService.obtenerUsuarios();
   }
 
   ValidacionLogin(){
@@ -104,7 +116,7 @@ export class LoginPage implements OnInit {
     await alert.present();
 
   }
-  
+
   irPagina() {
     let navigationExtras: NavigationExtras = {
       state: {

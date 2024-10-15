@@ -190,6 +190,25 @@ async obtenerUsuarios(): Promise<Usuario[]> {
   }
  }
 
+ //muestra todos los usuarios registrados en administrador
+ async login(correo: string, clave: string): Promise<any> {
+  const sql = 'SELECT * FROM usuario WHERE correo_user = ? AND clave_user = ?';
+  const res = await this.database.executeSql(sql, [correo, clave]);
+
+  if (res.rows.length > 0) {
+    const user = res.rows.item(0);
+    // Verifica si el usuario es administrador (id_rol = 1)
+    if (user.id_rol === 1) {
+      return { success: true, isAdmin: true, user: user };
+    } else {
+      return { success: true, isAdmin: false, user: user };
+    }
+  } else {
+    return { success: false };
+  }
+}
+
+
 }
 
 
