@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
+import { Usuario } from 'src/app/service/usuario';
 
 @Component({
   selector: 'app-registro',
@@ -16,12 +18,12 @@ export class RegistroPage implements OnInit {
   contrasena: string = "";
   confirmarContrasena: string = "";
 
-  constructor(private router: Router, private alertController: AlertController) { }
+  constructor(private router: Router, private alertController: AlertController,  private bdService: ServiceBDService) { }
   
   ngOnInit() {
   }
 
-  ValidacionRegistro(){
+   async ValidacionRegistro(){
     if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.telefono.trim() === '' || this.correo.trim() === ''
        || this.contrasena.trim() === '' || this.confirmarContrasena.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
@@ -33,17 +35,27 @@ export class RegistroPage implements OnInit {
     || !this.isConfirmarContrasenaValida()) {
       return; // Si alguno de los campos es inválido, no continuar
     }
- 
-    // Hacemos la validación de los datos
-    if (this.isFormValid()) {
-      // Si el formulario es válido, muestra un mensaje de éxito
-      this.presentAlert('Registro', 'Usuario Registrado');
-      this.irHome(); // Navegar a la página de inicio si el registro es exitoso
-    } else {
-      // Si el formulario es inválido, muestra un mensaje de error en la alerta
-      this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
-    }
+
+     // Verificar si el usuario ya está registrado
+  const usuarioRegistrado = await this.bdService.verificarUsuario(this.correo);
+  if (usuarioRegistrado) {
+    this.presentAlert('Error', 'Este correo ya está registrado.');
+    return; // Salir de la función si el correo ya está registrado
   }
+
+  // Si el usuario no está registrado, proceder a insertarlo
+  const nuevoUsuario = new Usuario();
+  nuevoUsuario.nombreuser = this.nombre;
+  nuevoUsuario.apellidouser = this.apellido;
+  nuevoUsuario.correo_user = this.correo;
+  nuevoUsuario.clave_user = this.contrasena; // Puedes encriptar la contraseña aquí
+  nuevoUsuario.telefono_user = parseInt(this.telefono, 10); // Convertir a número
+
+  await this.bdService.insertarUsuario(nuevoUsuario);
+  this.presentAlert('Éxito', 'Registro exitoso.'); // Mensaje de éxito
+  this.irHome(); // Navegar a la página principal (ajusta según tus necesidades)
+
+}
 
   // Validación para el nombre y el apellido
 isNombreApellidoValido(): boolean {

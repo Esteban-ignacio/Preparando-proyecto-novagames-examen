@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Usuario } from './usuario';
 
 @Injectable({
   providedIn: 'root'
@@ -72,6 +74,11 @@ export class ServiceBDService {
   );
   `;
 
+  listarusuario = new BehaviorSubject <Usuario[]>([]);
+
+  //variable para el status de la Base de datos
+  private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
+
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
     this.createBD();
    }
@@ -85,6 +92,15 @@ async presentAlert(titulo: string, msj:string) {
   });
 
   await alert.present();
+}
+
+//metodos para manipular los observables
+fetchNoticias(): Observable<Usuario[]>{
+  return this.listarusuario.asObservable();
+}
+
+dbState(){
+  return this.isDBReady.asObservable();
 }
 
  //función para crear la Base de Datos
@@ -113,25 +129,11 @@ async presentAlert(titulo: string, msj:string) {
 
     // Creación de las tablas
     await this.database.executeSql(this.tablaRol, []);
-    console.log('Tabla Rol creada.');
-    
     await this.database.executeSql(this.tablaCategoria, []);
-    console.log('Tabla Categoria creada.');
-    
     await this.database.executeSql(this.tablaUsuario, []);
-    console.log('Tabla Usuario creada.');
-    
     await this.database.executeSql(this.tablaProducto, []);
-    console.log('Tabla Producto creada.');
-    
     await this.database.executeSql(this.tablaCompra, []);
-    console.log('Tabla Compra creada.');
-    
     await this.database.executeSql(this.tablaDetalle, []);
-    console.log('Tabla Detalle creada.');
-
-    // Mostrar mensaje si todas las tablas se crean correctamente
-    await this.presentAlert('Creación de Tablas', 'Todas las tablas se han creado correctamente.');
 
   } catch (e) {
     // Mostrar alerta en caso de error
@@ -140,43 +142,53 @@ async presentAlert(titulo: string, msj:string) {
   }
 }
 
-async verificarTablas(): Promise<string[]> {
-  const tablasFaltantes: string[] = [];
-
-  try {
-    // Verificar si la tabla Rol existe
-    const resultadoRol = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='rol';", []);
-    if (resultadoRol.rows.length === 0) tablasFaltantes.push('rol');
-    
-    // Verificar si la tabla Categoria existe
-    const resultadoCategoria = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='categoria';", []);
-    if (resultadoCategoria.rows.length === 0) tablasFaltantes.push('categoria');
-    
-    // Verificar si la tabla Usuario existe
-    const resultadoUsuario = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='usuario';", []);
-    if (resultadoUsuario.rows.length === 0) tablasFaltantes.push('usuario');
-    
-    // Verificar si la tabla Producto existe
-    const resultadoProducto = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='producto';", []);
-    if (resultadoProducto.rows.length === 0) tablasFaltantes.push('producto');
-    
-    // Verificar si la tabla Compra existe
-    const resultadoCompra = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='compra';", []);
-    if (resultadoCompra.rows.length === 0) tablasFaltantes.push('compra');
-    
-    // Verificar si la tabla Detalle existe
-    const resultadoDetalle = await this.database.executeSql("SELECT name FROM sqlite_master WHERE type='table' AND name='detalle';", []);
-    if (resultadoDetalle.rows.length === 0) tablasFaltantes.push('detalle');
-
-    return tablasFaltantes;
-
-  } catch (e) {
-    console.error('Error al verificar las tablas:', e);
-    this.presentAlert('Verificación de Tablas', 'Error al verificar las tablas: ' + JSON.stringify(e));
-    return tablasFaltantes;
-  }
+// Método para verificar si el correo ya está registrado
+async verificarUsuario(correo: string): Promise<boolean> {
+  const sql = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
+  const res = await this.database.executeSql(sql, [correo]);
+  const count = res.rows.item(0).count;
+  return count > 0; // Retorna true si el usuario está registrado
 }
 
+// Método para insertar un nuevo usuario
+async insertarUsuario(usuario: Usuario): Promise<void> {
+  const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user) VALUES (?, ?, ?, ?, ?)';
+  await this.database.executeSql(sql, [usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user]);
+
+  await this.obtenerUsuarios();
+} catch (error: any) {
+  console.error('Error al insertar usuario:', error);
+  this.presentAlert('Inserción de Usuario', 'Error al insertar el usuario: ' + JSON.stringify(error));
+}
+
+
+async obtenerUsuarios(): Promise<Usuario[]> {
+  try {
+    const sql = 'SELECT * FROM usuario';
+    const res = await this.database.executeSql(sql, []);
+    const usuarios: Usuario[] = [];
+
+    for (let i = 0; i < res.rows.length; i++) {
+      const usuario = res.rows.item(i);
+      usuarios.push({
+        iduser: usuario.id_user,
+        nombreuser: usuario.nombre_user,
+        apellidouser: usuario.apellido_user,
+        correo_user: usuario.correo_user,
+        clave_user: usuario.clave_user,
+        telefono_user: usuario.telefono_user,
+      });
+    }
+
+    // Actualizar el BehaviorSubject
+    this.listarusuario.next(usuarios);
+    return usuarios;
+  } catch (error) {
+    console.error('Error al obtener usuarios:', error);
+    this.presentAlert('Obtención de Usuarios', 'No se encontraron usuarios registrados '+ JSON.stringify(error));
+    return []; // Retorna un arreglo vacío en caso de error
+  }
+ }
 
 }
 

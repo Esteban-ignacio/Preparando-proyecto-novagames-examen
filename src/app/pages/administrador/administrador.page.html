@@ -9,5 +9,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
+  <ion-list>
+    <ion-item *ngFor="let usuario of usuarios">
+      <ion-label>
+        <h2>{{ usuario.nombreuser }} {{ usuario.apellidouser }}</h2>
+        <p>Correo: {{ usuario.correo_user }}</p>
+        <p>Teléfono: {{ usuario.telefono_user }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
 </ion-content>
