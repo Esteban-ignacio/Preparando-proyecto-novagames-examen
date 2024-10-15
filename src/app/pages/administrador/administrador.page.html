@@ -10,11 +10,11 @@
 
 <ion-content [fullscreen]="true">
   <ion-list class="lista-usuarios">
-    <ion-item *ngFor="let usuario of usuarios">
+    <ion-item *ngFor="let usuario of usuarios" class="item">
       <ion-label>
-        <h2>{{ usuario.nombreuser }} {{ usuario.apellidouser }}</h2>
-        <p>Correo: {{ usuario.correo_user }}</p>
-        <p>Teléfono: {{ usuario.telefono_user }}</p>
+        <h2 class="Titulo-usuario">{{ usuario.nombreuser }} {{ usuario.apellidouser }}</h2>
+        <p class="datos-usuario">Correo: {{ usuario.correo_user }}</p>
+        <p class="datos-usuario">Teléfono: {{ usuario.telefono_user }}</p>
       </ion-label>
     </ion-item>
   </ion-list>
