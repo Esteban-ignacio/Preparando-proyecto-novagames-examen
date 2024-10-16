@@ -34,7 +34,6 @@ export class LoginPage implements OnInit {
       }
     });
   }
-  
 
   ValidacionLogin(){
     if (this.usuariologin.trim() === '' || this.correologin.trim() === ''|| this.contrasenalogin.trim() === '') {

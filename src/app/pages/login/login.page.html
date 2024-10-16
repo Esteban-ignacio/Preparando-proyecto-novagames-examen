@@ -34,8 +34,15 @@
       <ion-label position="floating"></ion-label>
       <ion-input type="password" class="contraseña-login" label="Contraseña" label-placement="floating" fill="solid" 
       placeholder="Ingrese su contraseña" [(ngModel)]="contrasenalogin" name="contrasenalogin" required></ion-input>
+      <ion-input-password-toggle slot="end"></ion-input-password-toggle>
     </ion-item>
   </form>
+  
+  
+  
+  
+  
+
   <ion-button class="ircasa" color="primary" (click)="ValidacionLogin()">Inicia sesion {{ usuariologin }}</ion-button>
   <br>
   <a class="registrate" (click) = "irRegistro()">Registrate aqui</a>
