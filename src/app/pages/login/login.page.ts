@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Usuario } from 'src/app/service/usuario';
 
@@ -17,7 +17,8 @@ export class LoginPage implements OnInit {
 
   usuarios: Usuario[] = [];
 
-  constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService) { }
+  constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService, 
+    private menuController: MenuController) { }
 
   ngOnInit() {
     // Esperar a que la base de datos esté lista
@@ -130,11 +131,15 @@ export class LoginPage implements OnInit {
     };
 
     // Verificar si el correo contiene @admin
-    if (this.correologin.includes('@admin')) {
-      this.router.navigate(['/administrador'], navigationExtras); // Redirigir a la página de admin
-    } else if (this.correologin.includes('@')) {
-      this.router.navigate(['/home'], navigationExtras); // Redirigir a la página de home
-    }
+  if (this.correologin.includes('@admin')) {
+    this.router.navigate(['/administrador'], navigationExtras); // Redirigir a la página de admin
+    this.menuController.enable(true, 'menu-admin'); // Habilitar menú de administrador
+    this.menuController.enable(false, 'menu-usuarios'); // Deshabilitar menú de usuarios
+  } else if (this.correologin.includes('@')) {
+    this.router.navigate(['/home'], navigationExtras); // Redirigir a la página de home
+    this.menuController.enable(false, 'menu-admin'); // Deshabilitar menú de administrador
+    this.menuController.enable(true, 'menu-usuarios'); // Habilitar menú de usuarios
+  }
 }
 
   irRegistro(){

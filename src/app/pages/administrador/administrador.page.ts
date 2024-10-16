@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Usuario } from 'src/app/service/usuario';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-administrador',
@@ -11,7 +13,7 @@ export class AdministradorPage implements OnInit {
 
   usuarios: Usuario[] = [];
 
-  constructor(private bdService: ServiceBDService) { }
+  constructor(private menuController: MenuController, private bdService: ServiceBDService, private router: Router) { }
 
   ngOnInit() {
     // Esperar a que la base de datos esté lista
@@ -25,5 +27,16 @@ export class AdministradorPage implements OnInit {
       }
     });
   }
+
+  ionViewWillLeave() {
+    // Rehabilitar el menú de usuarios al salir de la página de administrador
+    this.menuController.enable(true, 'menu-usuarios');
+    this.menuController.enable(false, 'menu-admin');
+  }
+
+  cerrarSesion() {
+    this.router.navigate(['/login']);
+  }
+  
   
 }
