@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, first, Observable } from 'rxjs';
 import { Usuario } from './usuario';
 
 @Injectable({
@@ -124,10 +124,7 @@ dbState(){
 
  async crearTablas() {
   try {
-    // Mensaje de inicio de creación de tablas
     console.log('Iniciando la creación de tablas...');
-
-    // Creación de las tablas
     await this.database.executeSql(this.tablaRol, []);
     await this.database.executeSql(this.tablaCategoria, []);
     await this.database.executeSql(this.tablaUsuario, []);
@@ -135,12 +132,16 @@ dbState(){
     await this.database.executeSql(this.tablaCompra, []);
     await this.database.executeSql(this.tablaDetalle, []);
 
+    // Marcar la base de datos como lista
+    this.isDBReady.next(true);
+
   } catch (e) {
-    // Mostrar alerta en caso de error
     this.presentAlert('Creación de Tablas', 'Error en crear las tablas: ' + JSON.stringify(e));
     console.error('Error al crear las tablas:', e);
+    this.isDBReady.next(false);
   }
 }
+
 
 // Método para verificar si el correo ya está registrado
 async verificarUsuario(correo: string): Promise<boolean> {
@@ -164,6 +165,13 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
 
 async obtenerUsuarios(): Promise<Usuario[]> {
   try {
+    // Esperar hasta que la base de datos esté lista
+    const dbReady = await this.isDBReady.pipe(first()).toPromise();
+    if (!dbReady) {
+      console.log('La base de datos no está lista todavía.');
+      return [];
+    }
+
     const sql = 'SELECT * FROM usuario';
     const res = await this.database.executeSql(sql, []);
     const usuarios: Usuario[] = [];
@@ -185,10 +193,11 @@ async obtenerUsuarios(): Promise<Usuario[]> {
     return usuarios;
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
-    this.presentAlert('Obtención de Usuarios', 'No se encontraron usuarios registrados '+ JSON.stringify(error));
+    this.presentAlert('Error', 'Error al obtener usuarios registrados: ' + JSON.stringify(error));
     return []; // Retorna un arreglo vacío en caso de error
   }
- }
+}
+
 
  //muestra todos los usuarios registrados en administrador
  async login(correo: string, clave: string): Promise<any> {

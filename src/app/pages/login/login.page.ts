@@ -20,15 +20,20 @@ export class LoginPage implements OnInit {
   constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
-
-     // Suscribirse al observable para obtener la lista de usuarios
-     this.bdService.fetchNoticias().subscribe(data => {
-      this.usuarios = data;
+    // Esperar a que la base de datos esté lista
+    this.bdService.dbState().subscribe(isReady => {
+      if (isReady) {
+        // Suscribirse al observable para obtener la lista de usuarios
+        this.bdService.fetchNoticias().subscribe(data => {
+          this.usuarios = data;
+        });
+  
+        // Llamar al método para obtener los usuarios desde la base de datos
+        this.bdService.obtenerUsuarios();
+      }
     });
-
-    // Llamar al método para obtener los usuarios desde la base de datos
-    this.bdService.obtenerUsuarios();
   }
+  
 
   ValidacionLogin(){
     if (this.usuariologin.trim() === '' || this.correologin.trim() === ''|| this.contrasenalogin.trim() === '') {
