@@ -1,8 +1,5 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
-    </ion-buttons>
     <ion-title class="recuperar-contra">
       <ion-icon name="lock-closed"></ion-icon>
       Recuperar contraseña
@@ -20,23 +17,7 @@
     </ion-item>
   </form>
 
-  <form class="contraseña-recuperar-contra"(ngSubmit)="ValidacionRecuperarClave()">
-    <ion-item>
-      <ion-label position="floating"></ion-label>
-      <ion-input type="password" class="contraseña-recuperar-contra" label="Contraseña" label-placement="floating" fill="solid" 
-      placeholder="Ingrese su contraseña" [(ngModel)]="contrasenarecuperarclave" name="contrasenarecuperarclave" required></ion-input>
-    </ion-item>
-  </form>
-
-  <form class="confirmar-contraseña-recuperar-contra"(ngSubmit)="ValidacionRecuperarClave()">
-    <ion-item>
-      <ion-label position="floating"></ion-label>
-    <ion-input type="password" class="confirmar-contraseña-recuperar-contra" label="Confirmar Contraseña" label-placement="floating" 
-      fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasenarecuperarclave" name="confirmarContrasenarecuperarclave" 
-      required></ion-input>
-    </ion-item>
-  </form>
-
-  <ion-button class="boton-confirmar-contraseña" (click)="ValidacionRecuperarClave()">Confirmar</ion-button>
+  <ion-button class="boton-volver-login" (click)="RegresarLogin()">Volver inicio</ion-button>
+  <ion-button class="boton-confirmar-contraseña" (click)="ValidacionRecuperarClave()">Cambiar clave</ion-button>
 
 </ion-content>
