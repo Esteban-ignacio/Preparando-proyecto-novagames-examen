@@ -3,6 +3,7 @@ import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Usuario } from 'src/app/service/usuario';
+import { Camera, CameraResultType } from '@capacitor/camera';
 
 @Component({
   selector: 'app-registro',
@@ -18,10 +19,28 @@ export class RegistroPage implements OnInit {
   contrasena: string = "";
   confirmarContrasena: string = "";
 
+  imagen: any;
+
   constructor(private router: Router, private alertController: AlertController,  private bdService: ServiceBDService) { }
   
   ngOnInit() {
   }
+
+  takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Uri
+    });
+  
+    // image.webPath will contain a path that can be set as an image src.
+    // You can access the original file using image.path, which can be
+    // passed to the Filesystem API to read the raw data of the image,
+    // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+    this.imagen = image.webPath;
+  
+    
+  };
 
    async ValidacionRegistro(){
     if (this.nombre.trim() === '' || this.apellido.trim() === '' || this.telefono.trim() === '' || this.correo.trim() === ''
