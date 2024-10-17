@@ -153,50 +153,45 @@ async verificarUsuario(correo: string): Promise<boolean> {
 
 // Método para insertar un nuevo usuario
 async insertarUsuario(usuario: Usuario): Promise<void> {
-  const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user) VALUES (?, ?, ?, ?, ?)';
-  await this.database.executeSql(sql, [usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user]);
-
-  await this.obtenerUsuarios();
-} catch (error: any) {
-  console.error('Error al insertar usuario:', error);
-  this.presentAlert('Inserción de Usuario', 'Error al insertar el usuario: ' + JSON.stringify(error));
+  try {
+    const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user) VALUES (?, ?, ?, ?, ?)';
+    await this.database.executeSql(sql, [
+      usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user
+    ]);
+    await this.obtenerUsuarios(); // Refrescar la lista de usuarios
+  } catch (error) {
+    console.error('Error al insertar usuario:', error);
+    this.presentAlert('Error', 'Error al insertar el usuario: ' + JSON.stringify(error));
+  }
 }
 
 
 async obtenerUsuarios(): Promise<Usuario[]> {
   try {
-    // Esperar hasta que la base de datos esté lista
-    const dbReady = await this.isDBReady.pipe(first()).toPromise();
-    if (!dbReady) {
-      console.log('La base de datos no está lista todavía.');
-      return [];
+    const res = await this.database.executeSql('SELECT * FROM usuario', []);
+    const items: Usuario[] = [];
+
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        items.push({
+          iduser: res.rows.item(i).id_user,
+          nombreuser: res.rows.item(i).nombre_user,
+          apellidouser: res.rows.item(i).apellido_user,
+          correo_user: res.rows.item(i).correo_user,
+          clave_user: res.rows.item(i).clave_user,
+          telefono_user: res.rows.item(i).telefono_user
+        });
+      }
     }
-
-    const sql = 'SELECT * FROM usuario';
-    const res = await this.database.executeSql(sql, []);
-    const usuarios: Usuario[] = [];
-
-    for (let i = 0; i < res.rows.length; i++) {
-      const usuario = res.rows.item(i);
-      usuarios.push({
-        iduser: usuario.id_user,
-        nombreuser: usuario.nombre_user,
-        apellidouser: usuario.apellido_user,
-        correo_user: usuario.correo_user,
-        clave_user: usuario.clave_user,
-        telefono_user: usuario.telefono_user,
-      });
-    }
-
-    // Actualizar el BehaviorSubject
-    this.listarusuario.next(usuarios);
-    return usuarios;
+    this.listarusuario.next(items); // Actualizar el observable con la lista de usuarios
+    return items;
   } catch (error) {
     console.error('Error al obtener usuarios:', error);
-    this.presentAlert('Error', 'Error al obtener usuarios registrados: ' + JSON.stringify(error));
-    return []; // Retorna un arreglo vacío en caso de error
+    this.presentAlert('Error', 'Error al obtener los usuarios: ' + JSON.stringify(error));
+    return [];
   }
 }
+
 
 
  //muestra todos los usuarios registrados en administrador

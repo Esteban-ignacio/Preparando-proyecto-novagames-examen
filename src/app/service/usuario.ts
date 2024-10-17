@@ -13,5 +13,11 @@ export class Datoslogin {
     contrasenalogin!: string;
 
 }
+
+export class Roles {
+    idrol!: number;
+    nombrerol!: string;
+    
+}
     
 

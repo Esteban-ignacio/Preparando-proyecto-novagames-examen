@@ -72,8 +72,7 @@ export class RegistroPage implements OnInit {
 
   await this.bdService.insertarUsuario(nuevoUsuario);
   this.presentAlert('Éxito', 'Registro exitoso.'); // Mensaje de éxito
-  this.irHome(); // Navegar a la página principal (ajusta según tus necesidades)
-
+  this.irlogin(); 
 }
 
   // Validación para el nombre y el apellido
@@ -178,19 +177,11 @@ isConfirmarContrasenaValida(): boolean {
     await alert.present();
   }
 
-  irHome(){
+  irlogin(){
     let navigationextras: NavigationExtras = {
       
     }
-    this.router.navigate(['/home'], navigationextras);
-  
-    }
-
-  irPerfil(){
-    let navigationextras: NavigationExtras = {
-      
-    }
-    this.router.navigate(['/perfil'], navigationextras);
+    this.router.navigate(['/login'], navigationextras);
   
     }
   }
