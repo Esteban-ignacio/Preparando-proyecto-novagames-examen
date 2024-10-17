@@ -19,7 +19,7 @@ export class AdministradorPage implements OnInit {
     // Esperar a que la base de datos esté lista
     this.bdService.dbState().subscribe(isReady => {
       if (isReady) {
-        this.bdService.fetchNoticias().subscribe((usuarios: Usuario[]) => {
+        this.bdService.fetchUsuarios().subscribe((usuarios: Usuario[]) => {
           this.usuarios = usuarios;
         });
   

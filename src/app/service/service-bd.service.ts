@@ -95,7 +95,7 @@ async presentAlert(titulo: string, msj:string) {
 }
 
 //metodos para manipular los observables
-fetchNoticias(): Observable<Usuario[]>{
+fetchUsuarios(): Observable<Usuario[]>{
   return this.listarusuario.asObservable();
 }
 
@@ -142,7 +142,7 @@ dbState(){
   }
 }
 
-
+//falta añadir observable
 // Método para verificar si el correo ya está registrado
 async verificarUsuario(correo: string): Promise<boolean> {
   const sql = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
@@ -193,7 +193,7 @@ async obtenerUsuarios(): Promise<Usuario[]> {
 }
 
 
-
+ //falta añadir observable
  //muestra todos los usuarios registrados en administrador
  async login(correo: string, clave: string): Promise<any> {
   const sql = 'SELECT * FROM usuario WHERE correo_user = ? AND clave_user = ?';

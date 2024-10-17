@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
-import { AlertController, MenuController } from '@ionic/angular';
+import { AlertController, MenuController} from '@ionic/angular';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Usuario } from 'src/app/service/usuario';
 
@@ -17,7 +17,7 @@ export class LoginPage implements OnInit {
 
   usuarios: Usuario[] = [];
 
-  constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService, 
+  constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService,
     private menuController: MenuController) { }
 
   ngOnInit() {
@@ -25,7 +25,7 @@ export class LoginPage implements OnInit {
     this.bdService.dbState().subscribe(isReady => {
       if (isReady) {
         // Suscribirse al observable para obtener la lista de usuarios
-        this.bdService.fetchNoticias().subscribe(data => {
+        this.bdService.fetchUsuarios().subscribe(data => {
           this.usuarios = data;
         });
   
