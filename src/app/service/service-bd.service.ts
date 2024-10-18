@@ -205,9 +205,9 @@ actualizarDatoslogin(datos: Datoslogin[]) {
 
 // Modificación del método login
 //verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su correo y contraseña
-async login(correo: string, clave: string): Promise<any> {
-  const sql = 'SELECT * FROM usuario WHERE correo_user = ? AND clave_user = ?';
-  const res = await this.database.executeSql(sql, [correo, clave]);
+async login(nombre: string, correo: string, clave: string): Promise<any> {
+  const sql = 'SELECT * FROM usuario WHERE nombre_user = ? AND correo_user = ? AND clave_user = ?';
+  const res = await this.database.executeSql(sql, [nombre, correo, clave]);
 
   if (res.rows.length > 0) {
     const user = res.rows.item(0);
@@ -227,6 +227,7 @@ async login(correo: string, clave: string): Promise<any> {
     return { success: false };
   }
 }
+
 
 }
 

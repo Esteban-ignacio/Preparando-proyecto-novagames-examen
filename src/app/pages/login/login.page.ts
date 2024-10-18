@@ -51,7 +51,7 @@ export class LoginPage implements OnInit {
     if (this.isFormValid()) {
       try {
         // Llamar al método de login del servicio
-        const loginResult = await this.bdService.login(this.correologin, this.contrasenalogin);
+        const loginResult = await this.bdService.login(this.usuariologin, this.correologin, this.contrasenalogin);
         
         if (loginResult.success) {
           this.presentAlert('Iniciado', 'Inicio exitoso');
