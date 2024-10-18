@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Datoslogin, Usuario, Verificarcorreo } from './usuario';
+import { Datoslogin, Extraerdatosusuario, Usuario, Verificarcorreo } from './usuario';
 
 
 @Injectable({
@@ -81,6 +81,8 @@ export class ServiceBDService {
 
   listaverificarcorreo = new BehaviorSubject <Verificarcorreo[]>([]);
 
+  listaextraerdatosusuario = new BehaviorSubject <Extraerdatosusuario[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -112,6 +114,9 @@ fetchVerificarcorreo(): Observable<Verificarcorreo[]>{
   return this.listaverificarcorreo.asObservable();
 }
 
+fetchExtraerdatosusuario(): Observable<Extraerdatosusuario[]>{
+  return this.listaextraerdatosusuario.asObservable();
+}
 
 dbState(){
   return this.isDBReady.asObservable();
