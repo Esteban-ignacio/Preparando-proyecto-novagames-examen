@@ -58,19 +58,16 @@
     padding-left: 40px;
     margin-top: 20px;
 }
+.boton-regresar-login{
+    padding-top: 60px;
+    padding-left: 50px;
+
+}
 .boton-registrarme {
-    width: 50%; /* Ajusta el ancho del botón */
-    text-align: center; /* Centra el texto del botón */
+    padding-top: 60px;
+    padding-left: 20px;
 }
 
-.contenedor-registro {
-    display: flex;
-    flex-direction: column; /* Ordena en columna: imagen arriba, botón abajo */
-    align-items: center; /* Centra horizontalmente */
-    justify-content: flex-end; /* Asegura que el botón se mantenga al final */
-    gap: 15px; /* Espacio entre la imagen y el botón */
-    margin-top: 55px; /* Margen superior para separar del campo anterior */
-}
 .contenedor-foto {
     display: flex;
     flex-direction: column; /* Ordena en columna: imagen arriba, botón abajo */
