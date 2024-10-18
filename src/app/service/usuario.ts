@@ -14,6 +14,11 @@ export class Datoslogin {
 
 }
 
+export class Verificarcorreo {
+    correoenregistro!: string;
+    
+}
+
 export class Roles {
     idrol!: number;
     nombrerol!: string;

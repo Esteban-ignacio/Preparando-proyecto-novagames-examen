@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Datoslogin, Usuario } from './usuario';
+import { Datoslogin, Usuario, Verificarcorreo } from './usuario';
 
 
 @Injectable({
@@ -79,6 +79,8 @@ export class ServiceBDService {
 
   listadatoslogin = new BehaviorSubject <Datoslogin[]>([]);
 
+  listaverificarcorreo = new BehaviorSubject <Verificarcorreo[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -105,6 +107,11 @@ fetchUsuarios(): Observable<Usuario[]>{
 fetchDatoslogin(): Observable<Datoslogin[]>{
   return this.listadatoslogin.asObservable();
 }
+
+fetchVerificarcorreo(): Observable<Verificarcorreo[]>{
+  return this.listaverificarcorreo.asObservable();
+}
+
 
 dbState(){
   return this.isDBReady.asObservable();
@@ -149,12 +156,16 @@ dbState(){
   }
 }
 
-//falta añadir observable
 // Método para verificar si el correo ya está registrado
 async verificarUsuario(correo: string): Promise<boolean> {
   const sql = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
   const res = await this.database.executeSql(sql, [correo]);
   const count = res.rows.item(0).count;
+  
+  // Emitir el resultado a través del BehaviorSubject
+  const verificarCorreo: Verificarcorreo[] = [{ correoenregistro: correo }];
+  this.listaverificarcorreo.next(verificarCorreo); // Actualiza el observable
+
   return count > 0; // Retorna true si el usuario está registrado
 }
 
@@ -204,7 +215,7 @@ actualizarDatoslogin(datos: Datoslogin[]) {
 }
 
 // Modificación del método login
-//verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su correo y contraseña
+//verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su nombre, correo y contraseña
 async login(nombre: string, correo: string, clave: string): Promise<any> {
   const sql = 'SELECT * FROM usuario WHERE nombre_user = ? AND correo_user = ? AND clave_user = ?';
   const res = await this.database.executeSql(sql, [nombre, correo, clave]);
