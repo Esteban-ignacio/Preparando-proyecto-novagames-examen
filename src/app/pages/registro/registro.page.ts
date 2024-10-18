@@ -55,11 +55,17 @@ export class RegistroPage implements OnInit {
       return; // Si alguno de los campos es inválido, no continuar
     }
 
-     // Verificar si el usuario ya está registrado
-  const usuarioRegistrado = await this.bdService.verificarUsuario(this.correo);
-  if (usuarioRegistrado) {
+    // Verificar si el usuario ya está registrado
+  const { emailExists, phoneExists } = await this.bdService.verificarUsuario(this.correo, this.telefono);
+  
+  if (emailExists) {
     this.presentAlert('Error', 'Este correo ya está registrado.');
     return; // Salir de la función si el correo ya está registrado
+  }
+  
+  if (phoneExists) {
+    this.presentAlert('Error', 'Este teléfono ya está registrado.');
+    return; // Salir de la función si el teléfono ya está registrado
   }
 
   // Si el usuario no está registrado, proceder a insertarlo

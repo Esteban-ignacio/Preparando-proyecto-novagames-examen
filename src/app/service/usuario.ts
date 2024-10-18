@@ -16,6 +16,7 @@ export class Datoslogin {
 
 export class Verificarcorreo {
     correoenregistro!: string;
+    telefonoenregistro!: string;
     
 }
 

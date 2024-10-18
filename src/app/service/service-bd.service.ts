@@ -157,17 +157,24 @@ dbState(){
 }
 
 // Método para verificar si el correo ya está registrado
-async verificarUsuario(correo: string): Promise<boolean> {
-  const sql = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
-  const res = await this.database.executeSql(sql, [correo]);
-  const count = res.rows.item(0).count;
+async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists: boolean; phoneExists: boolean }> {
+  const sqlEmail = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
+  const sqlPhone = 'SELECT COUNT(*) as count FROM usuario WHERE telefono_user = ?';
   
+  const resEmail = await this.database.executeSql(sqlEmail, [correo]);
+  const resPhone = await this.database.executeSql(sqlPhone, [telefono]);
+  
+  const emailExists = resEmail.rows.item(0).count > 0;
+  const phoneExists = resPhone.rows.item(0).count > 0;
+
   // Emitir el resultado a través del BehaviorSubject
-  const verificarCorreo: Verificarcorreo[] = [{ correoenregistro: correo }];
+  const verificarCorreo: Verificarcorreo[] = [{ correoenregistro: correo, telefonoenregistro: telefono }];
   this.listaverificarcorreo.next(verificarCorreo); // Actualiza el observable
 
-  return count > 0; // Retorna true si el usuario está registrado
+  return { emailExists, phoneExists }; // Retorna si el correo y teléfono existen
 }
+
+
 
 // Método para insertar un nuevo usuario
 async insertarUsuario(usuario: Usuario): Promise<void> {
