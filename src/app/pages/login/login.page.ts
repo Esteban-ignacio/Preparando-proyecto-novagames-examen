@@ -35,27 +35,41 @@ export class LoginPage implements OnInit {
     });
   }
 
-  ValidacionLogin(){
-    if (this.usuariologin.trim() === '' || this.correologin.trim() === ''|| this.contrasenalogin.trim() === '') {
+  async ValidacionLogin() {
+    // Verificar que los campos no estén vacíos
+    if (this.usuariologin.trim() === '' || this.correologin.trim() === '' || this.contrasenalogin.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
-
-      // Validar nombre, correo y contraseña con alertas específicas
-      if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
-          return; // Si alguno de los campos es inválido, no continuar
-        }
+  
+    // Validar nombre, correo y contraseña con alertas específicas
+    if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
+      return; // Si alguno de los campos es inválido, no continuar
+    }
   
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
-      // Si el formulario es válido, muestra un mensaje de éxito
-      this.presentAlert('Iniciado', 'Inicio exitoso');
-      this.irPagina(); // Navegar a la página de inicio si el registro es exitoso
+      try {
+        // Llamar al método de login del servicio
+        const loginResult = await this.bdService.login(this.correologin, this.contrasenalogin);
+        
+        if (loginResult.success) {
+          this.presentAlert('Iniciado', 'Inicio exitoso');
+          this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
+        } else {
+          this.presentAlert('Error', 'Credenciales inválidas. Por favor, revise sus datos.');
+        }
+      } catch (error) {
+        // Manejo de errores en caso de que algo falle en el login
+        this.presentAlert('Error', 'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
+        console.error(error); // Registro del error para depuración
+      }
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
     }
   }
+  
 
   // Validación para el nombre y el apellido
   isUsuarioLoginValido(): boolean {

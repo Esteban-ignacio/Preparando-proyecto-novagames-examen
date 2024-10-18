@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
-import { BehaviorSubject, first, Observable } from 'rxjs';
-import { Usuario } from './usuario';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Datoslogin, Usuario } from './usuario';
+
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +77,8 @@ export class ServiceBDService {
 
   listarusuario = new BehaviorSubject <Usuario[]>([]);
 
+  listadatoslogin = new BehaviorSubject <Datoslogin[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -97,6 +100,10 @@ async presentAlert(titulo: string, msj:string) {
 //metodos para manipular los observables
 fetchUsuarios(): Observable<Usuario[]>{
   return this.listarusuario.asObservable();
+}
+
+fetchDatoslogin(): Observable<Datoslogin[]>{
+  return this.listadatoslogin.asObservable();
 }
 
 dbState(){
@@ -192,26 +199,34 @@ async obtenerUsuarios(): Promise<Usuario[]> {
   }
 }
 
+actualizarDatoslogin(datos: Datoslogin[]) {
+  this.listadatoslogin.next(datos); // Actualiza los datos en el observable
+}
 
- //falta añadir observable
- //muestra todos los usuarios registrados en administrador
- async login(correo: string, clave: string): Promise<any> {
+// Modificación del método login
+//verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su correo y contraseña
+async login(correo: string, clave: string): Promise<any> {
   const sql = 'SELECT * FROM usuario WHERE correo_user = ? AND clave_user = ?';
   const res = await this.database.executeSql(sql, [correo, clave]);
 
   if (res.rows.length > 0) {
     const user = res.rows.item(0);
-    // Verifica si el usuario es administrador (id_rol = 1)
-    if (user.id_rol === 1) {
-      return { success: true, isAdmin: true, user: user };
-    } else {
-      return { success: true, isAdmin: false, user: user };
-    }
+
+    // Crear objeto Datoslogin y emitir por el observable
+    const datosLogin: Datoslogin = {
+      nombrelogin: user.nombre_user,
+      correologin: user.correo_user,
+      contrasenalogin: '' // No se guarda la contraseña por seguridad
+    };
+    this.actualizarDatoslogin([datosLogin]);
+
+    const isAdmin = user.id_rol === 1;
+    return { success: true, isAdmin: isAdmin, user: user };
   } else {
+    this.actualizarDatoslogin([]); // Emitir vacío si no hay usuario
     return { success: false };
   }
 }
-
 
 }
 
