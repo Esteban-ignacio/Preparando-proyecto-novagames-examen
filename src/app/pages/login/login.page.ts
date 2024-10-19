@@ -138,22 +138,26 @@ export class LoginPage implements OnInit {
 
   irPagina() {
     let navigationExtras: NavigationExtras = {
-      state: {
-        user: this.usuariologin
-      }
+      state: { user: this.usuariologin },
     };
-
-    // Verificar si el correo contiene @admin
-  if (this.correologin.includes('@admin')) {
-    this.router.navigate(['/administrador'], navigationExtras); // Redirigir a la página de admin
-    this.menuController.enable(true, 'menu-admin'); // Habilitar menú de administrador
-    this.menuController.enable(false, 'menu-usuarios'); // Deshabilitar menú de usuarios
-  } else if (this.correologin.includes('@')) {
-    this.router.navigate(['/home'], navigationExtras); // Redirigir a la página de home
-    this.menuController.enable(false, 'menu-admin'); // Deshabilitar menú de administrador
-    this.menuController.enable(true, 'menu-usuarios'); // Habilitar menú de usuarios
+  
+    if (this.correologin.includes('@admin')) {
+      this.navegarYConfigurarMenu('/administrador', 'menu-admin', 'menu-usuarios', navigationExtras);
+    } else if (this.correologin.includes('@')) {
+      this.navegarYConfigurarMenu('/home', 'menu-usuarios', 'menu-admin', navigationExtras);
+    }
   }
-}
+  
+  navegarYConfigurarMenu(
+    ruta: string,
+    habilitarMenu: string,
+    deshabilitarMenu: string,
+    extras: NavigationExtras
+  ) {
+    this.router.navigate([ruta], extras);
+    this.menuController.enable(true, habilitarMenu);
+    this.menuController.enable(false, deshabilitarMenu);
+  }
 
   irRegistro(){
     let navigationextras: NavigationExtras={

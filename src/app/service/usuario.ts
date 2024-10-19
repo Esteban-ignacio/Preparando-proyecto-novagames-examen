@@ -13,7 +13,7 @@ export class Datoslogin {
     contrasenalogin!: string;
 
 }
-
+//para verificar si existen estos datos en la bd
 export class Verificarcorreo {
     correoenregistro!: string;
     telefonoenregistro!: string;

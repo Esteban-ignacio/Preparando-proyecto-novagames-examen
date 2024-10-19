@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Datoslogin, Extraerdatosusuario, Usuario, Verificarcorreo } from './usuario';
+import { Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
 
 
 @Injectable({
@@ -81,6 +81,8 @@ export class ServiceBDService {
 
   listaverificarcorreo = new BehaviorSubject <Verificarcorreo[]>([]);
 
+  listaroles = new BehaviorSubject <Roles[]>([]);
+
   listaextraerdatosusuario = new BehaviorSubject <Extraerdatosusuario[]>([]);
 
   //variable para el status de la Base de datos
@@ -112,6 +114,10 @@ fetchDatoslogin(): Observable<Datoslogin[]>{
 
 fetchVerificarcorreo(): Observable<Verificarcorreo[]>{
   return this.listaverificarcorreo.asObservable();
+}
+
+fetchRoles(): Observable<Roles[]>{
+  return this.listaroles.asObservable();
 }
 
 fetchExtraerdatosusuario(): Observable<Extraerdatosusuario[]>{
@@ -221,6 +227,26 @@ async obtenerUsuarios(): Promise<Usuario[]> {
     return [];
   }
 }
+
+async obtenerRoles(): Promise<void> {
+  try {
+    const res = await this.database.executeSql('SELECT * FROM rol', []);
+    const roles: Roles[] = [];
+
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        roles.push({
+          idrol: res.rows.item(i).id_rol,
+          nombrerol: res.rows.item(i).nombre_rol,
+        });
+      }
+    }
+    this.listaroles.next(roles); // Emitir los roles al observable
+  } catch (error) {
+    console.error('Error al obtener roles:', error);
+  }
+}
+
 
 actualizarDatoslogin(datos: Datoslogin[]) {
   this.listadatoslogin.next(datos); // Actualiza los datos en el observable
