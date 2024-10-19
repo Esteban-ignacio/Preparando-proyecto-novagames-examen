@@ -11,12 +11,14 @@ export class HomePage implements OnInit {
   Usuario: string = "";
 
   constructor(private router: Router, private activerouter: ActivatedRoute) {
-    this.activerouter.queryParams.subscribe(param =>{
-      if(this.router.getCurrentNavigation()?.extras.state){
-        this.Usuario = this.router.getCurrentNavigation()?.extras?.state?.['user'];
+    this.activerouter.queryParams.subscribe(() => {
+      const navigation = this.router.getCurrentNavigation()?.extras?.state;
+      if (navigation) {
+        this.Usuario = navigation['user']; // Asigna el usuario recibido
       }
-    })
+    });
   }
+  
   
   ngOnInit() {
   }

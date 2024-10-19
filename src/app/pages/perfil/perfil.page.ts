@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 
 @Component({
   selector: 'app-perfil',
@@ -14,17 +14,10 @@ export class PerfilPage implements OnInit {
   telefono: string = "";
   contrasena: string = "";
 
-  constructor(private router:Router, private activerouter: ActivatedRoute) { 
-    this.activerouter.queryParams.subscribe(param =>{
-      if(this.router.getCurrentNavigation()?.extras.state){
-        this.nombre =  this.router.getCurrentNavigation()?.extras?.state?.['nomb'];
-        this.apellido = this.router.getCurrentNavigation()?.extras?.state?.['ape'];
-        this.correo = this.router.getCurrentNavigation()?.extras?.state?.['cor'];
-        this.telefono = this.router.getCurrentNavigation()?.extras?.state?.['tel'];
-        this.contrasena = this.router.getCurrentNavigation()?.extras?.state?.['cont'];
-      }
-    })
+  constructor(private router: Router) { 
+    
   }
+  
 
   ngOnInit() {
   }
