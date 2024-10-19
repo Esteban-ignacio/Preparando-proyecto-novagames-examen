@@ -13,15 +13,35 @@
 
 <ion-content [fullscreen]="true">
   <h2 class="titulo-pag-admin">Lista de Usuarios</h2>
+  
   <ion-list class="lista-usuarios">
     <ion-item *ngFor="let usuario of usuarios" class="item">
       <ion-label>
         <h2 class="Titulo-usuario">{{ usuario.nombreuser }} {{ usuario.apellidouser }}</h2>
-        <p class="datos-usuario">Correo: {{ usuario.correo_user }}</p>
-        <p class="datos-usuario">Teléfono: {{ usuario.telefono_user }}</p>
+
+        <div class="datos-row">
+          <span class="datos-label">Correo:</span>
+          <span class="datos-value">{{ usuario.correo_user }}</span>
+        </div>
+
+        <div class="datos-row">
+          <span class="datos-label">Teléfono:</span>
+          <span class="datos-value">{{ usuario.telefono_user }}</span>
+        </div>
+
+        <div class="datos-row">
+          <span class="datos-label">Contraseña:</span>
+          <ion-input 
+            type="password" 
+            [value]="usuario.clave_user" 
+            readonly 
+            class="password-input">
+          </ion-input>
+        </div>
+
       </ion-label>
     </ion-item>
   </ion-list>
 
-
 </ion-content>
+

@@ -10,22 +10,49 @@ ion-toolbar{
 ion-content{
     --background: #a8f6c6;
 }
-.lista-usuarios{
+.lista-usuarios {
     background-color: #a8f6c6;
-    margin-bottom: 40px;
-    padding-left: 10px;
-    padding-right: 160px;
-    padding-top: 10px;
-}
-.item{
-    --background: #a8f6c6; /* Fondo verde para cada ion-item */
-}
+    margin: 20px 10px;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  
+  .item {
+    --background: #a8f6c6;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+  
+  .datos-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .datos-label {
+    font-weight: bold;
+    margin-right: 15px;
+    flex: 0 0 120px; /* Tamaño fijo para las etiquetas */
+  }
+  
+  .datos-value {
+    flex: 1;
+    text-align: left;
+    color: black;
+  }
+  
+  .password-input {
+    flex: 1;
+    text-align: left;
+    border: none;
+    background: transparent;
+  }
+  
+  
 .Titulo-usuario{
     color: black;
     font-weight: bold;
-}
-.datos-usuario{
-    color: black;
 }
 .titulo-pag-admin{
   text-align: center;
