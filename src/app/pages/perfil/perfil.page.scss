@@ -15,12 +15,16 @@
   
   ion-item {
     display: flex;
-    align-items: center;
-    justify-content: flex-start; /* Centra el contenido dentro del ion-item */
+    align-items: center; /* Mantiene la alineación vertical */
+    justify-content: space-between; /* Alineación horizontal */
     padding: 10px; /* Espacio interno */
-    background-color: #a8f6c6; /* Fondo blanco para la etiqueta */
+    background-color: #a8f6c6; /* Fondo del item */
     max-width: 400px; /* Define un ancho máximo para centrar el item */
     margin: 0 auto; /* Centra el item en su contenedor */
+  }
+  
+  ion-input {
+    flex: 1; /* Hace que el ion-input ocupe el espacio restante */
   }
   
   
