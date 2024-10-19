@@ -5,41 +5,54 @@
     font-weight: bold;
 }
 
-.perfil-item {
-    padding-left: 20px; /* Ajusta el padding según sea necesario */
-    padding-right: 20px; /* Ajusta el padding según sea necesario */
-    --background: #a8f6c6;
-    color: black;
-    font-weight: bold;
-  }
-  
-  ion-item {
-    display: flex;
-    align-items: center; /* Mantiene la alineación vertical */
-    justify-content: space-between; /* Alineación horizontal */
-    padding: 10px; /* Espacio interno */
-    background-color: #a8f6c6; /* Fondo del item */
-    max-width: 400px; /* Define un ancho máximo para centrar el item */
-    margin: 0 auto; /* Centra el item en su contenedor */
-  }
-  
-  ion-input {
-    flex: 1; /* Hace que el ion-input ocupe el espacio restante */
-  }
-  
-  
+.lista-perfil {
+  background-color: #a8f6c6;
+  margin: 20px 10px;
+  padding: 10px;
+  border-radius: 8px;
+}
 
-.Boton-home{
+.perfil-item {
+  --background: #a8f6c6;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
+
+.datos-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.datos-label {
+  font-weight: bold;
+  margin-right: 15px;
+  flex: 0 0 120px; /* Tamaño fijo para las etiquetas */
+}
+
+.datos-value {
+  flex: 1;
+  text-align: left;
+  color: black;
+}
+
+.password-input {
+  flex: 1;
+  text-align: left;
+  border: none;
+  background: transparent;
+}
+
+.boton-home{
     padding-left: 30px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 .boton-modificar-perfil{
-    padding-left: 40px;
-    margin-top: 20px;
+    padding-left: 50px;
+    margin-top: 10px;
 }
-.imagen-niño{
-    padding-top: 40px;
-}
+
 ion-toolbar{
     --background: #b4f6a8;
   }

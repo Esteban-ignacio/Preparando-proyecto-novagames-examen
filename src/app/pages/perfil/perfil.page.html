@@ -12,44 +12,50 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-item class="perfil-item">
-    <div class="perfil-label">
-      <strong>Nombre:</strong>
-      <span>{{ datosPerfil?.nombreuser }}</span>
-    </div>
-  </ion-item>
-  
-  <ion-item class="perfil-item">
-    <div class="perfil-label">
-      <strong>Apellido:</strong>
-      <span>{{ datosPerfil?.apellidouser }}</span>
-    </div>
-  </ion-item>
-  
-  <ion-item class="perfil-item">
-    <div class="perfil-label">
-      <strong>Teléfono:</strong>
-      <span>{{ datosPerfil?.telefono_user }}</span>
-    </div>
-  </ion-item>
-  
-  <ion-item class="perfil-item">
-    <div class="perfil-label">
-      <strong>Correo:</strong>
-      <span>{{ datosPerfil?.correo_user }}</span>
-    </div>
-  </ion-item>
-  
-  <ion-item class="perfil-item">
-    <div class="perfil-label">
-      <strong>Contraseña:</strong>
-      <ion-input type="password" [value]="datosPerfil?.clave_user" readonly></ion-input>
-    </div>
-  </ion-item>
-  
-  
+  <ion-list class="lista-perfil">
+    <ion-item class="perfil-item">
+      <div class="datos-row">
+        <span class="datos-label">Nombre:</span>
+        <span class="datos-value">{{ datosPerfil?.nombreuser }}</span>
+      </div>
+    </ion-item>
 
-  <ion-button class="Boton-home" color="primary" (click)="Home()">Ir al inicio</ion-button>
-  <ion-button class="boton-modificar-perfil" (click)="modificarperfil()">Modificar Perfil</ion-button>
+    <ion-item class="perfil-item">
+      <div class="datos-row">
+        <span class="datos-label">Apellido:</span>
+        <span class="datos-value">{{ datosPerfil?.apellidouser }}</span>
+      </div>
+    </ion-item>
+
+    <ion-item class="perfil-item">
+      <div class="datos-row">
+        <span class="datos-label">Teléfono:</span>
+        <span class="datos-value">{{ datosPerfil?.telefono_user }}</span>
+      </div>
+    </ion-item>
+
+    <ion-item class="perfil-item">
+      <div class="datos-row">
+        <span class="datos-label">Correo:</span>
+        <span class="datos-value">{{ datosPerfil?.correo_user }}</span>
+      </div>
+    </ion-item>
+
+    <ion-item class="perfil-item">
+      <div class="datos-row">
+        <span class="datos-label">Contraseña:</span>
+        <ion-input 
+          type="password" 
+          [value]="datosPerfil?.clave_user" 
+          readonly 
+          class="password-input">
+        </ion-input>
+      </div>
+    </ion-item>
+  </ion-list>
+
+    <ion-button class="boton-home" color="primary" (click)="Home()">Ir al Inicio</ion-button>
+    <ion-button class="boton-modificar-perfil" (click)="modificarperfil()">Modificar Perfil</ion-button>
 </ion-content>
+
 
