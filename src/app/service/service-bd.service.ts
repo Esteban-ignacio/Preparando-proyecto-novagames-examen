@@ -195,11 +195,15 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
       usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user
     ]);
     await this.obtenerUsuarios(); // Refrescar la lista de usuarios
+
+    // Llamar al método para transferir datos al perfil
+    await this.transferirDatosPerfil(usuario.correo_user); // Pasar el correo del nuevo usuario
   } catch (error) {
     console.error('Error al insertar usuario:', error);
     this.presentAlert('Error', 'Error al insertar el usuario: ' + JSON.stringify(error));
   }
 }
+
 
 
 async obtenerUsuarios(): Promise<Usuario[]> {
@@ -252,8 +256,37 @@ actualizarDatoslogin(datos: Datoslogin[]) {
   this.listadatoslogin.next(datos); // Actualiza los datos en el observable
 }
 
-// Modificación del método login
+async transferirDatosPerfil(correo: string): Promise<void> {
+  try {
+    // Obtener datos del usuario por correo
+    const sql = 'SELECT * FROM usuario WHERE correo_user = ?';
+    const res = await this.database.executeSql(sql, [correo]);
+
+    if (res.rows.length > 0) {
+      const user = res.rows.item(0);
+
+      // Crear objeto de datos del perfil
+      const datosPerfil: Extraerdatosusuario = {
+        iduser: user.id_user,
+        nombreuser: user.nombre_user,
+        apellidouser: user.apellido_user,
+        correo_user: user.correo_user,
+        clave_user: user.clave_user,
+        telefono_user: user.telefono_user,
+        fotouser: user.fotouser || new Blob() // Asignar foto o Blob vacío
+      };
+
+      // Actualiza el observable con los datos extraídos
+      this.listaextraerdatosusuario.next([datosPerfil]);
+    }
+  } catch (error) {
+    console.error('Error al transferir datos al perfil:', error);
+    this.presentAlert('Error', 'Error al transferir datos al perfil: ' + JSON.stringify(error));
+  }
+}
+
 //verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su nombre, correo y contraseña
+// Método de login modificado para incluir la transferencia de datos al perfil
 async login(nombre: string, correo: string, clave: string): Promise<any> {
   const sql = 'SELECT * FROM usuario WHERE nombre_user = ? AND correo_user = ? AND clave_user = ?';
   const res = await this.database.executeSql(sql, [nombre, correo, clave]);
@@ -270,6 +303,10 @@ async login(nombre: string, correo: string, clave: string): Promise<any> {
     this.actualizarDatoslogin([datosLogin]);
 
     const isAdmin = user.id_rol === 1;
+    
+    // Llamar a la función para transferir datos al perfil
+    await this.transferirDatosPerfil(correo); // Transferir datos al perfil después de login
+
     return { success: true, isAdmin: isAdmin, user: user };
   } else {
     this.actualizarDatoslogin([]); // Emitir vacío si no hay usuario

@@ -4,36 +4,27 @@
     color: black;
     font-weight: bold;
 }
-.Nombre-perfil{
-    text-align: left;
-    padding-left: 40px;
-    padding-right: 40px;
+
+.perfil-item {
+    padding-left: 20px; /* Ajusta el padding según sea necesario */
+    padding-right: 20px; /* Ajusta el padding según sea necesario */
     --background: #a8f6c6;
-}
-.Apellido-perfil{
-    text-align: left;
-    padding-left: 40px;
-    padding-right: 40px;
-    --background: #a8f6c6;
-}
-.Correo-perfil{
-    text-align: left;
-    padding-left: 40px;
-    padding-right: 40px;
-    --background: #a8f6c6;
-}
-.Telefono-perfil{
-    text-align: left;
-    padding-left: 40px;
-    padding-right: 40px;
-    --background: #a8f6c6;
-}
-.Contraseña-perfil{
-    text-align: left;
-    padding-left: 40px;
-    padding-right: 40px;
-    --background: #a8f6c6;
-}
+    color: black;
+    font-weight: bold;
+  }
+  
+  ion-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Centra el contenido dentro del ion-item */
+    padding: 10px; /* Espacio interno */
+    background-color: #a8f6c6; /* Fondo blanco para la etiqueta */
+    max-width: 400px; /* Define un ancho máximo para centrar el item */
+    margin: 0 auto; /* Centra el item en su contenedor */
+  }
+  
+  
+
 .Boton-home{
     padding-left: 30px;
     margin-top: 20px;

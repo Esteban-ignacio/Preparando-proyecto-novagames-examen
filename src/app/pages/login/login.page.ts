@@ -17,23 +17,32 @@ export class LoginPage implements OnInit {
 
   usuarios: Usuario[] = [];
 
+  usuario: Usuario = new Usuario();
+
   constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService,
     private menuController: MenuController) { }
 
-  ngOnInit() {
-    // Esperar a que la base de datos esté lista
-    this.bdService.dbState().subscribe(isReady => {
-      if (isReady) {
-        // Suscribirse al observable para obtener la lista de usuarios
-        this.bdService.fetchUsuarios().subscribe(data => {
-          this.usuarios = data;
-        });
+    ngOnInit() {
+      // Esperar a que la base de datos esté lista
+      this.bdService.dbState().subscribe(isReady => {
+        if (isReady) {
+          // Suscribirse al observable para obtener la lista de usuarios
+          this.bdService.fetchUsuarios().subscribe(data => {
+            this.usuarios = data;
+          });
   
-        // Llamar al método para obtener los usuarios desde la base de datos
-        this.bdService.obtenerUsuarios();
-      }
-    });
-  }
+          // Llamar al método para obtener los usuarios desde la base de datos
+          this.bdService.obtenerUsuarios();
+        }
+      });
+      
+      // Manejo de la navegación y el usuario recibido
+      const navigation = this.router.getCurrentNavigation();
+      if (navigation?.extras?.state) {
+        this.usuario = navigation.extras.state['usuario'] || new Usuario(); // Maneja el caso donde no haya un usuario
+      } 
+      // No es necesario inicializar nuevamente aquí porque ya lo has hecho arriba
+    }
 
   async ValidacionLogin() {
     // Verificar que los campos no estén vacíos

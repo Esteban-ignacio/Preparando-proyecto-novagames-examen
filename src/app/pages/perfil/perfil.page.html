@@ -12,31 +12,44 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-item class="Nombre-perfil">
-    <ion-label position="floating">Nombre:</ion-label>
-    <ion-input type="text" [value]="nombre" readonly></ion-input>
+  <ion-item class="perfil-item">
+    <div class="perfil-label">
+      <strong>Nombre:</strong>
+      <span>{{ datosPerfil?.nombreuser }}</span>
+    </div>
   </ion-item>
-  <ion-item class="Apellido-perfil">
-    <ion-label position="floating">Apellido:</ion-label>
-    <ion-input type="text" [value]="apellido" readonly></ion-input>
+  
+  <ion-item class="perfil-item">
+    <div class="perfil-label">
+      <strong>Apellido:</strong>
+      <span>{{ datosPerfil?.apellidouser }}</span>
+    </div>
   </ion-item>
-  <ion-item class="Telefono-perfil">
-    <ion-label position="floating">Telefono:</ion-label>
-    <ion-input type="tel" [value]="telefono" readonly></ion-input>
+  
+  <ion-item class="perfil-item">
+    <div class="perfil-label">
+      <strong>Teléfono:</strong>
+      <span>{{ datosPerfil?.telefono_user }}</span>
+    </div>
   </ion-item>
-
-  <ion-item class="Correo-perfil">
-    <ion-label position="floating">Correo:</ion-label>
-    <ion-input type="email" [value]="correo" readonly></ion-input>
+  
+  <ion-item class="perfil-item">
+    <div class="perfil-label">
+      <strong>Correo:</strong>
+      <span>{{ datosPerfil?.correo_user }}</span>
+    </div>
   </ion-item>
-  <ion-item class="Contraseña-perfil">
-    <ion-label position="floating">Contraseña:</ion-label>
-    <ion-input type="password" [value]="contrasena" readonly></ion-input>
+  
+  <ion-item class="perfil-item">
+    <div class="perfil-label">
+      <strong>Contraseña:</strong>
+      <ion-input type="password" [value]="datosPerfil?.clave_user" readonly></ion-input>
+    </div>
   </ion-item>
+  
   
 
   <ion-button class="Boton-home" color="primary" (click)="Home()">Ir al inicio</ion-button>
   <ion-button class="boton-modificar-perfil" (click)="modificarperfil()">Modificar Perfil</ion-button>
-  <img class="imagen-niño" src="assets/img/imggamer.jpg">
-  <img src="assets/img/imgmando.jpg">
 </ion-content>
+
