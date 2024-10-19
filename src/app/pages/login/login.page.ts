@@ -57,7 +57,7 @@ export class LoginPage implements OnInit {
           this.presentAlert('Iniciado', 'Inicio exitoso');
           this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
         } else {
-          this.presentAlert('Error', 'Credenciales inválidas. Por favor, revise sus datos.');
+          this.presentAlert('Error', 'No encontramos una cuenta asociada. Verifica tus datos o crea una nueva cuenta.');
         }
       } catch (error) {
         // Manejo de errores en caso de que algo falle en el login
