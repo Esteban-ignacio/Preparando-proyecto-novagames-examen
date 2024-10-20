@@ -15,16 +15,23 @@ export class ModificarperfilPage implements OnInit {
   apellidomodificarperfil: string = "";
   telefonomodificarperfil: string = "";
 
-  datosPerfil: any;
+  datosPerfil: Extraerdatosusuario | undefined; // Cambiar a un tipo más específico
   
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
     this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
       if (datos.length > 0) {
+        this.datosPerfil = datos[0]; // Asigna el primer elemento a datosPerfil
+        this.nombremodificarperfil = ''; // Mantener vacías las variables, si no se desean mostrar datos predeterminados
+        this.apellidomodificarperfil = '';
+        this.telefonomodificarperfil = '';
+      } else {
+        this.presentAlert('Error', 'No se encontraron datos del perfil.');
       }
     });
   }
+
   async ValidacionModificarPerfil() {
     // Primero validamos el formulario
     if (!this.isFormValid()) {
@@ -32,7 +39,16 @@ export class ModificarperfilPage implements OnInit {
       return; // Salir de la función si la validación falla
     }
 
-    // Crear un objeto con los datos a actualizar
+    if (!this.datosPerfil) {
+    this.presentAlert('Error', 'No se encontró información del perfil.');
+    return; // Salir si datosPerfil es undefined
+  }
+
+  if (!this.datosPerfil.correo_user) {
+    this.presentAlert('Error', 'El correo del usuario no está disponible.');
+    return; // Salir si correo_user es undefined
+  }
+
   const usuarioActualizar: Extraerdatosusuario = {
     iduser: this.datosPerfil.iduser, // ID del usuario
     nombreuser: this.nombremodificarperfil,

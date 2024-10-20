@@ -287,17 +287,25 @@ async transferirDatosPerfil(correo: string): Promise<void> {
 
 async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
   const sql = 'UPDATE usuario SET nombre_user = ?, apellido_user = ?, telefono_user = ? WHERE correo_user = ?';
-  
+
   try {
-    await this.database.executeSql(sql, [
-      usuario.nombreuser, 
-      usuario.apellidouser, 
-      usuario.telefono_user, 
-      usuario.correo_user // Asegúrate de tener el correo del usuario
+    const res = await this.database.executeSql(sql, [
+      usuario.nombreuser,
+      usuario.apellidouser,
+      usuario.telefono_user,
+      usuario.correo_user
     ]);
 
-    // Después de actualizar, vuelve a obtener los datos para actualizar el observable
-    await this.transferirDatosPerfil(usuario.correo_user);
+    // Validar si se actualizaron filas
+    if (res.rowsAffected > 0) {
+      console.log('Usuario actualizado correctamente.');
+
+      // Después de actualizar, vuelve a obtener los datos para actualizar el observable
+      await this.transferirDatosPerfil(usuario.correo_user);
+    } else {
+      console.warn('No se encontró un usuario con el correo especificado.');
+      this.presentAlert('Advertencia', 'No se encontró el usuario para actualizar. Asegúrate de que el correo esté correcto.');
+    }
   } catch (error) {
     console.error('Error al actualizar usuario:', error);
     this.presentAlert('Error', 'Error al actualizar los datos del usuario: ' + JSON.stringify(error));
@@ -308,11 +316,18 @@ async actualizarClaveUsuario(correo: string, nuevaClave: string): Promise<void> 
   const sql = 'UPDATE usuario SET clave_user = ? WHERE correo_user = ?';
 
   try {
+    const res = await this.database.executeSql(sql, [nuevaClave, correo]);
 
-    await this.database.executeSql(sql, [nuevaClave, correo]);
+    // Validar si se actualizaron filas
+    if (res.rowsAffected > 0) {
+      console.log('Contraseña actualizada correctamente.');
 
-    // Llama a transferirDatosPerfil para actualizar el observable y reflejar los cambios en el perfil
-    await this.transferirDatosPerfil(correo);
+      // Llama a transferirDatosPerfil para actualizar el observable y reflejar los cambios en el perfil
+      await this.transferirDatosPerfil(correo);
+    } else {
+      console.warn('No se encontró un usuario con el correo especificado.');
+      this.presentAlert('Advertencia', 'No se encontró el usuario para actualizar la contraseña.');
+    }
   } catch (error) {
     console.error('Error al actualizar la contraseña:', error);
     this.presentAlert('Error', 'No se pudo actualizar la contraseña: ' + JSON.stringify(error));
