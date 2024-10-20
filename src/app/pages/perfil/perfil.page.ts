@@ -17,17 +17,19 @@ export class PerfilPage implements OnInit {
   contrasena: string = "";
 
   datosPerfil: Extraerdatosusuario | null = null;
-
+  
   constructor(private router: Router, private bdService: ServiceBDService) { 
     
   }
-  
 
   ngOnInit() {
-    // Suscribirse a los datos del usuario
+    this.loadProfile();
+  }
+
+  loadProfile() {
     this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
       if (datos.length > 0) {
-        this.datosPerfil = datos[0]; // Obtener el primer dato
+        this.datosPerfil = datos[0]; // Esto mostrará los datos actualizados
       }
     });
   }

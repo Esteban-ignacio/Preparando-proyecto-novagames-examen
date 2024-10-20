@@ -285,6 +285,26 @@ async transferirDatosPerfil(correo: string): Promise<void> {
   }
 }
 
+async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
+  const sql = 'UPDATE usuario SET nombre_user = ?, apellido_user = ?, telefono_user = ? WHERE correo_user = ?';
+  
+  try {
+    await this.database.executeSql(sql, [
+      usuario.nombreuser, 
+      usuario.apellidouser, 
+      usuario.telefono_user, 
+      usuario.correo_user // Asegúrate de tener el correo del usuario
+    ]);
+
+    // Después de actualizar, vuelve a obtener los datos para actualizar el observable
+    await this.transferirDatosPerfil(usuario.correo_user);
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error);
+    this.presentAlert('Error', 'Error al actualizar los datos del usuario: ' + JSON.stringify(error));
+  }
+}
+
+
 //verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su nombre, correo y contraseña
 // Método de login modificado para incluir la transferencia de datos al perfil
 async login(nombre: string, correo: string, clave: string): Promise<any> {

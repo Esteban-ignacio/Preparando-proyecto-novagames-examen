@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
+import { Extraerdatosusuario } from 'src/app/service/usuario';
 
 @Component({
   selector: 'app-modificarperfil',
@@ -12,31 +14,47 @@ export class ModificarperfilPage implements OnInit {
   nombremodificarperfil: string = "";
   apellidomodificarperfil: string = "";
   telefonomodificarperfil: string = "";
+
+  datosPerfil: any;
   
-  constructor(private alertController: AlertController, private router: Router) { }
+  constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
+    this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
+      if (datos.length > 0) {
+        this.datosPerfil = datos[0];
+        this.nombremodificarperfil = this.datosPerfil.nombreuser;
+        this.apellidomodificarperfil = this.datosPerfil.apellidouser;
+        this.telefonomodificarperfil = this.datosPerfil.telefono_user; // Asegúrate de que esto esté correcto
+      }
+    });
   }
-  ValidacionModificarPerfil(){
-    if (this.nombremodificarperfil.trim() === '') {
-      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
-      return; // Salir de la función si algún campo está vacío
+  async ValidacionModificarPerfil() {
+    // Primero validamos el formulario
+    if (!this.isFormValid()) {
+      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos y asegúrese de que los datos sean válidos.');
+      return; // Salir de la función si la validación falla
     }
 
-     // Validar nombre, apellido, teléfono y correo con alertas específicas
-     if (!this.isNombreApellidoModificarPerfilValido() || !this.isTelefonoModificarPerfilValido()) {
-        return; // Si alguno de los campos es inválido, no continuar
-      }
-  
-    // Hacemos la validación de los datos
-    if (this.isFormValid()) {
-      // Si el formulario es válido, muestra un mensaje de éxito
-      this.presentAlert('Realizado', 'Perfil Modificado con exito');
-      this.VolveralInicio(); // Navegar a la página de inicio si el registro es exitoso
-    } else {
-      // Si el formulario es inválido, muestra un mensaje de error en la alerta
-      this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
-    }
+    // Crear un objeto con los datos a actualizar
+  const usuarioActualizar: Extraerdatosusuario = {
+    iduser: this.datosPerfil.iduser, // ID del usuario
+    nombreuser: this.nombremodificarperfil,
+    apellidouser: this.apellidomodificarperfil,
+    correo_user: this.datosPerfil.correo_user, // Usar el correo obtenido de datosPerfil
+    clave_user: this.datosPerfil.clave_user, // La contraseña no se modifica
+    telefono_user: this.telefonomodificarperfil,
+  };
+
+  // Actualizar en la base de datos
+  try {
+    await this.bdService.actualizarUsuario(usuarioActualizar);
+    this.presentAlert('Realizado', 'Perfil Modificado con éxito');
+    this.VolveralPerfil(); // Navegar a la página de inicio si el registro es exitoso
+  } catch (error) {
+    console.error('Error al actualizar el perfil:', error);
+    this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
+  }
   }
 
    // Validación para el nombre y el apellido
@@ -98,11 +116,11 @@ isTelefonoModificarPerfilValido(): boolean {
 
     await alert.present();
   }
-  VolveralInicio(){
+  VolveralPerfil(){
     let navigationextras: NavigationExtras = {
 
     }
-    this.router.navigate(['/home'], navigationextras);
+    this.router.navigate(['/perfil'], navigationextras);
   }
   irCambiarcontra(){
     let navigationextras: NavigationExtras={

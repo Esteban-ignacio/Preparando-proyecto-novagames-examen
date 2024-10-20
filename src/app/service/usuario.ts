@@ -32,7 +32,7 @@ export class Extraerdatosusuario {
     apellidouser!: string;
     correo_user!: string;
     clave_user!: string;
-    telefono_user!: number;
+    telefono_user!: string;
 }
     
 
