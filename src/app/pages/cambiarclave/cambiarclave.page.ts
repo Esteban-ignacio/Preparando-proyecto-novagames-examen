@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
   selector: 'app-cambiarclave',
@@ -13,12 +14,12 @@ export class CambiarclavePage implements OnInit {
   contrasenacambiarclave: string = "";
   confirmarContrasenacambiarclave: string = "";
 
-  constructor(private alertController: AlertController, private router: Router) { }
+  constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
   }
 
-  ValidacionCambiarClave(){
+ async ValidacionCambiarClave(){
     if (this.correocambiarclave.trim() === ''|| this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
@@ -30,15 +31,22 @@ export class CambiarclavePage implements OnInit {
         return; // Si alguno de los campos es inválido, no continuar
       }
   
-    // Hacemos la validación de los datos
-    if (this.isFormValid()) {
-      // Si el formulario es válido, muestra un mensaje de éxito
-      this.presentAlert('Logrado','Contraseña Modificado con exito');
-      this.IrInicio(); // Navegar a la página de inicio si el registro es exitoso
-    } else {
-      // Si el formulario es inválido, muestra un mensaje de error en la alerta
-      this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
-    }
+      try {
+        // Verificar si el correo existe en la base de datos
+        const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
+  
+        if (existeCorreo) {
+          // Actualizar la contraseña
+          await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
+          this.presentAlert('Éxito', 'La contraseña ha sido modificada con éxito.');
+          this.IrInicio(); // Navegar a la página de inicio
+        } else {
+          this.presentAlert('Error', 'El correo ingresado no se encuentra registrado.');
+        }
+      } catch (error) {
+        console.error('Error al cambiar la contraseña:', error);
+        this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
+      }
   }
 
    // Validación para el correo

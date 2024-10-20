@@ -304,6 +304,21 @@ async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
   }
 }
 
+async actualizarClaveUsuario(correo: string, nuevaClave: string): Promise<void> {
+  const sql = 'UPDATE usuario SET clave_user = ? WHERE correo_user = ?';
+
+  try {
+
+    await this.database.executeSql(sql, [nuevaClave, correo]);
+
+    // Llama a transferirDatosPerfil para actualizar el observable y reflejar los cambios en el perfil
+    await this.transferirDatosPerfil(correo);
+  } catch (error) {
+    console.error('Error al actualizar la contraseña:', error);
+    this.presentAlert('Error', 'No se pudo actualizar la contraseña: ' + JSON.stringify(error));
+  }
+}
+
 
 //verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su nombre, correo y contraseña
 // Método de login modificado para incluir la transferencia de datos al perfil
@@ -334,8 +349,6 @@ async login(nombre: string, correo: string, clave: string): Promise<any> {
   }
 }
 
-// service-bd.service.ts
-
 async verificarCorreoenrecuperarcontra(correo: string): Promise<boolean> {
   const sqlEmail = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
   
@@ -343,7 +356,6 @@ async verificarCorreoenrecuperarcontra(correo: string): Promise<boolean> {
   
   return resEmail.rows.item(0).count > 0; // Retorna true si el correo existe
 }
-
 
 
 }
