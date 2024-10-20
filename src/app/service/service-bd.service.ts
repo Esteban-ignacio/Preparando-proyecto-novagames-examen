@@ -187,7 +187,7 @@ async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists:
 
 
 
-// Método para insertar un nuevo usuario
+// Método para insertar un nuevo usuario en la pagina de registro
 async insertarUsuario(usuario: Usuario): Promise<void> {
   try {
     const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user) VALUES (?, ?, ?, ?, ?)';
@@ -205,7 +205,7 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
 }
 
 
-
+//obtiene los usuarios en la pagina de admin
 async obtenerUsuarios(): Promise<Usuario[]> {
   try {
     const res = await this.database.executeSql('SELECT * FROM usuario', []);
@@ -232,6 +232,7 @@ async obtenerUsuarios(): Promise<Usuario[]> {
   }
 }
 
+//para el login
 async obtenerRoles(): Promise<void> {
   try {
     const res = await this.database.executeSql('SELECT * FROM rol', []);
@@ -273,7 +274,6 @@ async transferirDatosPerfil(correo: string): Promise<void> {
         correo_user: user.correo_user,
         clave_user: user.clave_user,
         telefono_user: user.telefono_user,
-        fotouser: user.fotouser || new Blob() // Asignar foto o Blob vacío
       };
 
       // Actualiza el observable con los datos extraídos

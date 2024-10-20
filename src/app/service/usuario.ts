@@ -33,7 +33,6 @@ export class Extraerdatosusuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: number;
-    fotouser!: Blob;
 }
     
 
