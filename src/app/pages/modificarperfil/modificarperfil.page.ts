@@ -22,10 +22,6 @@ export class ModificarperfilPage implements OnInit {
   ngOnInit() {
     this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
       if (datos.length > 0) {
-        this.datosPerfil = datos[0];
-        this.nombremodificarperfil = this.datosPerfil.nombreuser;
-        this.apellidomodificarperfil = this.datosPerfil.apellidouser;
-        this.telefonomodificarperfil = this.datosPerfil.telefono_user; // Asegúrate de que esto esté correcto
       }
     });
   }
