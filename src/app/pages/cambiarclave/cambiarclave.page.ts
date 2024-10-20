@@ -17,6 +17,10 @@ export class CambiarclavePage implements OnInit {
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
+    const navigation = this.router.getCurrentNavigation();
+    const fromPage = navigation?.extras?.state?.['fromPage'] || history.state.fromPage;
+
+    console.log('From page:', fromPage); // Verificar de dónde viene el usuario
   }
 
  async ValidacionCambiarClave(){
@@ -39,7 +43,20 @@ export class CambiarclavePage implements OnInit {
           // Actualizar la contraseña
           await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
           this.presentAlert('Éxito', 'La contraseña ha sido modificada con éxito.');
-          this.IrPerfil(); // Navegar a la página de inicio
+
+        
+        const navigation = this.router.getCurrentNavigation();
+        const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'];
+
+        console.log('From page:', fromPage);
+
+        if (fromPage === 'modificarperfil') {
+          this.IrPerfil(); // Navegar a la página de perfil
+        } else if (fromPage === 'recuperarclave') {
+          this.router.navigate(['/login']); // Navegar a la página de login
+        } else {
+          this.IrPerfil(); // Por defecto, navegar a la página de perfil
+        }
         } else {
           this.presentAlert('Error', 'El correo ingresado no se encuentra registrado.');
         }
@@ -105,10 +122,8 @@ export class CambiarclavePage implements OnInit {
 
     await alert.present();
   }
-  IrPerfil(){
-    let navigationextras: NavigationExtras = {
-
-    }
+  IrPerfil() {
+    let navigationextras: NavigationExtras = {};
     this.router.navigate(['/perfil'], navigationextras);
   }
 }

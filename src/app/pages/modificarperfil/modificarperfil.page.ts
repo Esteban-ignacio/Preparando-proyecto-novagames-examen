@@ -136,6 +136,7 @@ isTelefonoModificarPerfilValido(): boolean {
   }
   irCambiarcontra(){
     let navigationextras: NavigationExtras={
+      state: { fromPage: 'modificarperfil' }
     }
     this.router.navigate(['/cambiarclave'], navigationextras);
   }

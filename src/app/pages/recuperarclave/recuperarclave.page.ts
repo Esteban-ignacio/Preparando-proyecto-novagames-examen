@@ -85,7 +85,7 @@ export class RecuperarclavePage implements OnInit {
 
   Ircambiarcontra(){
     let navigationextras: NavigationExtras = {
-      
+      state: { fromPage: 'recuperarclave' }
     }
     this.router.navigate(['/cambiarclave'], navigationextras);
   }
