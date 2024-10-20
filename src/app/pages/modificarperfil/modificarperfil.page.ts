@@ -12,7 +12,6 @@ export class ModificarperfilPage implements OnInit {
   nombremodificarperfil: string = "";
   apellidomodificarperfil: string = "";
   telefonomodificarperfil: string = "";
-  correomodificarperfil: string = "";
   
   constructor(private alertController: AlertController, private router: Router) { }
 
@@ -25,8 +24,7 @@ export class ModificarperfilPage implements OnInit {
     }
 
      // Validar nombre, apellido, teléfono y correo con alertas específicas
-     if (!this.isNombreApellidoModificarPerfilValido() || !this.isTelefonoModificarPerfilValido() 
-      || !this.isCorreoModificarPerfilValido()) {
+     if (!this.isNombreApellidoModificarPerfilValido() || !this.isTelefonoModificarPerfilValido()) {
         return; // Si alguno de los campos es inválido, no continuar
       }
   
@@ -71,21 +69,10 @@ isTelefonoModificarPerfilValido(): boolean {
   return true;
 }
 
- // Validación para el correo
- isCorreoModificarPerfilValido(): boolean {
-  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
-  if (!regexEmail.test(this.correomodificarperfil)) {
-    this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
-    return false;
-  }
-  return true;
-}
-
   isFormValid(): boolean {
     const regex = /^[a-zA-Z]+$/; // Solo letras
     const regexPhone = /^\d{1,9}$/; // Solo números y hasta 9 dígitos
-    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
-
+   
     return (
       this.nombremodificarperfil.trim() !== '' && // No debe estar vacío
       this.nombremodificarperfil.length >= 2 &&
@@ -98,11 +85,7 @@ isTelefonoModificarPerfilValido(): boolean {
       regex.test(this.apellidomodificarperfil) && // Validación del apellido
 
       this.telefonomodificarperfil.trim() !== '' && // Teléfono no debe estar vacío
-      regexPhone.test(this.telefonomodificarperfil) && // Validación del teléfono
-
-      this.correomodificarperfil.trim() !== '' && // Correo no debe estar vacío
-      regexEmail.test(this.correomodificarperfil)  // Validación del correo
-
+      regexPhone.test(this.telefonomodificarperfil) // Validación del teléfono
     );
   }
 

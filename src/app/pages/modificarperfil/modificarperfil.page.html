@@ -37,14 +37,6 @@
     </ion-item>
   </form>
   
-  <form class="correo-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
-    <ion-item>
-      <ion-label position="floating"></ion-label>
-      <ion-input class="correo-modificar-perfil" label="Correo" label-placement="floating" fill="solid" 
-        placeholder="Ingrese su correo" [(ngModel)]="correomodificarperfil" name="correomodificarperfil" required></ion-input>
-    </ion-item>
-  </form>
-
   <ion-button class="boton-confirmar-cambios" (click)="ValidacionModificarPerfil()">Confirmar</ion-button>
   <a class="boton-cambiarcontra" (click) = "irCambiarcontra()">Cambio de contraseña</a>
 </ion-content>
