@@ -302,6 +302,7 @@ async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
 
       // Después de actualizar, vuelve a obtener los datos para actualizar el observable
       await this.transferirDatosPerfil(usuario.correo_user);
+      await this.obtenerUsuarios(); // Actualiza la lista de usuarios en el administrador
     } else {
       console.warn('No se encontró un usuario con el correo especificado.');
       this.presentAlert('Advertencia', 'No se encontró el usuario para actualizar. Asegúrate de que el correo esté correcto.');
@@ -324,6 +325,7 @@ async actualizarClaveUsuario(correo: string, nuevaClave: string): Promise<void> 
 
       // Llama a transferirDatosPerfil para actualizar el observable y reflejar los cambios en el perfil
       await this.transferirDatosPerfil(correo);
+      await this.obtenerUsuarios(); // Actualiza la lista de usuarios en el administrador
     } else {
       console.warn('No se encontró un usuario con el correo especificado.');
       this.presentAlert('Advertencia', 'No se encontró el usuario para actualizar la contraseña.');
