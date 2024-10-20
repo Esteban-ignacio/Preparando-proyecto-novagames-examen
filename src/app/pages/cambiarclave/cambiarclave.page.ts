@@ -39,7 +39,7 @@ export class CambiarclavePage implements OnInit {
           // Actualizar la contraseña
           await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
           this.presentAlert('Éxito', 'La contraseña ha sido modificada con éxito.');
-          this.IrInicio(); // Navegar a la página de inicio
+          this.IrPerfil(); // Navegar a la página de inicio
         } else {
           this.presentAlert('Error', 'El correo ingresado no se encuentra registrado.');
         }
@@ -105,10 +105,10 @@ export class CambiarclavePage implements OnInit {
 
     await alert.present();
   }
-  IrInicio(){
+  IrPerfil(){
     let navigationextras: NavigationExtras = {
 
     }
-    this.router.navigate(['/home'], navigationextras);
+    this.router.navigate(['/perfil'], navigationextras);
   }
 }
