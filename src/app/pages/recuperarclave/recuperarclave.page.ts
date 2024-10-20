@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
   selector: 'app-recuperarclave',
@@ -11,17 +12,24 @@ export class RecuperarclavePage implements OnInit {
 
   correorecuperarclave: string = "";
 
-  constructor(private alertController: AlertController, private router: Router) { }
+  constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
   }
 
-  ValidacionRecuperarClave(){
+  async ValidacionRecuperarClave(){
     if (this.correorecuperarclave.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
 
+     // Verificar si el correo existe en la base de datos
+     const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correorecuperarclave);
+
+     if (!existeCorreo) {
+      this.presentAlert('Error', 'El correo no se ha encontrado.');
+      return; // Si el correo no existe, detener la ejecución
+    }
       // Validar correo, contraseña y confirmar contraseña con alertas específicas
       if (!this.isCorreoRecuperarClaveValido()) {
           return; // Si alguno de los campos es inválido, no continuar

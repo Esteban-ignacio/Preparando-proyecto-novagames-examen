@@ -334,6 +334,17 @@ async login(nombre: string, correo: string, clave: string): Promise<any> {
   }
 }
 
+// service-bd.service.ts
+
+async verificarCorreoenrecuperarcontra(correo: string): Promise<boolean> {
+  const sqlEmail = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
+  
+  const resEmail = await this.database.executeSql(sqlEmail, [correo]);
+  
+  return resEmail.rows.item(0).count > 0; // Retorna true si el correo existe
+}
+
+
 
 }
 
