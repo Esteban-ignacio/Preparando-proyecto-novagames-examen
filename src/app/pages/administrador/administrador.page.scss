@@ -59,6 +59,17 @@ ion-content{
   color: black;
   font-weight: bold;
 }
+.buscar-correo{
+  margin: auto;
+  width: 350px;
+  height: 60px;
+  padding-top: 20px;
+  display: flex;
+  align-items: center; /* Alinea verticalmente */
+}
+.eliminar-boton-container {
+  margin-left: 10px; /* Espacio entre el input y el botón */
+}
   
   
   

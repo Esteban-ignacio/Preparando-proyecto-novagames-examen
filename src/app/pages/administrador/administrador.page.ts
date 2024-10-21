@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Usuario } from 'src/app/service/usuario';
-import { MenuController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-administrador',
@@ -11,9 +10,13 @@ import { MenuController } from '@ionic/angular';
 })
 export class AdministradorPage implements OnInit {
 
+  correoAEliminar: string = '';
+
   usuarios: Usuario[] = [];
 
-  constructor(private menuController: MenuController, private bdService: ServiceBDService, private router: Router) { }
+  constructor(private menuController: MenuController, private bdService: ServiceBDService,
+    private alertController: AlertController
+  ) { }
 
   ngOnInit() {
     // Esperar a que la base de datos esté lista
@@ -34,4 +37,35 @@ export class AdministradorPage implements OnInit {
     this.menuController.enable(false, 'menu-admin');
   }
 
+  eliminarUsuario() {
+    if (this.correoAEliminar) {
+      this.bdService.eliminarUsuario(this.correoAEliminar) // Cambia serviceBD a bdService
+        .then(() => {
+          console.log('Eliminación completada');
+          // Mostrar alerta de confirmación
+          this.bdService.presentAlert('Éxito', 'El usuario ha sido eliminado correctamente.');
+          // Aquí puedes actualizar la lista de usuarios si lo deseas
+          this.bdService.obtenerUsuarios(); // Actualiza la lista de usuarios
+        })
+        .catch((error: any) => { // Especificar el tipo para error
+          console.error('Error en la eliminación:', error);
+          this.bdService.presentAlert('Error', 'Error en la eliminación: ' + error);
+        });
+    } else {
+      this.bdService.presentAlert('Error', 'Por favor ingresa un correo válido.');
+    }
+  }
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+
+    await alert.present();
+  }
+
 }
+
+

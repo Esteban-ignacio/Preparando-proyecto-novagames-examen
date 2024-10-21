@@ -13,6 +13,17 @@
 
 <ion-content [fullscreen]="true">
   <h2 class="titulo-pag-admin">Lista de Usuarios</h2>
+
+  <form class="buscar-correo">
+    <ion-item>
+      <ion-label position="floating"></ion-label>
+      <ion-input class="buscar-correo" label="Correo" label-placement="floating" fill="solid" 
+        placeholder="Ingrese el correo" [(ngModel)]="correoAEliminar" name="buscarcorreo" required></ion-input>
+    </ion-item>
+    <div class="eliminar-boton-container">
+      <ion-button (click)="eliminarUsuario()">Eliminar Usuario</ion-button>
+    </div>
+  </form>
   
   <ion-list class="lista-usuarios">
     <ion-item *ngFor="let usuario of usuarios" class="item">

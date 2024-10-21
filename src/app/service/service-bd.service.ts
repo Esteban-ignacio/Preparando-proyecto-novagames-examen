@@ -374,6 +374,27 @@ async verificarCorreoenrecuperarcontra(correo: string): Promise<boolean> {
   return resEmail.rows.item(0).count > 0; // Retorna true si el correo existe
 }
 
+// Método para eliminar un usuario por su correo
+async eliminarUsuario(correo: string): Promise<void> {
+  try {
+    const sql = 'DELETE FROM usuario WHERE correo_user = ?';
+    const res = await this.database.executeSql(sql, [correo]);
+
+    if (res.rowsAffected > 0) {
+      console.log('Usuario eliminado correctamente.');
+      await this.obtenerUsuarios(); // Actualiza la lista de usuarios después de eliminar
+    } else {
+      console.warn('No se encontró un usuario con el correo especificado.');
+      this.presentAlert('Advertencia', 'No se encontró el usuario con el correo proporcionado.');
+    }
+  } catch (error) {
+    console.error('Error al eliminar usuario:', error);
+    this.presentAlert('Error', 'Error al eliminar el usuario: ' + JSON.stringify(error));
+  }
+}
+
+
+
 
 }
 
