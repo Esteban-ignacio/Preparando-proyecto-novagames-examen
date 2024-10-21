@@ -34,9 +34,4 @@ export class AdministradorPage implements OnInit {
     this.menuController.enable(false, 'menu-admin');
   }
 
-  cerrarSesion() {
-    this.router.navigate(['/login']);
-  }
-  
-  
 }
