@@ -384,12 +384,12 @@ async eliminarUsuario(correo: string): Promise<void> {
       console.log('Usuario eliminado correctamente.');
       await this.obtenerUsuarios(); // Actualiza la lista de usuarios después de eliminar
     } else {
-      console.warn('No se encontró un usuario con el correo especificado.');
-      this.presentAlert('Advertencia', 'No se encontró el usuario con el correo proporcionado.');
+      // Rechaza la promesa si no se encontró el usuario
+      throw new Error('Este correo no se ha encontrado.'); // Mensaje personalizado
     }
   } catch (error) {
     console.error('Error al eliminar usuario:', error);
-    this.presentAlert('Error', 'Error al eliminar el usuario: ' + JSON.stringify(error));
+    throw new Error('Error al eliminar el usuario: ' + JSON.stringify(error));
   }
 }
 

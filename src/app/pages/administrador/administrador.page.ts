@@ -37,24 +37,27 @@ export class AdministradorPage implements OnInit {
     this.menuController.enable(false, 'menu-admin');
   }
 
+
   eliminarUsuario() {
     if (this.correoAEliminar) {
-      this.bdService.eliminarUsuario(this.correoAEliminar) // Cambia serviceBD a bdService
+      this.bdService.eliminarUsuario(this.correoAEliminar)
         .then(() => {
-          console.log('Eliminación completada');
-          // Mostrar alerta de confirmación
-          this.bdService.presentAlert('Éxito', 'El usuario ha sido eliminado correctamente.');
-          // Aquí puedes actualizar la lista de usuarios si lo deseas
+          // Eliminación exitosa
+          this.presentAlert('Éxito', 'El usuario ha sido eliminado correctamente.');
+          this.correoAEliminar = ''; // Limpiar el campo de entrada
           this.bdService.obtenerUsuarios(); // Actualiza la lista de usuarios
         })
-        .catch((error: any) => { // Especificar el tipo para error
-          console.error('Error en la eliminación:', error);
-          this.bdService.presentAlert('Error', 'Error en la eliminación: ' + error);
+        .catch(() => {
+          // Mostrar alerta de error genérico
+          this.presentAlert('Error', 'Este correo no se ha encontrado.');
         });
     } else {
-      this.bdService.presentAlert('Error', 'Por favor ingresa un correo válido.');
+      this.presentAlert('Error', 'Por favor ingresa un correo válido.');
     }
   }
+  
+  
+  
 
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
