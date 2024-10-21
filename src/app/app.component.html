@@ -8,6 +8,18 @@
       </ion-header>
   
       <ion-content>
+        <ion-item class="inicio" [routerDirection]="'root'" [routerLink]="'/home'">
+          <ion-icon name="home"></ion-icon>
+          <ion-label>Inicio</ion-label>
+        </ion-item>
+        <ion-item class="perfil" [routerDirection]="'root'" [routerLink]="'/perfil'">
+          <ion-icon name="person-circle"></ion-icon>
+          <ion-label>Perfil</ion-label>
+        </ion-item>
+        <ion-item class="carrito" [routerDirection]="'root'" [routerLink]="'/carrito'">
+          <ion-icon name="cart"></ion-icon>
+          <ion-label>Carrito</ion-label>
+        </ion-item>
           <ion-item class="juegos-playstation" [routerDirection]="'root'" [routerLink]="'/playstation'">
             <ion-icon name="logo-playstation"></ion-icon>
             <ion-label>Juegos de Playstation</ion-label>
@@ -41,22 +53,5 @@
   </ion-menu>
 
   <ion-router-outlet id="main-content"></ion-router-outlet>
-
-  <ion-tabs>
-    <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="perfil">
-        <ion-icon name="person-circle"></ion-icon>
-        Perfil
-      </ion-tab-button>
-      <ion-tab-button tab="home">
-        <ion-icon name="home"></ion-icon>
-        Inicio
-      </ion-tab-button>
-      <ion-tab-button tab="carrito">
-        <ion-icon name="cart"></ion-icon>
-        Carrito
-      </ion-tab-button>
-    </ion-tab-bar>
-  </ion-tabs>
 
 </ion-app>
