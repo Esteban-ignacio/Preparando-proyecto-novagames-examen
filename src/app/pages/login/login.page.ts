@@ -65,6 +65,11 @@ export class LoginPage implements OnInit {
         if (loginResult.success) {
           this.presentAlert('Iniciado', 'Inicio exitoso');
           this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
+
+          // Limpiar los campos de entrada después de un inicio exitoso
+          this.usuariologin = ''; // Limpiar el campo de entrada
+          this.correologin = ''; // Limpiar el campo de entrada
+          this.contrasenalogin = ''; // Limpiar el campo de entrada
         } else {
           this.presentAlert('Error', 'No encontramos una cuenta asociada. Verifica tus datos o crea una nueva cuenta.');
         }

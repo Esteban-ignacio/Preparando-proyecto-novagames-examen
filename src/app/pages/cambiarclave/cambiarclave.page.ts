@@ -44,6 +44,9 @@ export class CambiarclavePage implements OnInit {
           await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
           this.presentAlert('Éxito', 'La contraseña ha sido modificada con éxito.');
 
+          // Limpiar los campos de entrada
+        this.limpiarCampos();
+
         
         const navigation = this.router.getCurrentNavigation();
         const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'];
@@ -122,6 +125,13 @@ export class CambiarclavePage implements OnInit {
 
     await alert.present();
   }
+
+  limpiarCampos() {
+    this.correocambiarclave = ''; // Limpiar correo
+    this.contrasenacambiarclave = ''; // Limpiar contraseña
+    this.confirmarContrasenacambiarclave = ''; // Limpiar confirmación de contraseña
+  }
+  
   IrPerfil() {
     let navigationextras: NavigationExtras = {};
     this.router.navigate(['/perfil'], navigationextras);

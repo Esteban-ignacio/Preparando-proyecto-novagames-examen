@@ -78,7 +78,19 @@ export class RegistroPage implements OnInit {
 
   await this.bdService.insertarUsuario(nuevoUsuario);
   this.presentAlert('Éxito', 'Registro exitoso.'); // Mensaje de éxito
-  this.irlogin(); 
+  // Limpiar los campos de entrada después del registro exitoso
+  this.limpiarCampos();
+
+  this.irlogin();
+}
+
+limpiarCampos() {
+  this.nombre = '';
+  this.apellido = '';
+  this.telefono = '';
+  this.correo = '';
+  this.contrasena = '';
+  this.confirmarContrasena = '';
 }
 
   // Validación para el nombre y el apellido

@@ -39,6 +39,7 @@ export class RecuperarclavePage implements OnInit {
     if (this.isFormValid()) {
       // Si el formulario es válido, muestra un mensaje de éxito
       this.presentAlert('Acceso aprobado','Ingrese los datos para cambiar su contraseña');
+      this.correorecuperarclave = ''; // Limpiar campo tras éxito
       this.Ircambiarcontra(); // Navegar a la página de inicio si el registro es exitoso
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
@@ -77,6 +78,7 @@ export class RecuperarclavePage implements OnInit {
   }
 
   RegresarLogin(){
+    this.correorecuperarclave = ''; // Limpiar campo al regresar al login
     let navigationextras: NavigationExtras = {
       
     }

@@ -62,12 +62,19 @@ export class ModificarperfilPage implements OnInit {
   try {
     await this.bdService.actualizarUsuario(usuarioActualizar);
     this.presentAlert('Realizado', 'Perfil Modificado con éxito');
+    this.limpiarCampos(); // Limpiar los campos tras una actualización exitosa
     this.VolveralPerfil(); // Navegar a la página de inicio si el registro es exitoso
   } catch (error) {
     console.error('Error al actualizar el perfil:', error);
     this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
   }
   }
+
+  limpiarCampos() {
+    this.nombremodificarperfil = '';
+    this.apellidomodificarperfil = '';
+    this.telefonomodificarperfil = '';
+  }  
 
    // Validación para el nombre y el apellido
    isNombreApellidoModificarPerfilValido(): boolean {
@@ -132,6 +139,7 @@ isTelefonoModificarPerfilValido(): boolean {
     let navigationextras: NavigationExtras = {
 
     }
+    this.limpiarCampos(); // Limpiar los campos al regresar
     this.router.navigate(['/perfil'], navigationextras);
   }
   irCambiarcontra(){
