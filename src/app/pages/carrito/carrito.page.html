@@ -12,17 +12,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <img src="https://th.bing.com/th/id/OIP.mF7H_I5aTatA0isO1BPjnAHaDV?w=667&h=300&rs=1&pid=ImgDetMain">
-     <ion-button class="menos">-</ion-button>
-     <ion-label>1</ion-label>
-     <ion-button>+</ion-button>
-     <p class="precio">Precio : $15.000</p>
-    
-     <img class="imagen-xbox" src="https://aqovwzqqqo.cloudimg.io/v7/www.technobaboy.com/wp-content/uploads/nba-2k24-kobe-bryant.jpg?w=768">
-     <ion-button class="menos">-</ion-button>
-     <ion-label>1</ion-label>
-     <ion-button>+</ion-button>
-     <p class="precio">Precio : $35.000</p>
+  <ion-list>
+    <ion-item *ngFor="let producto of productos">
+      <ion-label>
+        <h2>{{ producto.nombre }}</h2>
+        <p>Precio: <strong>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</strong></p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
 
-  <ion-button class="boton-comprar" (click)="Comprar()">Comprar</ion-button>
+  <ion-button class="boton-comprar" expand="full" (click)="Comprar()">Comprar</ion-button>
 </ion-content>
+
+
+

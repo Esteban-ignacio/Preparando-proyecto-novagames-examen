@@ -400,7 +400,59 @@ async eliminarUsuario(correo: string): Promise<void> {
   }
 }
 
+async obtenerProductos(): Promise<Productos[]> {
+  try {
+    const res = await this.database.executeSql('SELECT id_prod, nombre_prod, precio_prod FROM producto', []);
+    const items: Productos[] = [];
 
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        items.push({
+          id_prod: res.rows.item(i).id_prod,
+          nombre: res.rows.item(i).nombre_prod,
+          precio: res.rows.item(i).precio_prod
+        });
+      }
+    }
+
+    return items; // Devuelve los productos obtenidos
+  } catch (error) {
+    console.error('Error al obtener productos:', error);
+    return [];
+  }
+}
+
+// En tu servicio ServiceBDService
+async agregarProducto(producto: Productos): Promise<void> {
+  try {
+    await this.database.executeSql('INSERT INTO carrito (nombre, precio) VALUES (?, ?)', [producto.nombre, producto.precio]);
+  } catch (error) {
+    console.error('Error al agregar producto al carrito:', error);
+    throw error; // Permite que el error sea manejado en la llamada
+  }
+}
+
+
+
+async obtenerProductosDesdeCarrito(): Promise<Productos[]> {
+  try {
+    const res = await this.database.executeSql('SELECT * FROM carrito', []);
+    const items: Productos[] = [];
+
+    for (let i = 0; i < res.rows.length; i++) {
+      items.push({
+        id_prod: res.rows.item(i).id_prod, // Asegúrate de que la estructura de tu objeto sea correcta
+        nombre: res.rows.item(i).nombre,    // Cambia según la estructura de tu tabla
+        precio: res.rows.item(i).precio,    // Cambia según la estructura de tu tabla
+      });
+    }
+    
+    return items;
+  } catch (error) {
+    console.error('Error al obtener productos del carrito:', error);
+    throw error; // Permite manejar el error en la llamada
+  }
+}
 
 
 }
