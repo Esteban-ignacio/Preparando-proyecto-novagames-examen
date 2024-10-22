@@ -3,6 +3,7 @@ import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
+import { Productos } from './productos';
 
 
 @Injectable({
@@ -85,6 +86,8 @@ export class ServiceBDService {
 
   listaextraerdatosusuario = new BehaviorSubject <Extraerdatosusuario[]>([]);
 
+  listaobtenerproductos = new BehaviorSubject <Productos[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -122,6 +125,10 @@ fetchRoles(): Observable<Roles[]>{
 
 fetchExtraerdatosusuario(): Observable<Extraerdatosusuario[]>{
   return this.listaextraerdatosusuario.asObservable();
+}
+
+fetchProductos(): Observable<Productos[]>{
+  return this.listaobtenerproductos.asObservable();
 }
 
 dbState(){
