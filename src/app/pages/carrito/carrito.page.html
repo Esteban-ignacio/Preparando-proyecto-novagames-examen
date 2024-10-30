@@ -12,14 +12,7 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-list>
-    <ion-item *ngFor="let producto of productos">
-      <ion-label>
-        <h2>{{ producto.nombre }}</h2>
-        <p>Precio: <strong>{{ producto.precio | currency:'USD':'symbol':'1.2-2' }}</strong></p>
-      </ion-label>
-    </ion-item>
-  </ion-list>
+  
 
   <ion-button class="boton-comprar" expand="full" (click)="Comprar()">Comprar</ion-button>
 </ion-content>

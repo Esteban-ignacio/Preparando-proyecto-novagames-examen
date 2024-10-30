@@ -433,28 +433,6 @@ async agregarProducto(producto: Productos): Promise<void> {
 }
 
 
-
-async obtenerProductosDesdeCarrito(): Promise<Productos[]> {
-  try {
-    const res = await this.database.executeSql('SELECT * FROM carrito', []);
-    const items: Productos[] = [];
-
-    for (let i = 0; i < res.rows.length; i++) {
-      items.push({
-        id_prod: res.rows.item(i).id_prod, // Asegúrate de que la estructura de tu objeto sea correcta
-        nombre: res.rows.item(i).nombre,    // Cambia según la estructura de tu tabla
-        precio: res.rows.item(i).precio,    // Cambia según la estructura de tu tabla
-      });
-    }
-    
-    return items;
-  } catch (error) {
-    console.error('Error al obtener productos del carrito:', error);
-    throw error; // Permite manejar el error en la llamada
-  }
-}
-
-
 }
 
 
