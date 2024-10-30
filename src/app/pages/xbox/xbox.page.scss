@@ -4,19 +4,55 @@
     color: black;
     font-weight: bold;
 }
+.color-menu{
+  color: black;
+}
+.titulo-juegos-xbox{
+  text-align: center;
+  color: black;
+}
+.descripcion-juegos-xbox{
+  color: black;
+}
+.color-numero{
+  color: black;
+}
 ion-toolbar{
     --background: #b4f6a8;
   }
   ion-content{
     --background: #a8f6c6;
   }
-  .precio{
-    text-align: center;
-    color: black; 
-    font-weight: bold;
-  }
   .boton-agregar{
     display:flex;
+  }
+  .precio {
+    color: black; 
+    font-weight: bold;
+    margin-left: 20px;  /* Espacio a la derecha para separar del botón */
+  }
+  
+  .boton-disminuir-aumentar {
+    --padding-top: 2px;
+    --padding-bottom: 2px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    --border-radius: 5px;
+    font-size: 12px;
+  }
+  
+  .espacio-botones-dis-aum {
+    display: flex;
+    align-items: center;
+    margin-left: 80px; 
+    gap: 8px; /* Espacio entre el número y los botones */
+  }
+  
+  .alinear-precio-botones {
+    display: flex; /* Permite que los elementos hijos se alineen en una fila */
+    align-items: center; /* Alinea los elementos verticalmente al centro */
+    justify-content: flex-start; /* Alinea los elementos hacia el inicio */
+    margin: 16px;
   }
 
   

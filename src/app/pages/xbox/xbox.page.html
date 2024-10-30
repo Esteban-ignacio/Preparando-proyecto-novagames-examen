@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button class="color-menu"></ion-menu-button>
     </ion-buttons>
     <ion-title class="tituloXbox">
       <ion-icon name="logo-xbox"></ion-icon>
@@ -13,63 +13,26 @@
 
 <ion-content [fullscreen]="true">
   <ion-content class="ion-padding">
-    <h1>Juegos de deportes</h1>
+    <h1 class="titulo-juegos-xbox">Juegos de Xbox</h1>
   
-    <h2>FC 24</h2>
-    <img
-      src="assets/img/imgxbox/imagenfc24.jpg"
-    />
-    <p class="precio">Precio : $30.000</p><ion-button class="boton-agregar" (click)="irCarrito()">Agregar Carrito</ion-button>
-    <p>
-      Sigue la tradición de simulación de fútbol con mejoras en jugabilidad, gráficos y modos de juego. Incluye ligas, clubes y 
-      jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
-      gráfico Hypermotion V, que ofrece movimientos más realistas, y la inclusión de equipos femeninos en Ultimate Team, proporcionando 
-      una experiencia de fútbol aún más diversa y auténtica.
-    </p>
+    <div *ngFor="let producto of productosXbox">
+      <h2 class="titulo-juegos-xbox">{{ producto.nombre }}</h2>
+      <img [src]="producto.imagenUrl" />
 
+      <div class="alinear-precio-botones">
+         <p class="precio">Precio: {{ formatCurrency(producto.precio) }}</p>
+  
+         <div class="espacio-botones-dis-aum">
+            <ion-button class="boton-disminuir-aumentar" (click)="disminuirCantidad(producto)">-</ion-button>
+            <span class="color-numero">{{ producto.cantidad || 1 }}</span>
+            <ion-button class="boton-disminuir-aumentar" (click)="aumentarCantidad(producto)">+</ion-button>
+       </div>
+      </div>
+      
+      <ion-button class="boton-agregar" (click)="irCarrito()">Agregar al Carrito</ion-button>
+      <p class="descripcion-juegos-xbox">{{ producto.descripcion }}</p>
+    </div>
 
-    <h2>NBA 2K24</h2>
-    <img
-      src="assets/img/imgxbox/imgnba.webp"
-    />
-    <p class="precio">Precio : $35.000</p><ion-button class="boton-agregar" (click)="irCarrito()">Agregar Carrito</ion-button>
-    <p>
-      Arma tu equipo y vive el pasado, el presente y el futuro de la cultura del baloncesto en NBA 2K24. Disfruta de una experiencia 
-      auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
-      alineación ideal en MyTEAM. Revive tus épocas favoritas como GM o Comisionado en MyNBA. Siente una jugabilidad de próximo nivel y 
-      disfruta de visuales ultrarrealistas mientras juegas con tus equipos favoritos de la NBA y la WNBA en JUEGA AHORA.
-    </p>
-  
-    <h2>GRAN TURISMO 7</h2>
-    <img
-      src="assets/img/imgxbox/imggranturismo.jpg"
-    />
-    <p class="precio">Precio : $15.000</p><ion-button class="boton-agregar" (click)="irCarrito()">Agregar Carrito</ion-button>
-    <p>
-      Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
-      podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
-      como Campaña GT, Arcade o Escuela de conducción.
-    </p>
-  
-    <h2>PGA TOUR 2K23</h2>
-    <img
-      src="assets/img/imgxbox/imgpga.jpg"
-    />
-    <p class="precio">Precio : $20.000</p><ion-button class="boton-agregar" (click)="irCarrito()">Agregar Carrito</ion-button>
-    <p>
-      Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
-      masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.
-    </p>
-  
-    <h2>EA SPORTS NHL 24</h2>
-    <img
-      src="assets/img/imgxbox/imgnhl.jpg"
-    />
-    <p class="precio">Precio : $10.000</p><ion-button class="boton-agregar" (click)="irCarrito()">Agregar Carrito</ion-button>
-    <p>
-      Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
-      Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
-      que se acumula durante las jugadas ofensivas y pasando tiempo en la zona de ataque.
-    </p>
   </ion-content>
 </ion-content>
+
