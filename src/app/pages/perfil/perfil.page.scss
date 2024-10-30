@@ -1,4 +1,6 @@
-
+.color-menu{
+  color: black;
+}
 .Titulo-perfil{
     padding-left: 55px;
     color: black;
@@ -29,6 +31,7 @@
   font-weight: bold;
   margin-right: 15px;
   flex: 0 0 120px; /* Tamaño fijo para las etiquetas */
+  color: black;
 }
 
 .datos-value {

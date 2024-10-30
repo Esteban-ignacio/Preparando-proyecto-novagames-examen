@@ -25,21 +25,29 @@
 #container a {
   text-decoration: none;
 }
-
-.tituloHome{
+.color-menu{
+  color: black;
+}
+.titulo-home{
   padding-left: 75px;
   color: black;
   font-weight: bold;
-}
-.titulo-home{
   text-align: center;
 }
 .parte-titulo{
   text-align: center;
+  color: black;
 }
 .parte-subtitulo{
   text-align: center;
   padding-top: 20px;
+  color: black;
+}
+.descripcion-juego-ps-home{
+  color: black;
+}
+.descripcion-juego-xbox-home{
+  color: black;
 }
 ion-toolbar{
   --background: #b4f6a8;
