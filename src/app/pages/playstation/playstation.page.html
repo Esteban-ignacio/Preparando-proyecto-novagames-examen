@@ -1,7 +1,7 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-menu-button></ion-menu-button>
+      <ion-menu-button class="color-menu"></ion-menu-button>
     </ion-buttons>
     <ion-title class="TituloPlaystation">
       <ion-icon name="logo-playstation"></ion-icon>
@@ -13,67 +13,24 @@
 
 <ion-content [fullscreen]="true">
   <ion-content class="ion-padding">
-    <h1>Juegos de Battle Royale</h1>
+    <h1 class="titulo-juegos-ps">Juegos de Battle Royale</h1>
   
-    <h2>APEX LEGENDS</h2>
-    <img
-      src="assets/img/imgplaystation/imagenapex.jfif"
-    />
-    <p class="precio">Precio : $4.000</p>
-    <ion-button class="boton-agregar" (click)="agregarAlCarrito({ nombre: 'APEX LEGENDS', precio: 4000 })">Agregar Carrito</ion-button>
-    <p>
-      En este juego, hasta 60 jugadores forman escuadrones de tres personas y compiten en un campo de batalla en constante 
-      reducción para ser el último equipo en pie. Los jugadores eligen entre varios personajes, conocidos como "Leyendas", 
-      cada uno con habilidades únicas que pueden afectar el juego, como crear escudos, curar a compañeros, o rastrear enemigos.
-      Todo esto desde primera persona!!.
-    </p>
+    <div *ngFor="let producto of productosPlayStation">
+      <h2 class="titulo-juegos-ps">{{ producto.nombre }}</h2>
+      <img [src]="producto.imagenUrl" />
 
+      <div class="alinear-precio-botones">
+         <p class="precio">Precio: {{ formatCurrency(producto.precio) }}</p>
+  
+         <div class="espacio-botones-dis-aum">
+            <ion-button class="boton-disminuir-aumentar" (click)="disminuirCantidad(producto)">-</ion-button>
+            <span class="color-numero">{{ producto.cantidad || 1 }}</span>
+            <ion-button class="boton-disminuir-aumentar" (click)="aumentarCantidad(producto)">+</ion-button>
+       </div>
+        </div>
+      
+      <ion-button class="boton-agregar" (click)="irCarrito()">Agregar al Carrito</ion-button>
+      <p class="descripcion-juegos-ps">{{ producto.descripcion }}</p>
+    </div>
 
-    <h2>FORNITE</h2>
-    <img
-      src="assets/img/imgplaystation/imagenfornite.jpg"
-    />
-    <p class="precio">Precio : $4.000</p><ion-button class="boton-agregar" (click)="agregarAlCarrito({ nombre: 'FORNITE', precio: 4000 })">Agregar Carrito</ion-button>
-    <p>
-      La experiencia más icónica de todos los battle royale tiene contenido nuevo constantemente y ofrece una gran variedad 
-      de modos de juego para todos los gustos y estilos.
-      Sé el último jugador de pie en el modo clásico de Batalla campal, construye estructuras para ganar ventaja sobre otros 
-      99 jugadores y logra conseguir una victoria campal.
-    </p>
-  
-    <h2>CALL OF DUTTY WARZONE 2</h2>
-    <img
-      src="assets/img/imgplaystation/imagenwarzone.jpg"
-    />
-    <p class="precio">Precio : $15.000</p><ion-button class="boton-agregar" (click)="agregarAlCarrito({ nombre: 'CALL OF DUTTY WARZONE 2', precio: 15000 })">Agregar Carrito</ion-button>
-    <p>
-      Es un videojuego battle royale en el que hasta 150 jugadores compiten en un gigantesco mapa para ser el último 
-      equipo en pie. Los jugadores buscan armas, equipos y recursos mientras se enfrentan a otros equipos y evitan un círculo 
-      de gas que reduce constantemente el área de juego.
-
-    </p>
-  
-    <h2>PUBG: BATTLEGROUNDS</h2>
-    <img
-      src="assets/img/imgplaystation/imagenpubg.jpg"
-    />
-    <p class="precio">Precio : $5.000</p><ion-button class="boton-agregar" (click)="agregarAlCarrito({ nombre: 'PUBG: BATTLEGROUNDS', precio: 5000 })">Agregar Carrito</ion-button>
-    <p>
-      En este juego, hasta 100 jugadores se lanzan en paracaídas a una isla y compiten para ser el último en pie. Los jugadores deben 
-      explorar el entorno, buscar armas, vehículos y equipo, y sobrevivir en un mapa que se reduce gradualmente debido a una 
-      "zona azul" que daña a los que quedan fuera de ella.
-    </p>
-  
-    <h2>WARFACE: CLUTCH</h2>
-    <img
-      src="assets/img/imgplaystation/imagenwarface.jpg"
-    />
-    <p class="precio">Precio : $10.000</p><ion-button class="boton-agregar" (click)="agregarAlCarrito({ nombre: 'WARFACE: CLUTCH', precio: 10000 })">Agregar Carrito</ion-button>
-    <p>
-      Este juego de disparos por equipos representa una evolución para la jugabilidad de los battle royale y sigue siento popular 
-      más de una década después de su lanzamiento.
-      Elige entre cinco clases únicas: Rifleman, Medic, SED, Engineer y Sniper, cada una con una acción especial, como reponer 
-      municiones o restaurar armadura.
-    </p>
-  </ion-content>
 </ion-content>

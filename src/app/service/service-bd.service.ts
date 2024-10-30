@@ -400,9 +400,10 @@ async eliminarUsuario(correo: string): Promise<void> {
   }
 }
 
+//funcion para obtener productos de playstation y xbox, falta arreglar
 async obtenerProductos(): Promise<Productos[]> {
   try {
-    const res = await this.database.executeSql('SELECT id_prod, nombre_prod, precio_prod FROM producto', []);
+    const res = await this.database.executeSql('SELECT id_prod, nombre_prod, precio_prod, stock_prod FROM producto', []);
     const items: Productos[] = [];
 
     if (res.rows.length > 0) {
@@ -410,7 +411,8 @@ async obtenerProductos(): Promise<Productos[]> {
         items.push({
           id_prod: res.rows.item(i).id_prod,
           nombre: res.rows.item(i).nombre_prod,
-          precio: res.rows.item(i).precio_prod
+          precio: res.rows.item(i).precio_prod,
+          stock:  res.rows.item(i).stock_prod
         });
       }
     }
@@ -422,7 +424,7 @@ async obtenerProductos(): Promise<Productos[]> {
   }
 }
 
-// En tu servicio ServiceBDService
+// En tu servicio ServiceBDService, falta arreglar
 async agregarProducto(producto: Productos): Promise<void> {
   try {
     await this.database.executeSql('INSERT INTO carrito (nombre, precio) VALUES (?, ?)', [producto.nombre, producto.precio]);
