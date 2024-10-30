@@ -1,4 +1,6 @@
-
+.color-menu{
+  color: black;
+}
 .titulo-admin{
     text-align: center;
     color: black;
@@ -34,6 +36,7 @@ ion-content{
     font-weight: bold;
     margin-right: 15px;
     flex: 0 0 120px; /* Tamaño fijo para las etiquetas */
+    color: black;
   }
   
   .datos-value {
@@ -47,6 +50,7 @@ ion-content{
     text-align: left;
     border: none;
     background: transparent;
+    color: black;
   }
   
   
