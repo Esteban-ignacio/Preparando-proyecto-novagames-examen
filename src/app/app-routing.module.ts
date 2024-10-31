@@ -52,10 +52,21 @@ const routes: Routes = [
     loadChildren: () => import('./pages/modificarperfil/modificarperfil.module').then( m => m.ModificarperfilPageModule)
   },
   {
+    path: 'historialventasadmin',
+    loadChildren: () => import('./pages/historialventasadmin/historialventasadmin.module').then( m => m.HistorialventasadminPageModule)
+  },
+  {
+    path: 'historialventas',
+    loadChildren: () => import('./pages/historialventas/historialventas.module').then( m => m.HistorialventasPageModule)
+  },
+  {
+    path: 'gestionproductos',
+    loadChildren: () => import('./pages/gestionproductos/gestionproductos.module').then( m => m.GestionproductosPageModule)
+  },
+  {
     path: '**',
     loadChildren: () => import('./pages/notfound/notfound.module').then( m => m.NotfoundPageModule)
   }
-
  
 ];
 
