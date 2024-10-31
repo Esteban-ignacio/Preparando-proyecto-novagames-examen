@@ -1,6 +1,14 @@
-
+.color-menu{
+    color: black;
+}
 .titulo-ventas-usuarios{
     text-align: center;
     color: black;
     font-weight: bold;
+}
+ion-toolbar{
+    --background: #b4f6a8;
+}
+ion-content{
+    --background: #a8f6c6;
 }
