@@ -23,9 +23,9 @@ export class ModificarperfilPage implements OnInit {
     this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
       if (datos.length > 0) {
         this.datosPerfil = datos[0]; // Asigna el primer elemento a datosPerfil
-        this.nombremodificarperfil = ''; // Mantener vacías las variables, si no se desean mostrar datos predeterminados
-        this.apellidomodificarperfil = '';
-        this.telefonomodificarperfil = '';
+        this.nombremodificarperfil = this.datosPerfil.nombreuser || '';
+        this.apellidomodificarperfil = this.datosPerfil.apellidouser || '';
+        this.telefonomodificarperfil = this.datosPerfil.telefono_user || '';
       } else {
         this.presentAlert('Error', 'No se encontraron datos del perfil.');
       }
@@ -49,13 +49,14 @@ export class ModificarperfilPage implements OnInit {
     return; // Salir si correo_user es undefined
   }
 
+  // Preparar los datos para actualizar
   const usuarioActualizar: Extraerdatosusuario = {
-    iduser: this.datosPerfil.iduser, // ID del usuario
-    nombreuser: this.nombremodificarperfil,
-    apellidouser: this.apellidomodificarperfil,
-    correo_user: this.datosPerfil.correo_user, // Usar el correo obtenido de datosPerfil
-    clave_user: this.datosPerfil.clave_user, // La contraseña no se modifica
-    telefono_user: this.telefonomodificarperfil,
+    iduser: this.datosPerfil.iduser,
+    nombreuser: this.nombremodificarperfil || this.datosPerfil.nombreuser, // Mantener el valor anterior si está vacío
+    apellidouser: this.apellidomodificarperfil || this.datosPerfil.apellidouser, // Mantener el valor anterior si está vacío
+    correo_user: this.datosPerfil.correo_user, // No se modifica
+    clave_user: this.datosPerfil.clave_user, // No se modifica
+    telefono_user: this.telefonomodificarperfil || this.datosPerfil.telefono_user, // Mantener el valor anterior si está vacío
   };
 
   // Actualizar en la base de datos
