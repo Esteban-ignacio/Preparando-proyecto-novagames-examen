@@ -1,8 +1,8 @@
 
 .tituloXbox{
-    padding-left: 70px;
-    color: black;
-    font-weight: bold;
+  padding-left: 70px;
+  color: black;
+  font-weight: bold;
 }
 .color-menu{
   color: black;
@@ -10,9 +10,11 @@
 .titulo-juegos-xbox{
   text-align: center;
   color: black;
+  margin: 20px 0; /* Espacio alrededor del título */
 }
 .descripcion-juegos-xbox{
   color: black;
+  text-align: center; /* Centrar la descripción */
 }
 .color-numero{
   color: black;
@@ -22,14 +24,22 @@ ion-toolbar{
   }
   ion-content{
     --background: #a8f6c6;
-  }
+    display: flex; /* Flex para centrar contenido */
+   flex-direction: column; /* Alineación vertical */
+   align-items: center; /* Centrar los elementos */
+   padding: 16px; /* Añadir padding para espaciar el contenido */
+}
+.imagen-juego {
+  max-width: 100%; /* Hacer que la imagen no exceda el contenedor */
+  height: auto; /* Mantener proporciones de la imagen */
+}
   .boton-agregar{
     display:flex;
   }
   .precio {
     color: black; 
     font-weight: bold;
-    margin-left: 20px;  /* Espacio a la derecha para separar del botón */
+    margin: 0; /* Sin márgenes para alinear completamente a la izquierda */
   }
   
   .boton-disminuir-aumentar {
@@ -44,15 +54,15 @@ ion-toolbar{
   .espacio-botones-dis-aum {
     display: flex;
     align-items: center;
-    margin-left: 80px; 
     gap: 8px; /* Espacio entre el número y los botones */
   }
   
   .alinear-precio-botones {
-    display: flex; /* Permite que los elementos hijos se alineen en una fila */
-    align-items: center; /* Alinea los elementos verticalmente al centro */
-    justify-content: flex-start; /* Alinea los elementos hacia el inicio */
-    margin: 16px;
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; /* Distribuye los elementos entre sí */
+    width: 100%; /* Asegúrate de que ocupe todo el ancho del contenedor */
+    margin: 16px 0; /* Mantén el margen superior e inferior */
   }
 
   

@@ -13,6 +13,7 @@ export class XboxPage implements OnInit {
       id: 1,
       nombre: 'FC 24',
       precio: 30000,
+      stock: 55,
       imagenUrl: 'assets/img/imgxbox/imagenfc24.jpg',
       descripcion: `Sigue la tradición de simulación de fútbol con mejoras en jugabilidad, gráficos y modos de juego. Incluye ligas, clubes y 
                     jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
@@ -24,6 +25,7 @@ export class XboxPage implements OnInit {
       id: 2,
       nombre: 'NBA 2K24',
       precio: 35000,
+      stock: 40,
       imagenUrl: 'assets/img/imgxbox/imgnba.webp',
       descripcion: `Arma tu equipo y vive el pasado, el presente y el futuro de la cultura del baloncesto en NBA 2K24. Disfruta de una experiencia 
                     auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
@@ -35,6 +37,7 @@ export class XboxPage implements OnInit {
       id: 3,
       nombre: 'GRAN TURISMO 7',
       precio: 15000,
+      stock: 30,
       imagenUrl: 'assets/img/imgxbox/imggranturismo.jpg',
       descripcion: `Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
                     podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
@@ -45,6 +48,7 @@ export class XboxPage implements OnInit {
       id: 4,
       nombre: 'PGA TOUR 2K23',
       precio: 20000,
+      stock: 30,
       imagenUrl: 'assets/img/imgxbox/imgpga.jpg',
       descripcion: `Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
                     masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.`,
@@ -54,6 +58,7 @@ export class XboxPage implements OnInit {
       id: 5,
       nombre: 'EA SPORTS NHL 24',
       precio: 10000,
+      stock: 25,
       imagenUrl: 'assets/img/imgxbox/imgnhl.jpg',
       descripcion: `Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
                     Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
