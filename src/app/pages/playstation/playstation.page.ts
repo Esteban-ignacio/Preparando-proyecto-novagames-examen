@@ -22,7 +22,7 @@ export class PlaystationPage implements OnInit {
                     reducción para ser el último equipo en pie. Los jugadores eligen entre varios personajes, conocidos como "Leyendas",
                     cada uno con habilidades únicas que pueden afectar el juego, como crear escudos, curar a compañeros, o rastrear enemigos.
                    ¡Todo esto desde primera persona!`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 2,
@@ -34,7 +34,7 @@ export class PlaystationPage implements OnInit {
                      de modos de juego para todos los gustos y estilos.
                      Sé el último jugador de pie en el modo clásico de Batalla campal, construye estructuras para ganar ventaja sobre otros 
                      99 jugadores y logra conseguir una victoria campal.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 3,
@@ -45,7 +45,7 @@ export class PlaystationPage implements OnInit {
       descripcion: ` Es un videojuego battle royale en el que hasta 150 jugadores compiten en un gigantesco mapa para ser el último 
                      equipo en pie. Los jugadores buscan armas, equipos y recursos mientras se enfrentan a otros equipos y evitan un círculo 
                      de gas que reduce constantemente el área de juego.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 4,
@@ -56,7 +56,7 @@ export class PlaystationPage implements OnInit {
       descripcion: ` En este juego, hasta 100 jugadores se lanzan en paracaídas a una isla y compiten para ser el último en pie. Los jugadores deben 
                      explorar el entorno, buscar armas, vehículos y equipo, y sobrevivir en un mapa que se reduce gradualmente debido a una 
                     "zona azul" que daña a los que quedan fuera de ella.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 5,
@@ -68,20 +68,31 @@ export class PlaystationPage implements OnInit {
                      más de una década después de su lanzamiento.
                      Elige entre cinco clases únicas: Rifleman, Medic, SED, Engineer y Sniper, cada una con una acción especial, como reponer 
                      municiones o restaurar armadura.`,
-      cantidad: 1
+      cantidad: 0
     },
   ];
 
   aumentarCantidad(producto: any) {
-    producto.cantidad = (producto.cantidad || 1) + 1;
-  }
-
-  disminuirCantidad(producto: any) {
-    if (producto.cantidad && producto.cantidad > 1) {
-      producto.cantidad -= 1;
+    // Verificar que el stock restante sea mayor a 0 antes de aumentar la cantidad
+    if (producto.stock > 0) {
+      producto.cantidad += 1;
+      producto.stock -= 1; // Reducir el stock en uno al aumentar la cantidad
+    } else {
+      this.mostrarAlerta('No hay suficiente stock disponible');
     }
   }
-
+  
+  disminuirCantidad(producto: any) {
+    // Verificar que la cantidad no sea menor a 0 al disminuir
+    if (producto.cantidad > 0) {
+        producto.cantidad -= 1; // Disminuir la cantidad
+        producto.stock += 1;     // Aumentar el stock en uno
+    } else {
+        this.mostrarAlerta('No se puede disminuir más la cantidad'); // Si ya está en 0
+    }
+}
+ 
+  
   productos: Productos[] = [];
 
   constructor(private router: Router, private bdService: ServiceBDService, private alertController: AlertController) { }
@@ -120,4 +131,5 @@ export class PlaystationPage implements OnInit {
 
     this.router.navigate(['/carrito'], navigationextras);
   }
+  
 }
