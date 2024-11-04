@@ -11,27 +11,29 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-content class="ion-padding">
-    <h1 class="titulo-juegos-ps">Juegos de Battle Royale</h1>
-  
-    <div *ngFor="let producto of productosPlayStation">
-      <h2 class="titulo-juegos-ps">{{ producto.nombre }}</h2>
-      <img [src]="producto.imagenUrl" />
+<ion-content [fullscreen]="true" class="ion-padding">
+  <h1 class="titulo-juegos-ps">Juegos de Battle Royale</h1>
 
-      <div class="alinear-precio-botones">
-         <p class="precio">Precio: {{ formatCurrency(producto.precio) }}</p>
-  
-         <div class="espacio-botones-dis-aum">
-            <ion-button class="boton-disminuir-aumentar" (click)="disminuirCantidad(producto)">-</ion-button>
-            <span class="color-numero">{{ producto.cantidad || 1 }}</span>
-            <ion-button class="boton-disminuir-aumentar" (click)="aumentarCantidad(producto)">+</ion-button>
-       </div>
-        </div>
-      
-      <ion-button class="boton-agregar" (click)="irCarrito()">Agregar al Carrito</ion-button>
-      <p class="descripcion-juegos-ps">{{ producto.descripcion }}</p>
+  <div *ngFor="let producto of productosPlayStation">
+    <h2 class="titulo-juegos-ps">{{ producto.nombre }}</h2>
+    <img [src]="producto.imagenUrl" class="imagen-juego" />
+
+    <div class="alinear-precio-botones">
+      <p class="precio">Precio: {{ formatCurrency(producto.precio) }}</p>
+      <div class="espacio-botones-dis-aum">
+        <ion-button class="boton-disminuir-aumentar" (click)="disminuirCantidad(producto)">-</ion-button>
+        <span class="color-numero">{{ producto.cantidad || 1 }}</span>
+        <ion-button class="boton-disminuir-aumentar" (click)="aumentarCantidad(producto)">+</ion-button>
+        <!-- Mostrar stock disponible -->
+        <p class="stock-disponible">Stock disponible: {{ producto.stock }}</p>
+      </div>
     </div>
 
-  </ion-content>
+    <ion-button class="boton-agregar" (click)="irCarrito()">Agregar al Carrito</ion-button>
+    <p class="descripcion-juegos-ps">{{ producto.descripcion }}</p>
+  </div>
 </ion-content>
+
+
+
+

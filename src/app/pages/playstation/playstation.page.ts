@@ -16,6 +16,7 @@ export class PlaystationPage implements OnInit {
       id: 1,
       nombre: 'APEX LEGENDS',
       precio: 4000,
+      stock: 60,
       imagenUrl: 'assets/img/imgplaystation/imagenapex.jfif',
       descripcion: `En este juego, hasta 60 jugadores forman escuadrones de tres personas y compiten en un campo de batalla en constante 
                     reducción para ser el último equipo en pie. Los jugadores eligen entre varios personajes, conocidos como "Leyendas",
@@ -27,6 +28,7 @@ export class PlaystationPage implements OnInit {
       id: 2,
       nombre: 'FORTNITE',
       precio: 4000,
+      stock: 60,
       imagenUrl: 'assets/img/imgplaystation/imagenfornite.jpg',
       descripcion: ` La experiencia más icónica de todos los battle royale tiene contenido nuevo constantemente y ofrece una gran variedad 
                      de modos de juego para todos los gustos y estilos.
@@ -38,6 +40,7 @@ export class PlaystationPage implements OnInit {
       id: 3,
       nombre: 'CALL OF DUTTY WARZONE 2',
       precio: 15000,
+      stock: 55,
       imagenUrl: 'assets/img/imgplaystation/imagenwarzone.jpg',
       descripcion: ` Es un videojuego battle royale en el que hasta 150 jugadores compiten en un gigantesco mapa para ser el último 
                      equipo en pie. Los jugadores buscan armas, equipos y recursos mientras se enfrentan a otros equipos y evitan un círculo 
@@ -48,6 +51,7 @@ export class PlaystationPage implements OnInit {
       id: 4,
       nombre: 'PUBG: BATTLEGROUNDS',
       precio: 5000,
+      stock: 45,
       imagenUrl: 'assets/img/imgplaystation/imagenpubg.jpg',
       descripcion: ` En este juego, hasta 100 jugadores se lanzan en paracaídas a una isla y compiten para ser el último en pie. Los jugadores deben 
                      explorar el entorno, buscar armas, vehículos y equipo, y sobrevivir en un mapa que se reduce gradualmente debido a una 
@@ -58,6 +62,7 @@ export class PlaystationPage implements OnInit {
       id: 5,
       nombre: 'WARFACE: CLUTCH',
       precio: 10000,
+      stock: 50,
       imagenUrl: 'assets/img/imgplaystation/imagenwarface.jpg',
       descripcion: ` Este juego de disparos por equipos representa una evolución para la jugabilidad de los battle royale y sigue siento popular 
                      más de una década después de su lanzamiento.
