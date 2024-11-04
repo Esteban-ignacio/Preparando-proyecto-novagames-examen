@@ -50,6 +50,11 @@ ion-content {
   margin: 0; /* Sin márgenes para alinear completamente a la izquierda */
 }
 
+.stock-disponible{
+  color: black; 
+  font-weight: bold;
+}
+
 .boton-disminuir-aumentar {
   --padding-top: 2px;
   --padding-bottom: 2px;
