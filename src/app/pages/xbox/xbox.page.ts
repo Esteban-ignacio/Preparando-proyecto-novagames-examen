@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
+import { Productos } from 'src/app/service/productos';
+import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
   selector: 'app-xbox',
@@ -89,13 +90,40 @@ disminuirCantidad(producto: any) {
   }
 }
 
-  constructor( private router: Router, private alertController: AlertController) { }
+  productos: Productos[] = [];
+
+  constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
 
   ngOnInit() {
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
+  }
+
+  guardarProductoEnBD(producto: any) {
+    if (producto.cantidad > 0) {
+      const productoAGuardar: Productos = {
+        id_prod: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        stock: producto.cantidad,
+        imagen_prod: producto.imagenUrl,
+        descripcion: producto.descripcion // Asegúrate de incluir la descripción aquí
+      };
+  
+      console.log('Producto a guardar:', productoAGuardar);
+      this.bdService.guardarProducto(productoAGuardar)
+        .then(() => {
+          this.mostrarAlerta('Producto agregado al carrito correctamente');
+        })
+        .catch((error: any) => {
+          console.error('Error al guardar el producto', error);
+          this.mostrarAlerta('Hubo un error al agregar el producto al carrito: ' + (error.message || 'error desconocido'));
+        });
+    } else {
+      this.mostrarAlerta('La cantidad debe ser mayor a 0 para agregar al carrito');
+    }
   }
 
   async mostrarAlerta(mensaje: string) {
@@ -107,14 +135,5 @@ disminuirCantidad(producto: any) {
 
     await alert.present();
   }
-
-  irCarrito(){
-    let navigationextras: NavigationExtras = {
-
-    }
-
-    this.router.navigate(['/carrito'], navigationextras);
-  }
-
 
 }
