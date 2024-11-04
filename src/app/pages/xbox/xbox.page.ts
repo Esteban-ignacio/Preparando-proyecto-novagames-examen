@@ -11,7 +11,7 @@ export class XboxPage implements OnInit {
 
   productosXbox: any[] = [
     {
-      id: 1,
+      id: 6,
       nombre: 'FC 24',
       precio: 30000,
       stock: 55,
@@ -23,7 +23,7 @@ export class XboxPage implements OnInit {
       cantidad: 0
     },
     {
-      id: 2,
+      id: 7,
       nombre: 'NBA 2K24',
       precio: 35000,
       stock: 40,
@@ -35,7 +35,7 @@ export class XboxPage implements OnInit {
       cantidad: 0
     },
     {
-      id: 3,
+      id: 8,
       nombre: 'GRAN TURISMO 7',
       precio: 15000,
       stock: 30,
@@ -46,7 +46,7 @@ export class XboxPage implements OnInit {
       cantidad: 0
     },
     {
-      id: 4,
+      id: 9,
       nombre: 'PGA TOUR 2K23',
       precio: 20000,
       stock: 30,
@@ -56,7 +56,7 @@ export class XboxPage implements OnInit {
       cantidad: 0
     },
     {
-      id: 5,
+      id: 10,
       nombre: 'EA SPORTS NHL 24',
       precio: 10000,
       stock: 25,

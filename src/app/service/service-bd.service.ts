@@ -46,7 +46,7 @@ export class ServiceBDService {
     id_prod INTEGER PRIMARY KEY AUTOINCREMENT, 
     nombre_prod VARCHAR(100) NOT NULL, 
     descripcion_prod VARCHAR(200) NOT NULL, 
-    foto_prod BLOB NOT NULL, 
+    foto_prod TEXT NOT NULL, 
     precio_prod DECIMAL(10,2) NOT NULL, 
     stock_prod INTEGER NOT NULL, 
     id_cat INTEGER, 
@@ -400,39 +400,48 @@ async eliminarUsuario(correo: string): Promise<void> {
   }
 }
 
-//funcion para obtener productos de playstation y xbox, falta arreglar
 async obtenerProductos(): Promise<Productos[]> {
   try {
-    const res = await this.database.executeSql('SELECT id_prod, nombre_prod, precio_prod, stock_prod FROM producto', []);
-    const items: Productos[] = [];
-
-    if (res.rows.length > 0) {
-      for (let i = 0; i < res.rows.length; i++) {
-        items.push({
-          id_prod: res.rows.item(i).id_prod,
-          nombre: res.rows.item(i).nombre_prod,
-          precio: res.rows.item(i).precio_prod,
-          stock:  res.rows.item(i).stock_prod
-        });
+      const sql = 'SELECT * FROM producto';
+      const result = await this.database.executeSql(sql, []);
+      
+      const productos: Productos[] = [];
+      for (let i = 0; i < result.rows.length; i++) {
+          const item = result.rows.item(i);
+          productos.push({
+              id_prod: item.id_prod,
+              nombre: item.nombre_prod,
+              descripcion: item.descripcion_prod,
+              imagen_prod: item.foto_prod,
+              precio: item.precio_prod,
+              stock: item.stock_prod
+            });
       }
-    }
-
-    return items; // Devuelve los productos obtenidos
+      return productos; // Devuelve la lista de productos
   } catch (error) {
-    console.error('Error al obtener productos:', error);
-    return [];
+      console.error('Error al obtener los productos:', error);
+      this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
+      return []; // Devuelve un array vacío en caso de error
   }
 }
 
-// En tu servicio ServiceBDService, falta arreglar
-async agregarProducto(producto: Productos): Promise<void> {
+async guardarProducto(producto: Productos): Promise<void> {
   try {
-    await this.database.executeSql('INSERT INTO carrito (nombre, precio) VALUES (?, ?)', [producto.nombre, producto.precio]);
+    const sql = 'INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?)';
+    await this.database.executeSql(sql, [
+      producto.nombre,
+      producto.descripcion,  // Asegúrate de que la descripción se incluya aquí
+      producto.imagen_prod,
+      producto.precio,
+      producto.stock
+    ]);
+    await this.obtenerProductos(); // Refrescar la lista de productos después de la inserción
   } catch (error) {
-    console.error('Error al agregar producto al carrito:', error);
-    throw error; // Permite que el error sea manejado en la llamada
+    console.error('Error al guardar el producto:', error);
+    this.presentAlert('Error', 'Error al guardar el producto: ' + JSON.stringify(error));
   }
 }
+
 
 
 }

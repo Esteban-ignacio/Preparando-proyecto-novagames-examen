@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { NavigationExtras, Router } from '@angular/router';
 import { Productos } from 'src/app/service/productos';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { AlertController } from '@ionic/angular'; // Importa AlertController
@@ -91,28 +90,44 @@ export class PlaystationPage implements OnInit {
         this.mostrarAlerta('No se puede disminuir más la cantidad'); // Si ya está en 0
     }
 }
- 
+
   productos: Productos[] = [];
 
-  constructor(private router: Router, private bdService: ServiceBDService, private alertController: AlertController) { }
+  constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
 
   ngOnInit() {
-    this.obtenerProductos();
-  }
-
-  obtenerProductos() {
-    this.bdService.obtenerProductos().then((data: Productos[]) => {
-      this.productos = data;
-      console.log(this.productos);
-    }).catch((error: any) => {
-      console.error('Error al obtener productos', error);
-    });
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
+  guardarProductoEnBD(producto: any) {
+    if (producto.cantidad > 0) {
+      const productoAGuardar: Productos = {
+        id_prod: producto.id,
+        nombre: producto.nombre,
+        precio: producto.precio,
+        stock: producto.cantidad,
+        imagen_prod: producto.imagenUrl,
+        descripcion: producto.descripcion // Asegúrate de incluir la descripción aquí
+      };
+  
+      console.log('Producto a guardar:', productoAGuardar);
+      this.bdService.guardarProducto(productoAGuardar)
+        .then(() => {
+          this.mostrarAlerta('Producto agregado al carrito correctamente');
+        })
+        .catch((error: any) => {
+          console.error('Error al guardar el producto', error);
+          this.mostrarAlerta('Hubo un error al agregar el producto al carrito: ' + (error.message || 'error desconocido'));
+        });
+    } else {
+      this.mostrarAlerta('La cantidad debe ser mayor a 0 para agregar al carrito');
+    }
+  }
+  
+  
   async mostrarAlerta(mensaje: string) {
     const alert = await this.alertController.create({
       header: 'Información',
@@ -123,12 +138,6 @@ export class PlaystationPage implements OnInit {
     await alert.present();
   }
 
-  irCarrito() {
-    let navigationextras: NavigationExtras = {
-
-    }
-
-    this.router.navigate(['/carrito'], navigationextras);
-  }
+  
   
 }

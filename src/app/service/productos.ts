@@ -3,4 +3,6 @@ export class Productos {
     nombre!: string;
     precio!: number;
     stock!: number;
+    imagen_prod!: string;
+    descripcion!: string;
 }
