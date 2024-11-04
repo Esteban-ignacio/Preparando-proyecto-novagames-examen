@@ -92,7 +92,6 @@ export class PlaystationPage implements OnInit {
     }
 }
  
-  
   productos: Productos[] = [];
 
   constructor(private router: Router, private bdService: ServiceBDService, private alertController: AlertController) { }

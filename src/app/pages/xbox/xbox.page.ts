@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { AlertController } from '@ionic/angular';
 
 @Component({
   selector: 'app-xbox',
@@ -19,7 +20,7 @@ export class XboxPage implements OnInit {
                     jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
                     gráfico Hypermotion V, que ofrece movimientos más realistas, y la inclusión de equipos femeninos en Ultimate Team, proporcionando 
                     una experiencia de fútbol aún más diversa y auténtica.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 2,
@@ -31,7 +32,7 @@ export class XboxPage implements OnInit {
                     auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
                     alineación ideal en MyTEAM. Revive tus épocas favoritas como GM o Comisionado en MyNBA. Siente una jugabilidad de próximo nivel y 
                     disfruta de visuales ultrarrealistas mientras juegas con tus equipos favoritos de la NBA y la WNBA en JUEGA AHORA.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 3,
@@ -42,7 +43,7 @@ export class XboxPage implements OnInit {
       descripcion: `Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
                     podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
                     como Campaña GT, Arcade o Escuela de conducción.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 4,
@@ -52,7 +53,7 @@ export class XboxPage implements OnInit {
       imagenUrl: 'assets/img/imgxbox/imgpga.jpg',
       descripcion: `Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
                     masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.`,
-      cantidad: 1
+      cantidad: 0
     },
     {
       id: 5,
@@ -63,28 +64,48 @@ export class XboxPage implements OnInit {
       descripcion: `Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
                     Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
                     que se acumula durante las jugadas ofensivas y pasando tiempo en la zona de ataque.`,
-      cantidad: 1
+      cantidad: 0
     },
     
 ];
 
 aumentarCantidad(producto: any) {
-  producto.cantidad = (producto.cantidad || 1) + 1;
-}
-
-disminuirCantidad(producto: any) {
-  if (producto.cantidad && producto.cantidad > 1) {
-    producto.cantidad -= 1;
+  // Verificar que el stock restante sea mayor a 0 antes de aumentar la cantidad
+  if (producto.stock > 0) {
+    producto.cantidad += 1;
+    producto.stock -= 1; // Reducir el stock en uno al aumentar la cantidad
+  } else {
+    this.mostrarAlerta('No hay suficiente stock disponible');
   }
 }
 
-  constructor( private router: Router) { }
+disminuirCantidad(producto: any) {
+  // Verificar que la cantidad no sea menor a 0 al disminuir
+  if (producto.cantidad > 0) {
+      producto.cantidad -= 1; // Disminuir la cantidad
+      producto.stock += 1;     // Aumentar el stock en uno
+  } else {
+      this.mostrarAlerta('No se puede disminuir más la cantidad'); // Si ya está en 0
+  }
+}
+
+  constructor( private router: Router, private alertController: AlertController) { }
 
   ngOnInit() {
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
+  }
+
+  async mostrarAlerta(mensaje: string) {
+    const alert = await this.alertController.create({
+      header: 'Información',
+      message: mensaje,
+      buttons: ['Aceptar'],
+    });
+
+    await alert.present();
   }
 
   irCarrito(){
