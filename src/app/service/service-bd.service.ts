@@ -399,43 +399,62 @@ async eliminarUsuario(correo: string): Promise<void> {
     throw new Error('Error al eliminar el usuario: ' + JSON.stringify(error));
   }
 }
-
-async obtenerProductos(): Promise<Productos[]> {
-  try {
+   // Función que obtiene los productos desde la base de datos y los actualiza en el BehaviorSubject
+   async obtenerProductos(): Promise<void> {
+    try {
+      // Consultar productos desde la base de datos (sin la cantidad)
       const sql = 'SELECT * FROM producto';
       const result = await this.database.executeSql(sql, []);
       
       const productos: Productos[] = [];
       for (let i = 0; i < result.rows.length; i++) {
-          const item = result.rows.item(i);
-          productos.push({
-              id_prod: item.id_prod,
-              nombre: item.nombre_prod,
-              descripcion: item.descripcion_prod,
-              imagen_prod: item.foto_prod,
-              precio: item.precio_prod,
-              stock: item.stock_prod
-            });
+        const item = result.rows.item(i);
+        // Instanciar el producto con los datos obtenidos
+        productos.push(new Productos(
+          item.id_prod,
+          item.nombre_prod,
+          item.descripcion_prod,
+          item.foto_prod,
+          item.precio_prod,
+          item.stock_prod
+        ));
       }
-      return productos; // Devuelve la lista de productos
-  } catch (error) {
+
+      // Actualizamos el BehaviorSubject con los productos obtenidos
+      this.listaobtenerproductos.next(productos);
+    } catch (error) {
       console.error('Error al obtener los productos:', error);
       this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
-      return []; // Devuelve un array vacío en caso de error
+    }
   }
-}
 
-async guardarProducto(producto: Productos): Promise<void> {
+async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   try {
-    const sql = 'INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?)';
-    await this.database.executeSql(sql, [
+    // Insertar el producto en la tabla 'producto'
+    const sqlProducto = `
+      INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    await this.database.executeSql(sqlProducto, [
       producto.nombre,
-      producto.descripcion,  // Asegúrate de que la descripción se incluya aquí
+      producto.descripcion,
       producto.imagen_prod,
       producto.precio,
       producto.stock
     ]);
-    await this.obtenerProductos(); // Refrescar la lista de productos después de la inserción
+
+    // Ahora obtenemos el id del producto recién insertado
+    const sqlLastInsertId = 'SELECT last_insert_rowid() as id';
+    const result = await this.database.executeSql(sqlLastInsertId, []);
+    const idProducto = result.rows.item(0).id;
+
+    // Insertar la cantidad del producto en la tabla 'detalle' (usando cantidad_detalle en lugar de cantidad)
+    const sqlDetalle = 'INSERT INTO detalle (id_prod, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?)';
+    const subtotal = producto.precio * cantidad; // Calculamos el subtotal
+    await this.database.executeSql(sqlDetalle, [idProducto, cantidad, subtotal]);
+
+    // Refrescar la lista de productos después de la inserción
+    await this.obtenerProductos();
   } catch (error) {
     console.error('Error al guardar el producto:', error);
     this.presentAlert('Error', 'Error al guardar el producto: ' + JSON.stringify(error));

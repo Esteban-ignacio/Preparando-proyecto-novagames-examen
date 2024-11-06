@@ -96,6 +96,7 @@ export class PlaystationPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
 
   ngOnInit() {
+    
   }
 
   formatCurrency(precio: number): string {
@@ -108,13 +109,14 @@ export class PlaystationPage implements OnInit {
         id_prod: producto.id,
         nombre: producto.nombre,
         precio: producto.precio,
-        stock: producto.cantidad,
+        stock: producto.cantidad, // Este valor es el stock actualizado
         imagen_prod: producto.imagenUrl,
         descripcion: producto.descripcion // Asegúrate de incluir la descripción aquí
       };
   
       console.log('Producto a guardar:', productoAGuardar);
-      this.bdService.guardarProducto(productoAGuardar)
+      // Aquí asegurate de que al llamar a guardarProducto, estás pasando la cantidad correctamente
+      this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
         })
