@@ -10,14 +10,20 @@ import { ServiceBDService } from 'src/app/service/service-bd.service';
 })
 export class CarritoPage implements OnInit {
 
-  productos: Productos[] = [];
+  productos: Productos[] = []; // Lista para almacenar los productos del carrito
 
-  constructor(private alertController: AlertController,  private bdService: ServiceBDService) { }
+  constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
-    
+    this.obtenerProductosCarrito(); // Llamar a la función para obtener los productos al iniciar
   }
- 
+
+  // Función para obtener los productos del carrito desde el servicio
+  obtenerProductosCarrito() {
+    this.bdService.fetchProductos().subscribe(productos => {
+      this.productos = productos; // Asignamos los productos al array
+    });
+  }
 
   async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({
@@ -25,15 +31,15 @@ export class CarritoPage implements OnInit {
       message: msj,
       buttons: ['Realizado'],
     });
-  
+
     await alert.present();
   }
-  
-  
 
-  Comprar(){
-    this.presentAlert('Comprado', 'Compra Realizada')
+  // Función para manejar la compra
+  Comprar() {
+    this.presentAlert('Comprado', 'Compra Realizada');
   }
 }
+
 
 

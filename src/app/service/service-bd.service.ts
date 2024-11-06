@@ -461,6 +461,22 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   }
 }
 
+//eliminar los productos que se muestran en el carrito una vez se cierra sesion
+async limpiarCarrito(): Promise<void> {
+  try {
+    // Eliminar todos los productos del carrito (tabla detalle)
+    const sql = 'DELETE FROM detalle';
+    await this.database.executeSql(sql, []);
+
+    // Actualizar el estado del carrito (vaciar el BehaviorSubject)
+    this.listaobtenerproductos.next([]);  // Actualiza el carrito a vacío
+
+    console.log('Carrito limpiado exitosamente');
+  } catch (error) {
+    console.error('Error al limpiar el carrito:', error);
+  }
+}
+
 
 
 }
