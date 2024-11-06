@@ -15,15 +15,22 @@
   <h2 class="tus-productos-carrito">Tus Productos</h2>
 
   <!-- Lista de productos en el carrito -->
-  <ion-list>
-    <ion-item *ngFor="let producto of productos">
-      <ion-label>
-        <h2>{{ producto.nombre }}</h2>
-        <p>Precio: ${{ producto.precio }}</p>
-        <p>Cantidad: {{ producto.stock }}</p>
-      </ion-label>
+  <ion-list class="lista-productos-carrito">
+    <ion-item *ngFor="let producto of productos" class="producto-item">
+      <div class="datos-row">
+        <span class="datos-label">{{ producto.nombre }}</span>
+      </div>
+      <div class="datos-row">
+        <span class="datos-label">Precio:</span>
+        <span class="datos-value">${{ producto.precio }}</span>
+      </div>
+      <div class="datos-row">
+        <span class="datos-label">Cantidad:</span>
+        <span class="datos-value">{{ producto.stock }}</span>
+      </div>
     </ion-item>
   </ion-list>
+  
 
   <!-- Botón para comprar -->
   <ion-button class="boton-comprar" expand="full" (click)="Comprar()">Comprar</ion-button>

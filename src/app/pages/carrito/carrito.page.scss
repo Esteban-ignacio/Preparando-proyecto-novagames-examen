@@ -15,9 +15,30 @@ ion-toolbar{
   }
 .tus-productos-carrito{
   text-align: center;
+}
+.lista-productos-carrito{
+  background-color: #a8f6c6;
   color: black;
 }
 .boton-comprar{
   margin-top: 30px;
   margin-left: 150px;
+}
+.producto-item {
+  --ion-item-background: transparent;
+  margin-bottom: 10px;
+}
+
+.datos-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 5px 0;
+}
+
+.datos-label {
+  font-weight: bold;
+  color: black; 
+}
+.datos-value {
+  color: black; 
 }
