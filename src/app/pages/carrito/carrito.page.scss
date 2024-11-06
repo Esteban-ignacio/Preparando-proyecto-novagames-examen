@@ -15,18 +15,35 @@ ion-toolbar{
   }
 .tus-productos-carrito{
   text-align: center;
-}
-.lista-productos-carrito{
-  background-color: #a8f6c6;
   color: black;
+  font-weight: bold;
 }
 .boton-comprar{
   margin-top: 30px;
   margin-left: 150px;
 }
+.lista-productos-carrito {
+  background-color: #a8f6c6;
+  color: black;
+}
+
 .producto-item {
   --ion-item-background: transparent;
   margin-bottom: 10px;
+  display: flex;
+  align-items: center; /* Alinea el contenido verticalmente */
+}
+
+.imagen-producto {
+  width: 150px; /* Ajuste de ancho de la imagen para cubrir toda la izquierda */
+  height: 140px;
+}
+
+.datos-producto {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centra los datos verticalmente respecto a la imagen */
+  margin-left: 15px;
 }
 
 .datos-row {
@@ -35,10 +52,42 @@ ion-toolbar{
   margin: 5px 0;
 }
 
-.datos-label {
+.datos-label, .datos-value {
   font-weight: bold;
-  color: black; 
+  color: black;
+  font-size: 16px;
+  line-height: 1.2;
 }
-.datos-value {
-  color: black; 
+.total-row {
+  margin-top: 10px;
+  padding-top: 5px;
 }
+
+.total-pagar {
+  display: flex;
+  justify-content: center;         /* Centra los elementos horizontalmente */
+  align-items: center;             /* Centra los elementos verticalmente */
+  font-weight: bold;
+  font-size: 18px;
+  padding: 10px;
+  background-color: #a8f6c6;
+  width: 100%;                     /* Ocupa todo el ancho disponible */
+}
+
+.total-label, .total-value {
+  color: black;
+  font-size: 16px;
+  margin: 0 15px;                  /* Espacio pequeño entre los textos */
+  text-align: center;              /* Centra el texto dentro de cada contenedor */
+  display: inline-block;           /* Asegura que se comporten como bloques en línea */
+}
+
+.total-label {
+  width: auto;                     /* El nombre tiene un tamaño automático */
+}
+
+.total-value {
+  width: auto;                     /* El valor también tiene un tamaño automático */
+}
+
+

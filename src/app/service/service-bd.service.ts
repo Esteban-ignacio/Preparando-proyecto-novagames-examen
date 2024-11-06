@@ -402,8 +402,12 @@ async eliminarUsuario(correo: string): Promise<void> {
    // Función que obtiene los productos desde la base de datos y los actualiza en el BehaviorSubject
    async obtenerProductos(): Promise<void> {
     try {
-      // Consultar productos desde la base de datos (sin la cantidad)
-      const sql = 'SELECT * FROM producto';
+      // Consultar productos y sus cantidades desde la base de datos
+      const sql = `
+        SELECT p.id_prod, p.nombre_prod, p.descripcion_prod, p.foto_prod, p.precio_prod, p.stock_prod, d.cantidad_detalle
+        FROM producto p
+        LEFT JOIN detalle d ON p.id_prod = d.id_prod
+      `;
       const result = await this.database.executeSql(sql, []);
       
       const productos: Productos[] = [];
@@ -416,17 +420,18 @@ async eliminarUsuario(correo: string): Promise<void> {
           item.descripcion_prod,
           item.foto_prod,
           item.precio_prod,
-          item.stock_prod
+          item.stock_prod,
+          item.cantidad_detalle || 0  // Aseguramos que la cantidad no sea null
         ));
       }
-
+  
       // Actualizamos el BehaviorSubject con los productos obtenidos
       this.listaobtenerproductos.next(productos);
     } catch (error) {
       console.error('Error al obtener los productos:', error);
       this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
     }
-  }
+  }  
 
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   try {

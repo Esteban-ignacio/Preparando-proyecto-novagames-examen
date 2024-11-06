@@ -13,26 +13,39 @@
 
 <ion-content [fullscreen]="true">
   <h2 class="tus-productos-carrito">Tus Productos</h2>
-
   <!-- Lista de productos en el carrito -->
   <ion-list class="lista-productos-carrito">
     <ion-item *ngFor="let producto of productos" class="producto-item">
-      <div class="datos-row">
-        <span class="datos-label">{{ producto.nombre }}</span>
-      </div>
-      <div class="datos-row">
-        <span class="datos-label">Precio:</span>
-        <span class="datos-value">${{ producto.precio }}</span>
-      </div>
-      <div class="datos-row">
-        <span class="datos-label">Cantidad:</span>
-        <span class="datos-value">{{ producto.stock }}</span>
+      <ion-thumbnail slot="start" class="imagen-producto">
+        <img [src]="producto.imagen_prod" alt="Imagen del producto">
+      </ion-thumbnail>
+      <div class="datos-producto">
+        <div class="datos-row">
+          <span class="datos-label">{{ producto.nombre }}</span>
+        </div>
+        <div class="datos-row">
+          <span class="datos-label">Precio:</span>
+          <span class="datos-value">{{ producto.precio | currency }}</span>
+        </div>
+        <div class="datos-row">
+          <span class="datos-label">Cantidad:</span>
+          <span class="datos-value">{{ producto.cantidad }}</span>
+        </div>
+        <!-- Nuevo apartado de total -->
+        <div class="datos-row total-row">
+          <span class="datos-label">Total:</span>
+          <span class="datos-value">$8000</span> <!-- Ajusta este valor dinámicamente si es necesario -->
+        </div>
       </div>
     </ion-item>
   </ion-list>
-  
 
-  <!-- Botón para comprar -->
+  <!-- Nuevo apartado de Total a Pagar fuera de la lista -->
+<div class="total-pagar">
+  <span class="total-label">Total a Pagar:</span>
+  <span class="total-value">$1118000</span>
+</div>
+  
   <ion-button class="boton-comprar" expand="full" (click)="Comprar()">Comprar</ion-button>
 </ion-content>
 

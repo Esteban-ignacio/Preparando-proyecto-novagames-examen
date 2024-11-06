@@ -109,13 +109,15 @@ export class PlaystationPage implements OnInit {
         id_prod: producto.id,
         nombre: producto.nombre,
         precio: producto.precio,
-        stock: producto.cantidad, // Este valor es el stock actualizado
+        stock: producto.stock - producto.cantidad, // Reducimos el stock por la cantidad agregada
         imagen_prod: producto.imagenUrl,
-        descripcion: producto.descripcion // Asegúrate de incluir la descripción aquí
+        descripcion: producto.descripcion,
+        cantidad: producto.cantidad // Asegúrate de incluir la cantidad que el usuario seleccionó
       };
   
       console.log('Producto a guardar:', productoAGuardar);
-      // Aquí asegurate de que al llamar a guardarProducto, estás pasando la cantidad correctamente
+  
+      // Aquí aseguramos de que al llamar a guardarProducto, pasamos la cantidad correctamente
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
@@ -128,6 +130,7 @@ export class PlaystationPage implements OnInit {
       this.mostrarAlerta('La cantidad debe ser mayor a 0 para agregar al carrito');
     }
   }
+  
   
   
   async mostrarAlerta(mensaje: string) {
