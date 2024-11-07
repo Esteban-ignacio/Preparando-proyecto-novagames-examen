@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-
 @Component({
   selector: 'app-historialventas',
   templateUrl: './historialventas.page.html',
@@ -12,6 +11,4 @@ export class HistorialventasPage implements OnInit {
 
   ngOnInit() {
   }
-
-  
 }

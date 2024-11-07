@@ -44,46 +44,55 @@ export class LoginPage implements OnInit {
       // No es necesario inicializar nuevamente aquí porque ya lo has hecho arriba
     }
 
-  async ValidacionLogin() {
-    // Verificar que los campos no estén vacíos
-    if (this.usuariologin.trim() === '' || this.correologin.trim() === '' || this.contrasenalogin.trim() === '') {
-      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
-      return; // Salir de la función si algún campo está vacío
-    }
-  
-    // Validar nombre, correo y contraseña con alertas específicas
-    if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
-      return; // Si alguno de los campos es inválido, no continuar
-    }
-  
-    // Hacemos la validación de los datos
-    if (this.isFormValid()) {
-      try {
-        // Llamar al método de login del servicio
-        const loginResult = await this.bdService.login(this.usuariologin, this.correologin, this.contrasenalogin);
-        
-        if (loginResult.success) {
-          this.presentAlert('Iniciado', 'Inicio exitoso');
-          this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
-
-          // Limpiar los campos de entrada después de un inicio exitoso
-          this.usuariologin = ''; // Limpiar el campo de entrada
-          this.correologin = ''; // Limpiar el campo de entrada
-          this.contrasenalogin = ''; // Limpiar el campo de entrada
-        } else {
-          this.presentAlert('Error', 'No encontramos una cuenta asociada. Verifica tus datos o crea una nueva cuenta.');
-        }
-      } catch (error) {
-        // Manejo de errores en caso de que algo falle en el login
-        this.presentAlert('Error', 'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
-        console.error(error); // Registro del error para depuración
+    async ValidacionLogin() {
+      // Verificar que los campos no estén vacíos
+      if (this.usuariologin.trim() === '' || this.correologin.trim() === '' || this.contrasenalogin.trim() === '') {
+        this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
+        return; // Salir de la función si algún campo está vacío
       }
-    } else {
-      // Si el formulario es inválido, muestra un mensaje de error en la alerta
-      this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
+    
+      // Validar nombre, correo y contraseña con alertas específicas
+      if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
+        return; // Si alguno de los campos es inválido, no continuar
+      }
+    
+      // Llamamos a la función obtenerCorreoUsuario para verificar si el correo existe en la base de datos
+      await this.bdService.obtenerCorreoUsuario(this.correologin);
+    
+      // Verificamos el resultado de la función (esto dependerá de cómo implementes el comportamiento en obtenerCorreoUsuario)
+      // En este caso, asumimos que si el correo no existe, ya se habrá mostrado una alerta y no se continuará con el login
+      if (this.bdService.listaobtenercorreousuario.value.length === 0) {
+        return; // Si no se encuentra el correo, no continuar con el login
+      }
+    
+      // Hacemos la validación de los datos
+      if (this.isFormValid()) {
+        try {
+          // Llamar al método de login del servicio
+          const loginResult = await this.bdService.login(this.usuariologin, this.correologin, this.contrasenalogin);
+          
+          if (loginResult.success) {
+            this.presentAlert('Iniciado', 'Inicio exitoso');
+            this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
+    
+            // Limpiar los campos de entrada después de un inicio exitoso
+            this.usuariologin = ''; // Limpiar el campo de entrada
+            this.correologin = ''; // Limpiar el campo de entrada
+            this.contrasenalogin = ''; // Limpiar el campo de entrada
+          } else {
+            this.presentAlert('Error', 'No encontramos una cuenta asociada. Verifica tus datos o crea una nueva cuenta.');
+          }
+        } catch (error) {
+          // Manejo de errores en caso de que algo falle en el login
+          this.presentAlert('Error', 'Ocurrió un error al intentar iniciar sesión. Por favor, inténtelo de nuevo.');
+          console.error(error); // Registro del error para depuración
+        }
+      } else {
+        // Si el formulario es inválido, muestra un mensaje de error en la alerta
+        this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
+      }
     }
-  }
-  
+    
 
   // Validación para el nombre y el apellido
   isUsuarioLoginValido(): boolean {

@@ -422,7 +422,7 @@ async eliminarUsuario(correo: string): Promise<void> {
       SELECT p.id_prod, p.nombre_prod, p.descripcion_prod, p.foto_prod, p.precio_prod, p.stock_prod, d.cantidad_detalle
       FROM producto p
       LEFT JOIN detalle d ON p.id_prod = d.id_prod
-      LEFT JOIN usuario u ON d.id_usuario = u.id_user
+      LEFT JOIN usuario u ON d.id_user = u.id_user
       WHERE u.correo_user = ?  -- Filtramos por el correo del usuario
     `;
     const result = await this.database.executeSql(sql, [correoUsuario]);
@@ -452,16 +452,13 @@ async eliminarUsuario(correo: string): Promise<void> {
 
 // Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
-  // Obtener correo desde la lista de usuarios
-  const correos = await this.obtenerCorreosUsuarios();
-  
-  if (correos.length === 0) {
-    this.presentAlert('Error', 'No se encontraron usuarios registrados.');
+  // Obtener correo desde el BehaviorSubject o lista de usuarios
+  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
+
+  if (!correoUsuario) {
+    this.presentAlert('Error', 'No se encontró el correo del usuario.');
     return;
   }
-
-  // Asumimos que el primer correo en la lista es el correo del usuario actual
-  const correoUsuario = correos[0];  // Si tienes un sistema para identificar al usuario activo, reemplaza esto
 
   try {
     // Consultar el idUsuario directamente a partir del correo
@@ -475,10 +472,8 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
     }
 
     // Insertar el producto en la tabla 'producto' si aún no existe
-    const sqlProducto = `
-      INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod)
-      VALUES (?, ?, ?, ?, ?)
-    `;
+    const sqlProducto = `INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod)
+                         VALUES (?, ?, ?, ?, ?)`;
     await this.database.executeSql(sqlProducto, [
       producto.nombre,
       producto.descripcion,
@@ -493,7 +488,7 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
     const idProducto = result.rows.item(0).id;
 
     // Insertar la cantidad del producto en la tabla 'detalle', asociando el producto con el usuario
-    const sqlDetalle = 'INSERT INTO detalle (id_prod, id_usuario, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?, ?)';
+    const sqlDetalle = 'INSERT INTO detalle (id_prod, id_user, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?, ?)';
     const subtotal = producto.precio * cantidad; // Calculamos el subtotal
     await this.database.executeSql(sqlDetalle, [idProducto, idUsuario, cantidad, subtotal]);
 
@@ -506,21 +501,31 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
 }
 
 // Obtiene los correos de los usuarios
-async obtenerCorreosUsuarios(): Promise<string[]> {
+async obtenerCorreoUsuario(correo: string): Promise<void> {
   try {
-    const res = await this.database.executeSql('SELECT correo_user FROM usuario', []);
-    const correos: string[] = [];
+    // Hacemos la verificación usando la base de datos local (si usas fetch para API, cambia esto)
+    const sql = 'SELECT correo_user FROM usuario WHERE correo_user = ?';
+    const result = await this.database.executeSql(sql, [correo]);
 
-    if (res.rows.length > 0) {
-      for (let i = 0; i < res.rows.length; i++) {
-        correos.push(res.rows.item(i).correo_user);
-      }
+    if (result.rows.length === 0) {
+      // Si no se encuentra el correo en la base de datos, retornamos null
+      this.presentAlert('Error', 'El correo no existe en la base de datos.');
+      this.listaobtenercorreousuario.next([]);  // Emitir un array vacío cuando no hay correo
+      return;
     }
-    return correos;
+
+    // Si el correo existe, lo devolvemos y lo emitimos a través del BehaviorSubject
+    const usuario = result.rows.item(0);
+    const correoUsuario = usuario.correo_user;
+
+    // Emitir el correo a través del observable
+    this.listaobtenercorreousuario.next([{ correo_usuario: correoUsuario }]);
+
+    console.log('Correo del usuario:', correoUsuario);  // Solo para verificación
   } catch (error) {
-    console.error('Error al obtener correos de usuarios:', error);
-    this.presentAlert('Error', 'Error al obtener los correos de los usuarios: ' + JSON.stringify(error));
-    return [];
+    console.error('Error al obtener el correo del usuario:', error);
+    this.presentAlert('Error', 'Hubo un problema al obtener el correo del usuario.');
+    this.listaobtenercorreousuario.next([]);  // Emitir un array vacío en caso de error
   }
 }
 
