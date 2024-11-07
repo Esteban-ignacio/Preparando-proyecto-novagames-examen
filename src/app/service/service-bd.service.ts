@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { SQLite, SQLiteObject } from '@awesome-cordova-plugins/sqlite/ngx';
 import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
+import { Correousuario, Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
 import { Productos } from './productos';
 
 
@@ -88,6 +88,8 @@ export class ServiceBDService {
 
   listaobtenerproductos = new BehaviorSubject <Productos[]>([]);
 
+  listaobtenercorreousuario = new BehaviorSubject <Correousuario[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -129,6 +131,10 @@ fetchExtraerdatosusuario(): Observable<Extraerdatosusuario[]>{
 
 fetchProductos(): Observable<Productos[]>{
   return this.listaobtenerproductos.asObservable();
+}
+
+fetchCorreousuario(): Observable<Correousuario[]>{
+  return this.listaobtenercorreousuario.asObservable();
 }
 
 dbState(){
@@ -173,7 +179,7 @@ dbState(){
     this.isDBReady.next(false);
   }
 }
-
+    
 // Método para verificar si el correo ya está registrado
 async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists: boolean; phoneExists: boolean }> {
   const sqlEmail = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
@@ -399,43 +405,76 @@ async eliminarUsuario(correo: string): Promise<void> {
     throw new Error('Error al eliminar el usuario: ' + JSON.stringify(error));
   }
 }
-   // Función que obtiene los productos desde la base de datos y los actualiza en el BehaviorSubject
-   async obtenerProductos(): Promise<void> {
-    try {
-      // Consultar productos y sus cantidades desde la base de datos
-      const sql = `
-        SELECT p.id_prod, p.nombre_prod, p.descripcion_prod, p.foto_prod, p.precio_prod, p.stock_prod, d.cantidad_detalle
-        FROM producto p
-        LEFT JOIN detalle d ON p.id_prod = d.id_prod
-      `;
-      const result = await this.database.executeSql(sql, []);
-      
-      const productos: Productos[] = [];
-      for (let i = 0; i < result.rows.length; i++) {
-        const item = result.rows.item(i);
-        // Instanciar el producto con los datos obtenidos
-        productos.push(new Productos(
-          item.id_prod,
-          item.nombre_prod,
-          item.descripcion_prod,
-          item.foto_prod,
-          item.precio_prod,
-          item.stock_prod,
-          item.cantidad_detalle || 0  // Aseguramos que la cantidad no sea null
-        ));
-      }
-  
-      // Actualizamos el BehaviorSubject con los productos obtenidos
-      this.listaobtenerproductos.next(productos);
-    } catch (error) {
-      console.error('Error al obtener los productos:', error);
-      this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
-    }
-  }  
 
-async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
+ // Función para obtener productos utilizando el correo del usuario desde el BehaviorSubject
+ async obtenerProductos(): Promise<void> {
+  // Obtener correo desde BehaviorSubject
+  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
+
+  if (!correoUsuario) {
+    this.presentAlert('Error', 'No se encontró el correo del usuario.');
+    return;
+  }
+
   try {
-    // Insertar el producto en la tabla 'producto'
+    // Consultar productos y sus cantidades desde la base de datos, filtrando por el correo
+    const sql = `
+      SELECT p.id_prod, p.nombre_prod, p.descripcion_prod, p.foto_prod, p.precio_prod, p.stock_prod, d.cantidad_detalle
+      FROM producto p
+      LEFT JOIN detalle d ON p.id_prod = d.id_prod
+      LEFT JOIN usuario u ON d.id_usuario = u.id_user
+      WHERE u.correo_user = ?  -- Filtramos por el correo del usuario
+    `;
+    const result = await this.database.executeSql(sql, [correoUsuario]);
+    
+    const productos: Productos[] = [];
+    for (let i = 0; i < result.rows.length; i++) {
+      const item = result.rows.item(i);
+      // Instanciar el producto con los datos obtenidos
+      productos.push(new Productos(
+        item.id_prod,
+        item.nombre_prod,
+        item.descripcion_prod,
+        item.foto_prod,
+        item.precio_prod,
+        item.stock_prod,
+        item.cantidad_detalle || 0  // Aseguramos que la cantidad no sea null
+      ));
+    }
+
+    // Actualizamos el BehaviorSubject con los productos obtenidos
+    this.listaobtenerproductos.next(productos);
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
+  }
+}
+
+// Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
+async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
+  // Obtener correo desde la lista de usuarios
+  const correos = await this.obtenerCorreosUsuarios();
+  
+  if (correos.length === 0) {
+    this.presentAlert('Error', 'No se encontraron usuarios registrados.');
+    return;
+  }
+
+  // Asumimos que el primer correo en la lista es el correo del usuario actual
+  const correoUsuario = correos[0];  // Si tienes un sistema para identificar al usuario activo, reemplaza esto
+
+  try {
+    // Consultar el idUsuario directamente a partir del correo
+    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
+    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
+    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
+    
+    if (idUsuario === null) {
+      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
+      return;
+    }
+
+    // Insertar el producto en la tabla 'producto' si aún no existe
     const sqlProducto = `
       INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod)
       VALUES (?, ?, ?, ?, ?)
@@ -448,21 +487,40 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
       producto.stock
     ]);
 
-    // Ahora obtenemos el id del producto recién insertado
+    // Obtener el ID del producto recién insertado
     const sqlLastInsertId = 'SELECT last_insert_rowid() as id';
     const result = await this.database.executeSql(sqlLastInsertId, []);
     const idProducto = result.rows.item(0).id;
 
-    // Insertar la cantidad del producto en la tabla 'detalle' (usando cantidad_detalle en lugar de cantidad)
-    const sqlDetalle = 'INSERT INTO detalle (id_prod, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?)';
+    // Insertar la cantidad del producto en la tabla 'detalle', asociando el producto con el usuario
+    const sqlDetalle = 'INSERT INTO detalle (id_prod, id_usuario, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?, ?)';
     const subtotal = producto.precio * cantidad; // Calculamos el subtotal
-    await this.database.executeSql(sqlDetalle, [idProducto, cantidad, subtotal]);
+    await this.database.executeSql(sqlDetalle, [idProducto, idUsuario, cantidad, subtotal]);
 
     // Refrescar la lista de productos después de la inserción
-    await this.obtenerProductos();
+    await this.obtenerProductos(); // Obtener productos actualizados
   } catch (error) {
     console.error('Error al guardar el producto:', error);
     this.presentAlert('Error', 'Error al guardar el producto: ' + JSON.stringify(error));
+  }
+}
+
+// Obtiene los correos de los usuarios
+async obtenerCorreosUsuarios(): Promise<string[]> {
+  try {
+    const res = await this.database.executeSql('SELECT correo_user FROM usuario', []);
+    const correos: string[] = [];
+
+    if (res.rows.length > 0) {
+      for (let i = 0; i < res.rows.length; i++) {
+        correos.push(res.rows.item(i).correo_user);
+      }
+    }
+    return correos;
+  } catch (error) {
+    console.error('Error al obtener correos de usuarios:', error);
+    this.presentAlert('Error', 'Error al obtener los correos de los usuarios: ' + JSON.stringify(error));
+    return [];
   }
 }
 
@@ -481,8 +539,6 @@ async limpiarCarrito(): Promise<void> {
     console.error('Error al limpiar el carrito:', error);
   }
 }
-
-
 
 }
 

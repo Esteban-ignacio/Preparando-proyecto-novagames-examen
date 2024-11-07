@@ -10,6 +10,8 @@ import { ServiceBDService } from 'src/app/service/service-bd.service';
 })
 export class XboxPage implements OnInit {
 
+  correoUsuario: string = '';
+
   productosXbox: any[] = [
     {
       id: 6,
@@ -95,28 +97,31 @@ disminuirCantidad(producto: any) {
   constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
 
   ngOnInit() {
-   
+    const correoUsuario = localStorage.getItem('correoUsuario');
+    if (correoUsuario) {
+      this.correoUsuario = correoUsuario;
+    }
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
-  guardarProductoEnBD(producto: any) {
+  guardarProductoEnBD(producto: any): void {
     if (producto.cantidad > 0) {
       const productoAGuardar: Productos = {
         id_prod: producto.id,
         nombre: producto.nombre,
         precio: producto.precio,
-        stock: producto.stock - producto.cantidad, // Reducimos el stock por la cantidad agregada
+        stock: producto.stock - producto.cantidad,
         imagen_prod: producto.imagenUrl,
         descripcion: producto.descripcion,
-        cantidad: producto.cantidad // Asegúrate de incluir la cantidad que el usuario seleccionó
+        cantidad: producto.cantidad
       };
   
       console.log('Producto a guardar:', productoAGuardar);
   
-      // Aquí aseguramos de que al llamar a guardarProducto, pasamos la cantidad correctamente
+      // Llamamos a guardarProducto y no necesitamos pasar el correo
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
@@ -129,7 +134,7 @@ disminuirCantidad(producto: any) {
       this.mostrarAlerta('La cantidad debe ser mayor a 0 para agregar al carrito');
     }
   }  
-
+  
   async mostrarAlerta(mensaje: string) {
     const alert = await this.alertController.create({
       header: 'Información',

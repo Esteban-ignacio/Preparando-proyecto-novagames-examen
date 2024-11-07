@@ -34,5 +34,9 @@ export class Extraerdatosusuario {
     clave_user!: string;
     telefono_user!: string;
 }
+
+export class Correousuario {
+    correo_usuario!: string;
+}
     
 
