@@ -25,6 +25,10 @@ export class CarritoPage implements OnInit {
     });
   }
 
+  formatCurrency(precio: number): string {
+    return `$${precio.toLocaleString('es-CL')}`;
+  }  
+
   calcularTotalAPagar(): number {
     return this.productos.reduce((total, producto) => {
       return total + (producto.precio * producto.cantidad);

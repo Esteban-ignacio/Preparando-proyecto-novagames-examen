@@ -33,7 +33,7 @@
         </div>
         <div class="datos-row">
           <span class="datos-label">Precio:</span>
-          <span class="datos-value">{{ producto.precio | currency }}</span>
+          <span class="datos-value">{{ formatCurrency(producto.precio) }}</span>
         </div>
         <div class="datos-row">
           <span class="datos-label">Cantidad:</span>
@@ -42,7 +42,7 @@
         <!-- Nuevo apartado de total -->
         <div class="datos-row total-row">
           <span class="datos-label">Total:</span>
-          <span class="datos-value">{{ producto.precio * producto.cantidad | currency }}</span> 
+          <span class="datos-value">{{ formatCurrency(producto.precio * producto.cantidad) }}</span> 
         </div>
       </div>
     </ion-item>
@@ -51,7 +51,7 @@
   <!-- Total a Pagar fuera de la lista, solo se muestra si hay productos -->
   <div class="total-pagar" *ngIf="productos.length > 0">
     <span class="total-label">Total a Pagar:</span>
-    <span class="total-value">{{ calcularTotalAPagar() | currency }}</span>
+    <span class="total-value">{{ formatCurrency(calcularTotalAPagar()) }}</span>
   </div>
   
   <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>
