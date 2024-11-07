@@ -12,9 +12,17 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <h2 class="tus-productos-carrito">Tus Productos</h2>
-  <!-- Lista de productos en el carrito -->
-  <ion-list class="lista-productos-carrito">
+  <!-- Verificar si hay productos en el carrito -->
+  <div *ngIf="productos.length === 0" class="mensaje-carrito-vacio">
+    <h2 class="titulo-sin-productos">
+      <span>Agregue</span>
+      <span>Sus</span>
+      <span>Productos</span>
+      <span>Aquí</span>
+    </h2>
+  </div>  
+  <!-- Lista de productos en el carrito, solo se muestra si hay productos -->
+  <ion-list class="lista-productos-carrito" *ngIf="productos.length > 0">
     <ion-item *ngFor="let producto of productos" class="producto-item">
       <ion-thumbnail slot="start" class="imagen-producto">
         <img [src]="producto.imagen_prod" alt="Imagen del producto">
@@ -34,21 +42,20 @@
         <!-- Nuevo apartado de total -->
         <div class="datos-row total-row">
           <span class="datos-label">Total:</span>
-          <span class="datos-value">$8000</span> <!-- Ajusta este valor dinámicamente si es necesario -->
+          <span class="datos-value">{{ producto.precio * producto.cantidad | currency }}</span> 
         </div>
       </div>
     </ion-item>
   </ion-list>
 
-  <!-- Nuevo apartado de Total a Pagar fuera de la lista -->
-<div class="total-pagar">
-  <span class="total-label">Total a Pagar:</span>
-  <span class="total-value">$1118000</span>
-</div>
+  <!-- Total a Pagar fuera de la lista, solo se muestra si hay productos -->
+  <div class="total-pagar" *ngIf="productos.length > 0">
+    <span class="total-label">Total a Pagar:</span>
+    <span class="total-value">{{ calcularTotalAPagar() | currency }}</span>
+  </div>
   
-  <ion-button class="boton-comprar" expand="full" (click)="Comprar()">Comprar</ion-button>
+  <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>
 </ion-content>
-
 
 
 

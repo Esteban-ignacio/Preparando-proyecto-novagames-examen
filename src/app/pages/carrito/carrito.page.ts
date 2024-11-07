@@ -25,6 +25,12 @@ export class CarritoPage implements OnInit {
     });
   }
 
+  calcularTotalAPagar(): number {
+    return this.productos.reduce((total, producto) => {
+      return total + (producto.precio * producto.cantidad);
+    }, 0);
+  }
+
   async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({
       header: titulo,

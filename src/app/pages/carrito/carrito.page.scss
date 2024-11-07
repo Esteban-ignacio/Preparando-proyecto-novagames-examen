@@ -18,10 +18,17 @@ ion-toolbar{
   color: black;
   font-weight: bold;
 }
-.boton-comprar{
-  margin-top: 30px;
-  margin-left: 150px;
+.boton-comprar {
+  display: block;          /* Necesario para centrar el botón */
+  margin: 30px auto;       /* Centra el botón horizontalmente */
+  padding-left: 20px;      /* Ajusta el relleno interno izquierdo */
+  margin-top: 20px;       /* Ajusta el relleno interno superior */
+  padding-right: 20px;     /* Ajusta el relleno interno derecho */
+  padding-bottom: 15px;    /* Ajusta el relleno interno inferior */
+  width: 200px;            /* Disminuye el tamaño del botón */
+  font-size: 14px;         /* Opcional: disminuye el tamaño del texto */
 }
+
 .lista-productos-carrito {
   background-color: #a8f6c6;
   color: black;
@@ -89,5 +96,33 @@ ion-toolbar{
 .total-value {
   width: auto;                     /* El valor también tiene un tamaño automático */
 }
+
+.mensaje-carrito-vacio {
+  position: absolute; /* Posiciona el div en toda la pantalla */
+  top: 0; /* Ajusta la posición superior */
+  left: 0; /* Ajusta la posición izquierda */
+  width: 100%; /* Ocupa el 100% del ancho */
+  height: 70%; /* Ocupa el 100% de la altura */
+  display: flex; /* Usa flexbox para centrar el contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  z-index: 10; /* Asegura que el mensaje esté por encima de otros elementos */
+}
+
+.titulo-sin-productos {
+  font-size: 24px; /* Ajusta el tamaño de la fuente */
+  font-weight: bold; /* Hace que el texto sea negrita */
+  color: black;
+  text-align: center; /* Alinea el texto al centro */
+  font-weight: bold;
+}
+
+.titulo-sin-productos span {
+  display: block; /* Hace que cada palabra esté en una línea separada */
+  font-size: 32px; /* Ajusta el tamaño de cada palabra */
+  line-height: 1.5; /* Ajusta la separación entre las líneas */
+}
+
+
 
 

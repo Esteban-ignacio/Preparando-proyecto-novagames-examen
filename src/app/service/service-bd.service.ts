@@ -141,26 +141,30 @@ dbState(){
   return this.isDBReady.asObservable();
 }
 
- //función para crear la Base de Datos
- createBD(){
-  //varificar si la plataforma esta disponible
-  this.platform.ready().then(()=>{
-    //crear la Base de Datos
+//función para crear la Base de Datos
+createBD() {
+  // Verificar si la plataforma está disponible
+  this.platform.ready().then(() => {
+    // Crear la Base de Datos
     this.sqlite.create({
       name: 'novagames.db',
       location: 'default'
-    }).then((db: SQLiteObject)=>{
-      //capturar la conexion a la BD
+    }).then((db: SQLiteObject) => {
+      // Capturar la conexión a la BD
       this.database = db;
-      //llamamos a la función para crear las tablas
-      this.crearTablas();
-    }).catch(e=>{
+      // Llamamos a la función para crear las tablas y luego verificar columnas
+      this.crearTablas().then(() => {
+        // Llamar a la verificación de columnas después de crear las tablas
+        this.verificarColumnas();
+      });
+    }).catch(e => {
       this.presentAlert('Base de Datos', 'Error en crear la BD: ' + JSON.stringify(e));
-    })
-  })
- }
+    });
+  });
+}
 
- async crearTablas() {
+// Función para crear tablas con retorno de promesa
+async crearTablas() {
   try {
     console.log('Iniciando la creación de tablas...');
     await this.database.executeSql(this.tablaRol, []);
@@ -172,12 +176,36 @@ dbState(){
 
     // Marcar la base de datos como lista
     this.isDBReady.next(true);
-
   } catch (e) {
     this.presentAlert('Creación de Tablas', 'Error en crear las tablas: ' + JSON.stringify(e));
     console.error('Error al crear las tablas:', e);
     this.isDBReady.next(false);
   }
+}
+
+// Función para verificar si la columna 'id_user' ya existe en la tabla 'detalle'
+verificarColumnas() {
+  const verificarSQL = "PRAGMA table_info(detalle);";
+  
+  this.database.executeSql(verificarSQL, []).then((result) => {
+    const columnaExiste = Array.from({ length: result.rows.length }, (_, i) => result.rows.item(i))
+                               .some(row => row.name === 'id_user');
+    
+    if (!columnaExiste) {
+      // Si no existe la columna 'id_user', la agregamos
+      const alterTableSQL = "ALTER TABLE detalle ADD COLUMN id_user INTEGER;";
+      
+      this.database.executeSql(alterTableSQL, []).then(() => {
+        console.log("Columna 'id_user' añadida exitosamente a la tabla 'detalle'");
+      }).catch(e => {
+        this.presentAlert('Base de Datos', 'Error al añadir la columna id_user: ' + JSON.stringify(e));
+      });
+    } else {
+      console.log("La columna 'id_user' ya existe en la tabla 'detalle'");
+    }
+  }).catch(e => {
+    this.presentAlert('Base de Datos', 'Error al verificar columnas en detalle: ' + JSON.stringify(e));
+  });
 }
     
 // Método para verificar si el correo ya está registrado
