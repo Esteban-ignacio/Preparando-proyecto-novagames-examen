@@ -573,6 +573,37 @@ async limpiarCarrito(): Promise<void> {
   }
 }
 
+// Función para obtener los productos del carrito desde localStorage
+obtenerCarrito(): Productos[] {
+  const carrito = localStorage.getItem('carrito');
+  return carrito ? JSON.parse(carrito) : [];
+}
+
+// Función para agregar o actualizar un producto en el carrito
+agregarProducto(producto: Productos): void {
+  let carrito = this.obtenerCarrito();
+
+  // Verifica si el producto ya existe en el carrito
+  const index = carrito.findIndex(p => p.id_prod === producto.id_prod);
+  if (index !== -1) {
+    // Si el producto existe, solo actualizamos la cantidad
+    carrito[index].cantidad = producto.cantidad;
+  } else {
+    // Si no existe, agregamos el producto al carrito con la cantidad actual
+    carrito.push(producto);
+  }
+
+  // Guardamos el carrito actualizado en localStorage
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+}
+
+// Función para obtener la cantidad total de productos en el carrito
+obtenerCantidadTotal(): number {
+  const carrito = this.obtenerCarrito();
+  return carrito.reduce((total, producto) => total + producto.cantidad, 0);
+}
+
+
 }
 
 

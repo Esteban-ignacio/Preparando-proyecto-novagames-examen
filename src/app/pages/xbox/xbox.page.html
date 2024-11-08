@@ -18,15 +18,9 @@
     <h2 class="titulo-juegos-xbox">{{ producto.nombre }}</h2>
     <img [src]="producto.imagenUrl" class="imagen-juego" />
 
-    <div class="alinear-precio-botones">
+    <div class="alinear-precio-stock">
       <p class="precio">Precio: {{ formatCurrency(producto.precio) }}</p>
-      <div class="espacio-botones-dis-aum">
-        <ion-button class="boton-disminuir-aumentar" (click)="disminuirCantidad(producto)">-</ion-button>
-        <span class="color-numero">{{ producto.cantidad > 0 ? producto.cantidad : 0 }}</span>
-        <ion-button class="boton-disminuir-aumentar" (click)="aumentarCantidad(producto)">+</ion-button>
-        <!-- Mostrar stock disponible -->
-        <p class="stock-disponible">Stock disponible: {{ producto.stock }}</p>
-      </div>
+      <p class="stock-disponible">Stock disponible: {{ producto.stock }}</p>
     </div>
 
     <ion-button class="boton-agregar" (click)="guardarProductoEnBD(producto)">Agregar al Carrito</ion-button>

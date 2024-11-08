@@ -18,10 +18,25 @@ export class CarritoPage implements OnInit {
     this.obtenerProductosCarrito(); // Llamar a la función para obtener los productos al iniciar
   }
 
-  // Función para obtener los productos del carrito desde el servicio
+   // Función para obtener los productos desde la base de datos y las cantidades del carrito en localStorage
   obtenerProductosCarrito() {
     this.bdService.fetchProductos().subscribe(productos => {
-      this.productos = productos; // Asignamos los productos al array
+      // Obtener los productos del carrito desde localStorage
+      const carrito = this.bdService.obtenerCarrito();
+
+      // Asociamos las cantidades del carrito con los productos obtenidos
+      this.productos = productos.map(producto => {
+        // Buscamos si el producto está en el carrito y le asignamos la cantidad correcta
+        const productoEnCarrito = carrito.find(p => p.id_prod === producto.id_prod);
+        
+        // Si el producto está en el carrito, asignamos la cantidad; sino, la cantidad será 1
+        if (productoEnCarrito) {
+          producto.cantidad = productoEnCarrito.cantidad;
+        } else {
+          producto.cantidad = 1; // Establecemos la cantidad predeterminada a 1 si no está en el carrito
+        }
+        return producto;
+      });
     });
   }
 
@@ -43,6 +58,20 @@ export class CarritoPage implements OnInit {
     });
 
     await alert.present();
+  }
+
+  // Modificar la cantidad de un producto
+  modificarCantidad(accion: string, producto: any): void {
+    // Verifica si la acción es incrementar o decrementar
+    if (accion === 'incrementar') {
+      producto.cantidad += 1;
+    } else if (accion === 'decrementar' && producto.cantidad > 1) {
+      producto.cantidad -= 1;
+    }
+
+    // Guardar el carrito actualizado en localStorage
+    this.bdService.agregarProducto(producto); // Actualizamos el producto con la nueva cantidad
+    console.log('Cantidad actualizada:', producto.cantidad);
   }
 
   // Función para manejar la compra

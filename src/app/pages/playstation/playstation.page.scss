@@ -47,30 +47,16 @@ ion-content {
 .precio {
   color: black; 
   font-weight: bold;
-  margin: 0; /* Sin márgenes para alinear completamente a la izquierda */
+  padding-left: 40px;
 }
 
 .stock-disponible{
   color: black; 
   font-weight: bold;
+  padding-right: 40px;
 }
 
-.boton-disminuir-aumentar {
-  --padding-top: 2px;
-  --padding-bottom: 2px;
-  --padding-start: 8px;
-  --padding-end: 8px;
-  --border-radius: 5px;
-  font-size: 12px;
-}
-
-.espacio-botones-dis-aum {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Espacio entre el número y los botones */
-}
-
-.alinear-precio-botones {
+.alinear-precio-stock {
   display: flex; 
   align-items: center; 
   justify-content: space-between; /* Distribuye los elementos entre sí */

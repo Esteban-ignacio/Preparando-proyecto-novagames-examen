@@ -23,7 +23,7 @@ export class XboxPage implements OnInit {
                     jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
                     gráfico Hypermotion V, que ofrece movimientos más realistas, y la inclusión de equipos femeninos en Ultimate Team, proporcionando 
                     una experiencia de fútbol aún más diversa y auténtica.`,
-      cantidad: 0
+      cantidad: 1
     },
     {
       id: 7,
@@ -35,7 +35,7 @@ export class XboxPage implements OnInit {
                     auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
                     alineación ideal en MyTEAM. Revive tus épocas favoritas como GM o Comisionado en MyNBA. Siente una jugabilidad de próximo nivel y 
                     disfruta de visuales ultrarrealistas mientras juegas con tus equipos favoritos de la NBA y la WNBA en JUEGA AHORA.`,
-      cantidad: 0
+      cantidad: 1
     },
     {
       id: 8,
@@ -46,7 +46,7 @@ export class XboxPage implements OnInit {
       descripcion: `Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
                     podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
                     como Campaña GT, Arcade o Escuela de conducción.`,
-      cantidad: 0
+      cantidad: 1
     },
     {
       id: 9,
@@ -56,7 +56,7 @@ export class XboxPage implements OnInit {
       imagenUrl: 'assets/img/imgxbox/imgpga.jpg',
       descripcion: `Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
                     masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.`,
-      cantidad: 0
+      cantidad: 1
     },
     {
       id: 10,
@@ -67,30 +67,10 @@ export class XboxPage implements OnInit {
       descripcion: `Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
                     Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
                     que se acumula durante las jugadas ofensivas y pasando tiempo en la zona de ataque.`,
-      cantidad: 0
+      cantidad: 1
     },
     
 ];
-
-aumentarCantidad(producto: any) {
-  // Verificar que el stock restante sea mayor a 0 antes de aumentar la cantidad
-  if (producto.stock > 0) {
-    producto.cantidad += 1;
-    producto.stock -= 1; // Reducir el stock en uno al aumentar la cantidad
-  } else {
-    this.mostrarAlerta('No hay suficiente stock disponible');
-  }
-}
-
-disminuirCantidad(producto: any) {
-  // Verificar que la cantidad no sea menor a 0 al disminuir
-  if (producto.cantidad > 0) {
-      producto.cantidad -= 1; // Disminuir la cantidad
-      producto.stock += 1;     // Aumentar el stock en uno
-  } else {
-      this.mostrarAlerta('No se puede disminuir más la cantidad'); // Si ya está en 0
-  }
-}
 
   productos: Productos[] = [];
 
@@ -113,7 +93,7 @@ disminuirCantidad(producto: any) {
         id_prod: producto.id,
         nombre: producto.nombre,
         precio: producto.precio,
-        stock: producto.stock - producto.cantidad,
+        stock: producto.stock,
         imagen_prod: producto.imagenUrl,
         descripcion: producto.descripcion,
         cantidad: producto.cantidad
@@ -128,12 +108,10 @@ disminuirCantidad(producto: any) {
         })
         .catch((error: any) => {
           console.error('Error al guardar el producto', error);
-          this.mostrarAlerta('Hubo un error al agregar el producto al carrito: ' + (error.message || 'error desconocido'));
+          // Aquí solo se maneja el error en caso de fallo
         });
-    } else {
-      this.mostrarAlerta('La cantidad debe ser mayor a 0 para agregar al carrito');
     }
-  }  
+  }
   
   async mostrarAlerta(mensaje: string) {
     const alert = await this.alertController.create({

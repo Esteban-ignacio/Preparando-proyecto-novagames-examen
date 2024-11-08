@@ -37,8 +37,17 @@
         </div>
         <div class="datos-row">
           <span class="datos-label">Cantidad:</span>
+          
+          <!-- Botón para disminuir la cantidad -->
+          <button (click)="modificarCantidad('decrementar', producto)" [disabled]="producto.cantidad <= 1">-</button>
+          
+          <!-- Muestra la cantidad actual -->
           <span class="datos-value">{{ producto.cantidad }}</span>
+          
+          <!-- Botón para aumentar la cantidad -->
+          <button (click)="modificarCantidad('incrementar', producto)">+</button>
         </div>
+        
         <!-- Nuevo apartado de total -->
         <div class="datos-row total-row">
           <span class="datos-label">Total:</span>
