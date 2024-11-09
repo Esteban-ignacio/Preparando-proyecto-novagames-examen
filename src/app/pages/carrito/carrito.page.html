@@ -62,7 +62,27 @@
     <span class="total-label">Total a Pagar:</span>
     <span class="total-value">{{ formatCurrency(calcularTotalAPagar()) }}</span>
   </div>
-  
+
+  <!-- Selector de Formato, solo se muestra si hay productos -->
+<div *ngIf="productos.length > 0">
+  <ion-item lines="none" class="custom-button">
+    <ion-label class="custom-label">Formato:</ion-label>
+    <ion-select 
+      #select 
+      aria-label="currency" 
+      placeholder="Seleccionar" 
+      interface="popover" 
+      [value]="selectedCurrency" 
+      (ionChange)="onCurrencyChange($event)" 
+      class="custom-select"
+    >
+      <ion-select-option value="usd">$ USD</ion-select-option>
+      <ion-select-option value="uf">UF</ion-select-option>
+      <ion-select-option value="clp">CLP $</ion-select-option>
+    </ion-select>
+  </ion-item>
+</div>
+
   <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>
 </ion-content>
 

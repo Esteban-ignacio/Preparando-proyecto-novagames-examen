@@ -12,6 +12,12 @@ export class CarritoPage implements OnInit {
 
   productos: Productos[] = []; // Lista para almacenar los productos del carrito
 
+  selectedCurrency: string | null = null;
+
+onCurrencyChange(event: any) {
+  this.selectedCurrency = event.detail.value;  // Actualiza el valor seleccionado
+}
+
   constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {

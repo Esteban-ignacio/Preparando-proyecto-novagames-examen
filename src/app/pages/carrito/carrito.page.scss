@@ -18,16 +18,6 @@ ion-toolbar{
   color: black;
   font-weight: bold;
 }
-.boton-comprar {
-  display: block;          /* Necesario para centrar el botón */
-  margin: 30px auto;       /* Centra el botón horizontalmente */
-  padding-left: 20px;      /* Ajusta el relleno interno izquierdo */
-  margin-top: 20px;       /* Ajusta el relleno interno superior */
-  padding-right: 20px;     /* Ajusta el relleno interno derecho */
-  padding-bottom: 15px;    /* Ajusta el relleno interno inferior */
-  width: 200px;            /* Disminuye el tamaño del botón */
-  font-size: 14px;         /* Opcional: disminuye el tamaño del texto */
-}
 
 .lista-productos-carrito {
   background-color: #a8f6c6;
@@ -122,6 +112,72 @@ ion-toolbar{
   font-size: 32px; /* Ajusta el tamaño de cada palabra */
   line-height: 1.5; /* Ajusta la separación entre las líneas */
 }
+
+/* Elimina el espacio adicional superior en el contenedor de selección */
+.custom-button {
+  margin-bottom: 5px;  /* Reduce el espacio entre la selección y el botón */
+}
+
+/* Ajusta el margen superior del botón para reducir el espacio */
+.boton-comprar {
+  display: block;
+  margin: 5px auto; /* Reduce el margen superior para acercarlo */
+  padding-left: 20px;
+  margin-top: 5px;   /* Ajusta el margen superior */
+  padding-right: 20px;
+  padding-bottom: 15px;
+  width: 200px; 
+  font-size: 14px;
+}
+
+/* Centra el item y el texto, y aplica fondo verde a todo el contenedor */
+.custom-button {
+  display: flex;
+  flex-direction: row;  /* Cambia la dirección de los elementos a fila */
+  justify-content: center;
+  align-items: center;
+  padding: 10px;  /* Ajustamos el padding interno */
+  --background: #a8f6c6;
+  color: black;
+  font-weight: bold;
+  border-radius: 5px;
+  margin: 0 auto;  /* Centra el botón en su contenedor */
+  width: 80%;  /* Aseguramos que el contenedor tenga un tamaño adecuado */
+  max-width: 300px;  /* Establecemos un límite máximo para el tamaño */
+  box-sizing: border-box;  /* Asegura que padding y border se incluyan en el ancho */
+}
+
+/* Ajuste de estilo para el ion-label */
+.custom-label {
+  text-align: center;
+  font-size: 16px;
+  color: black;
+  font-weight: bold;
+  margin-right: 10px;  /* Asegura un pequeño espacio entre el label y el select */
+  white-space: nowrap;  /* Evita que el texto se divida en varias líneas */
+}
+
+/* Estilos para el ion-select */
+.custom-select {
+  background-color: transparent;
+  --background: #a8f6c6;
+  padding: 5px 0;                
+  margin: 0;
+  --placeholder-color: black;   /* Cambia el color del placeholder */
+  --placeholder-font-weight: bold; /* Aplica negrita al placeholder */
+}
+
+/* Estilo adicional para los select-options */
+ion-select-option {
+  color: black; /* Asegura que las opciones también sean negras */
+  font-weight: bold;
+}
+
+/* Estilos para el ion-select icon */
+.custom-select .select-icon {
+  --background: #a8f6c6;
+}
+
 
 
 
