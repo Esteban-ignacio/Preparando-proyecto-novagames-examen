@@ -30,7 +30,7 @@
       <!-- Contenedor de los datos del producto -->
       <div class="datos-producto">
         <!-- Ícono de basurero arriba del nombre y alineado a la derecha -->
-        <ion-icon class="basurero" name="trash-sharp" ></ion-icon>
+        <ion-icon class="basurero" name="trash-sharp" (click)="eliminarProducto(producto)"></ion-icon>
         
         <div class="datos-row">
           <span class="datos-label">{{ producto.nombre }}</span>

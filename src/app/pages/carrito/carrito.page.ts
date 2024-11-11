@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Productos } from 'src/app/service/productos'; 
@@ -141,6 +140,32 @@ formatCurrency(precio: number): string {
       this.bdService.agregarProducto(producto); // Actualizamos el producto con la nueva cantidad
       console.log('Cantidad actualizada:', producto.cantidad);
     }  
+
+// Función para eliminar un producto del carrito
+async eliminarProducto(producto: any) {
+  const alert = await this.alertController.create({
+    header: 'Eliminar Producto',
+    message: '¿Estás seguro de que deseas eliminar este producto del carrito?',
+    buttons: [
+      {
+        text: 'Cancelar',
+        role: 'cancel',
+      },
+      {
+        text: 'Eliminar',
+        handler: async () => {
+          // Llamamos directamente al servicio para eliminar el producto
+          await this.bdService.eliminarProductoDelCarrito(producto);  // Llamamos a la función modificada para eliminar
+
+          // Actualizamos los productos del carrito después de eliminar
+          await this.obtenerProductosCarrito(); // Actualizamos la UI o el estado del carrito
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
 
   // Función para manejar la compra
   Comprar() {

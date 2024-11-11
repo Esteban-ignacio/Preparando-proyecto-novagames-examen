@@ -610,6 +610,40 @@ obtenerCantidadTotal(): number {
   return carrito.reduce((total, producto) => total + producto.cantidad, 0);
 }
 
+// Función para eliminar un producto del carrito
+async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
+  // Obtener el correo del usuario desde el BehaviorSubject
+  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
+
+  if (!correoUsuario) {
+    this.presentAlert('Error', 'No se encontró el correo del usuario.');
+    return;
+  }
+
+  try {
+    // Consultar el id del usuario a partir del correo
+    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
+    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
+    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
+
+    if (idUsuario === null) {
+      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
+      return;
+    }
+
+    // Eliminar la relación del producto con el usuario en la tabla 'detalle'
+    const sqlEliminarDetalle = 'DELETE FROM detalle WHERE id_prod = ? AND id_user = ?';
+    await this.database.executeSql(sqlEliminarDetalle, [producto.id_prod, idUsuario]);
+
+    // Refrescar la lista de productos después de eliminar
+    await this.obtenerProductos(); // Obtener productos actualizados
+
+    this.presentAlert('Éxito', 'Producto eliminado del carrito correctamente.');
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    this.presentAlert('Error', 'Error al eliminar el producto: ' + JSON.stringify(error));
+  }
+}
 
 
 }
