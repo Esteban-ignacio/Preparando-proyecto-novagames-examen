@@ -41,7 +41,6 @@ export class LoginPage implements OnInit {
       if (navigation?.extras?.state) {
         this.usuario = navigation.extras.state['usuario'] || new Usuario(); // Maneja el caso donde no haya un usuario
       } 
-      // No es necesario inicializar nuevamente aquí porque ya lo has hecho arriba
     }
 
     async ValidacionLogin() {
@@ -74,6 +73,9 @@ export class LoginPage implements OnInit {
           if (loginResult.success) {
             this.presentAlert('Iniciado', 'Inicio exitoso');
             this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
+
+            // Limpiar el carrito después del inicio de sesión
+            await this.bdService.limpiarCarrito();  // Llama a la función para limpiar el carrito
     
             // Limpiar los campos de entrada después de un inicio exitoso
             this.usuariologin = ''; // Limpiar el campo de entrada
