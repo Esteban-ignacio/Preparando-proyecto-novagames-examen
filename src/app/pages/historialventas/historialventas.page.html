@@ -12,16 +12,5 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  !-- Mostrar los indicadores si los datos están disponibles -->
-  <div *ngIf="dolar && uf && ipc">
-    <h2>Indicadores Económicos</h2>
-    <p><strong>Dólar:</strong> {{ dolar.valor }} {{ dolar.codigo }}</p>
-    <p><strong>UF:</strong> {{ uf.valor }} {{ uf.codigo }}</p>
-    <p><strong>IPC:</strong> {{ ipc.valor }} {{ ipc.codigo }}</p>
-  </div>
 
-  <!-- Mensaje de carga en caso de que los datos no estén disponibles -->
-  <div *ngIf="!dolar || !uf || !ipc">
-    <p>Cargando indicadores...</p>
-  </div>
 </ion-content>

@@ -178,6 +178,14 @@ ion-select-option {
   --background: #a8f6c6;
 }
 
+.basurero{
+  position: absolute;
+  top: 5px; /* Ajusta la distancia desde la parte superior */
+  right: 5px; /* Alinea el ícono a la derecha */
+  font-size: 24px; /* Ajusta el tamaño del ícono */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el ícono */
+  color: black;
+}
 
 
 

@@ -26,7 +26,12 @@
       <ion-thumbnail slot="start" class="imagen-producto">
         <img [src]="producto.imagen_prod" alt="Imagen del producto">
       </ion-thumbnail>
+      
+      <!-- Contenedor de los datos del producto -->
       <div class="datos-producto">
+        <!-- Ícono de basurero arriba del nombre y alineado a la derecha -->
+        <ion-icon class="basurero" name="trash-sharp" ></ion-icon>
+        
         <div class="datos-row">
           <span class="datos-label">{{ producto.nombre }}</span>
         </div>
@@ -36,25 +41,17 @@
         </div>
         <div class="datos-row">
           <span class="datos-label">Cantidad:</span>
-          
-          <!-- Botón para disminuir la cantidad -->
           <button (click)="modificarCantidad('decrementar', producto)" [disabled]="producto.cantidad <= 1">-</button>
-          
-          <!-- Muestra la cantidad actual -->
           <span class="datos-value">{{ producto.cantidad }}</span>
-          
-          <!-- Botón para aumentar la cantidad -->
           <button (click)="modificarCantidad('incrementar', producto)">+</button>
         </div>
-        
-        <!-- Nuevo apartado de total -->
         <div class="datos-row total-row">
           <span class="datos-label">Subtotal:</span>
           <span class="datos-value">{{ formatCurrency(calcularSubtotal(producto)) }}</span>
         </div>
       </div>
     </ion-item>
-  </ion-list>
+  </ion-list>  
   
   <!-- Total a Pagar fuera de la lista, solo se muestra si hay productos -->
   <div class="total-pagar" *ngIf="productos.length > 0">
@@ -82,7 +79,7 @@
     </ion-item>
   </div>
   
-  <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>  
+  <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button> 
 
 </ion-content>
 
