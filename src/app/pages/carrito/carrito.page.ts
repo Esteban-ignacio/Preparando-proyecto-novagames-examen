@@ -1,6 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-import { Productos } from 'src/app/service/productos';
+import { Productos } from 'src/app/service/productos'; 
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
@@ -12,49 +13,105 @@ export class CarritoPage implements OnInit {
 
   productos: Productos[] = []; // Lista para almacenar los productos del carrito
 
-  selectedCurrency: string | null = null;
+  productosConvertidos: any[] = [];
 
-onCurrencyChange(event: any) {
-  this.selectedCurrency = event.detail.value;  // Actualiza el valor seleccionado
-}
+  selectedCurrency: string | null = 'clp'; // Moneda predeterminada a pesos chilenos
 
-  constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
+  tasasCambio: any = {}; // Objeto para almacenar las tasas de cambio
+  tasaDolar: number = 0;
+  tasaUF: number = 0;
+
+  constructor(private alertController: AlertController, private bdService: ServiceBDService, private http: HttpClient) { }
 
   ngOnInit() {
     this.obtenerProductosCarrito(); // Llamar a la función para obtener los productos al iniciar
+    this.tasaDolar = 970.87; // Tasa de conversión de pesos chilenos a dólares
+    this.tasaUF = 37995.00;  // Tasa de conversión de pesos chilenos a UF
+    this.convertirMoneda();   // Mostrar precios en el formato predeterminado (CLP)
   }
 
-   // Función para obtener los productos desde la base de datos y las cantidades del carrito en localStorage
+  // Función para obtener los productos del carrito y calcular precios convertidos
   obtenerProductosCarrito() {
-    this.bdService.fetchProductos().subscribe(productos => {
-      // Obtener los productos del carrito desde localStorage
+    this.bdService.fetchProductos().subscribe((productos) => {
+      console.log('Productos obtenidos de la base de datos:', productos);
       const carrito = this.bdService.obtenerCarrito();
-
-      // Asociamos las cantidades del carrito con los productos obtenidos
-      this.productos = productos.map(producto => {
-        // Buscamos si el producto está en el carrito y le asignamos la cantidad correcta
-        const productoEnCarrito = carrito.find(p => p.id_prod === producto.id_prod);
-        
-        // Si el producto está en el carrito, asignamos la cantidad; sino, la cantidad será 1
+      console.log('Contenido del carrito:', carrito);
+  
+      this.productos = productos.map((producto) => {
+        const productoEnCarrito = carrito.find((p) => p.id_prod === producto.id_prod);
         if (productoEnCarrito) {
           producto.cantidad = productoEnCarrito.cantidad;
         } else {
-          producto.cantidad = 1; // Establecemos la cantidad predeterminada a 1 si no está en el carrito
+          producto.cantidad = 1;
         }
         return producto;
       });
+  
+      // Convertimos los precios a la moneda predeterminada (CLP)
+      this.convertirMoneda();
     });
-  }
-
-  formatCurrency(precio: number): string {
-    return `$${precio.toLocaleString('es-CL')}`;
   }  
 
+// Función para convertir el precio dependiendo de la moneda seleccionada
+convertirPrecioMoneda(precio: number): number {
+  let precioConvertido = precio;
+  if (this.selectedCurrency === 'usd' && this.tasaDolar > 0) {
+    precioConvertido = precio / this.tasaDolar;  // De pesos chilenos a dólares
+  } else if (this.selectedCurrency === 'uf' && this.tasaUF > 0) {
+    precioConvertido = precio / this.tasaUF;  // De pesos chilenos a UF
+  }
+  return precioConvertido;
+}
+
+  // Función para manejar la selección de moneda
+  onCurrencyChange(event: any) {
+    this.selectedCurrency = event.detail.value;
+    this.convertirMoneda(); // Convertir los valores al cambiar la moneda
+  }
+
+ // Función para obtener la tasa de cambio desde el servicio
+ obtenerTasaDeCambio() {
+  this.bdService.obtenerIndicadores().subscribe(tasas => {
+    this.tasasCambio = tasas;
+    this.tasaDolar = tasas.dolar;
+    this.tasaUF = tasas.uf;
+    this.convertirMoneda(); // Al obtener las tasas, actualizamos los productos
+  });
+}
+
+convertirMoneda() {
+  this.productosConvertidos = this.productos.map(producto => {
+    return { 
+      ...producto, 
+      precioConvertido: this.convertirPrecioMoneda(producto.precio) 
+    };
+  });
+}
+
+  // Calcular el subtotal del producto (cantidad * precio convertido)
+  calcularSubtotal(producto: any): number {
+    const precio = producto.precioConvertido || producto.precio;
+    return precio * producto.cantidad;
+  }
+
+  // Calcular el total a pagar
   calcularTotalAPagar(): number {
-    return this.productos.reduce((total, producto) => {
-      return total + (producto.precio * producto.cantidad);
+    return this.productosConvertidos.reduce((total, producto: any) => {
+      const precio = producto.precioConvertido || producto.precio;
+      return total + (precio * producto.cantidad);
     }, 0);
   }
+
+// Función para mostrar el precio formateado según la moneda seleccionada
+formatCurrency(precio: number): string {
+  if (this.selectedCurrency === 'usd') {
+    return `$${precio.toFixed(2)} USD`; // Formato USD
+  } else if (this.selectedCurrency === 'uf') {
+    return `${precio.toFixed(2)} UF`; // Formato UF
+  }
+  return `$${precio.toLocaleString('es-CL')}`; // Formato CLP
+}
+
 
   async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({

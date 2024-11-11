@@ -21,9 +21,8 @@
       <span>Aquí</span>
     </h2>
   </div>  
-  <!-- Lista de productos en el carrito, solo se muestra si hay productos -->
   <ion-list class="lista-productos-carrito" *ngIf="productos.length > 0">
-    <ion-item *ngFor="let producto of productos" class="producto-item">
+    <ion-item *ngFor="let producto of productosConvertidos" class="producto-item">
       <ion-thumbnail slot="start" class="imagen-producto">
         <img [src]="producto.imagen_prod" alt="Imagen del producto">
       </ion-thumbnail>
@@ -33,7 +32,7 @@
         </div>
         <div class="datos-row">
           <span class="datos-label">Precio:</span>
-          <span class="datos-value">{{ formatCurrency(producto.precio) }}</span>
+          <span class="datos-value">{{ formatCurrency(producto.precioConvertido || producto.precio) }}</span>
         </div>
         <div class="datos-row">
           <span class="datos-label">Cantidad:</span>
@@ -50,40 +49,41 @@
         
         <!-- Nuevo apartado de total -->
         <div class="datos-row total-row">
-          <span class="datos-label">Total:</span>
-          <span class="datos-value">{{ formatCurrency(producto.precio * producto.cantidad) }}</span> 
+          <span class="datos-label">Subtotal:</span>
+          <span class="datos-value">{{ formatCurrency(calcularSubtotal(producto)) }}</span>
         </div>
       </div>
     </ion-item>
   </ion-list>
-
+  
   <!-- Total a Pagar fuera de la lista, solo se muestra si hay productos -->
   <div class="total-pagar" *ngIf="productos.length > 0">
     <span class="total-label">Total a Pagar:</span>
     <span class="total-value">{{ formatCurrency(calcularTotalAPagar()) }}</span>
   </div>
-
+  
   <!-- Selector de Formato, solo se muestra si hay productos -->
-<div *ngIf="productos.length > 0">
-  <ion-item lines="none" class="custom-button">
-    <ion-label class="custom-label">Formato:</ion-label>
-    <ion-select 
-      #select 
-      aria-label="currency" 
-      placeholder="Seleccionar" 
-      interface="popover" 
-      [value]="selectedCurrency" 
-      (ionChange)="onCurrencyChange($event)" 
-      class="custom-select"
-    >
-      <ion-select-option value="usd">$ USD</ion-select-option>
-      <ion-select-option value="uf">UF</ion-select-option>
-      <ion-select-option value="clp">CLP $</ion-select-option>
-    </ion-select>
-  </ion-item>
-</div>
+  <div *ngIf="productos.length > 0">
+    <ion-item lines="none" class="custom-button">
+      <ion-label class="custom-label">Formato:</ion-label>
+      <ion-select 
+        #select 
+        aria-label="currency" 
+        placeholder="Seleccionar" 
+        interface="popover" 
+        [value]="selectedCurrency" 
+        (ionChange)="onCurrencyChange($event)" 
+        class="custom-select"
+      >
+        <ion-select-option value="usd">$ USD</ion-select-option>
+        <ion-select-option value="uf">UF</ion-select-option>
+        <ion-select-option value="clp">CLP $</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </div>
+  
+  <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>  
 
-  <ion-button class="boton-comprar" expand="full" (click)="Comprar()" *ngIf="productos.length > 0">Comprar</ion-button>
 </ion-content>
 
 

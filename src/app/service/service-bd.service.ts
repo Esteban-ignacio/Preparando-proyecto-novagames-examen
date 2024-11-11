@@ -4,6 +4,7 @@ import { AlertController, Platform } from '@ionic/angular';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Correousuario, Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
 import { Productos } from './productos';
+import { HttpClient } from '@angular/common/http';
 
 
 @Injectable({
@@ -93,10 +94,16 @@ export class ServiceBDService {
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController) {
+  private apiUrl = 'https://mindicador.cl/api';
+
+  constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private http: HttpClient) {
     this.createBD();
    }
 
+   // Método para obtener el valor del dólar, peso chileno y UF
+  obtenerIndicadores(): Observable<any> {
+    return this.http.get<any>(this.apiUrl);
+  }
 
 async presentAlert(titulo: string, msj:string) {
   const alert = await this.alertController.create({

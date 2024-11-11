@@ -1,3 +1,4 @@
+// productos.ts
 export class Productos {
   id_prod: number;
   nombre: string;
@@ -5,7 +6,7 @@ export class Productos {
   imagen_prod: string;
   precio: number;
   stock: number;
-  cantidad: number; // Asegúrate de agregar esta propiedad
+  cantidad: number;
 
   constructor(id_prod: number, nombre: string, descripcion: string, imagen_prod: string, precio: number, stock: number, cantidad: number) {
     this.id_prod = id_prod;
@@ -17,4 +18,7 @@ export class Productos {
     this.cantidad = cantidad;
   }
 }
+
+
+
 
