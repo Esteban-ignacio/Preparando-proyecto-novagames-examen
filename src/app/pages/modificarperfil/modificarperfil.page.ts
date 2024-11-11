@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NavigationExtras, Router } from '@angular/router';
+import { Camera, CameraResultType } from '@capacitor/camera';
 import { AlertController } from '@ionic/angular';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { Extraerdatosusuario } from 'src/app/service/usuario';
@@ -16,6 +17,8 @@ export class ModificarperfilPage implements OnInit {
   telefonomodificarperfil: string = "";
 
   datosPerfil: Extraerdatosusuario | undefined; // Cambiar a un tipo más específico
+
+  imagen: any;
   
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
@@ -31,6 +34,22 @@ export class ModificarperfilPage implements OnInit {
       }
     });
   }
+
+  takePicture = async () => {
+    const image = await Camera.getPhoto({
+      quality: 90,
+      allowEditing: false,
+      resultType: CameraResultType.Uri
+    });
+  
+    // image.webPath will contain a path that can be set as an image src.
+    // You can access the original file using image.path, which can be
+    // passed to the Filesystem API to read the raw data of the image,
+    // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
+    this.imagen = image.webPath;
+  
+    
+  };
 
   async ValidacionModificarPerfil() {
     // Primero validamos el formulario

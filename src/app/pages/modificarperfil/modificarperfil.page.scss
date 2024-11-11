@@ -21,6 +21,7 @@ ion-content{
     margin: auto;
     width: 350px;
     --padding-start: 0;
+    padding-top: 10px;
 }
 .apellido-modificar-perfil{
     margin: auto;
@@ -46,3 +47,24 @@ ion-content{
     padding-top: 10px;
     display: block;
 }
+.contenedor-foto {
+    display: flex;
+    flex-direction: column; /* Ordena en columna: imagen arriba, botón abajo */
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    gap: 15px; /* Espacio entre la imagen y el botón */
+  }
+  
+  .foto {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%; /* Foto circular */
+    object-fit: cover; /* Evita distorsión */
+    border: 2px solid #ccc; /* Borde opcional */
+  }
+  
+  .tomar-foto {
+    width: 50%; /* Ajusta el ancho del botón */
+    text-align: center; /* Centra el texto del botón */
+  }  
+

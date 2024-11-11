@@ -13,6 +13,11 @@
 
 <ion-content [fullscreen]="true">
   <h2 class="ingresar-datos-modificar-perfil">Ingrese sus datos</h2>
+  <div class="contenedor-foto">
+    <img class="foto" *ngIf="imagen" [src]="imagen" alt="Sin imagen" />
+    <ion-button expand="block" class="tomar-foto" (click)="takePicture()">Tomar Foto</ion-button>
+  </div>
+  
   <form class="nombre-modificar-perfil"(ngSubmit)="ValidacionModificarPerfil()">
     <ion-item>
       <ion-label position="floating"></ion-label>

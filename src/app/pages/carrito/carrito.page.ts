@@ -21,7 +21,7 @@ export class CarritoPage implements OnInit {
   tasaDolar: number = 0;
   tasaUF: number = 0;
 
-  constructor(private alertController: AlertController, private bdService: ServiceBDService, private http: HttpClient) { }
+  constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
     this.obtenerProductosCarrito(); // Llamar a la función para obtener los productos al iniciar
