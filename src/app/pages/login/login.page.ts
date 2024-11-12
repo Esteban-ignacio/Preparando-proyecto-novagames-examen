@@ -20,7 +20,7 @@ export class LoginPage implements OnInit {
   usuario: Usuario = new Usuario();
 
   constructor(private router: Router, private alertController: AlertController, private bdService: ServiceBDService,
-    private menuController: MenuController) { }
+    private menuCtrl: MenuController,) { }
 
     ngOnInit() {
       // Esperar a que la base de datos esté lista
@@ -58,8 +58,6 @@ export class LoginPage implements OnInit {
       // Llamamos a la función obtenerCorreoUsuario para verificar si el correo existe en la base de datos
       await this.bdService.obtenerCorreoUsuario(this.correologin);
     
-      // Verificamos el resultado de la función (esto dependerá de cómo implementes el comportamiento en obtenerCorreoUsuario)
-      // En este caso, asumimos que si el correo no existe, ya se habrá mostrado una alerta y no se continuará con el login
       if (this.bdService.listaobtenercorreousuario.value.length === 0) {
         return; // Si no se encuentra el correo, no continuar con el login
       }
@@ -72,7 +70,11 @@ export class LoginPage implements OnInit {
           
           if (loginResult.success) {
             this.presentAlert('Iniciado', 'Inicio exitoso');
-            this.irPagina(); // Navegar a la página de inicio si el inicio es exitoso
+
+            // Determina el rol en función del correo
+            const rol = this.correologin.includes('@admin') ? 'administrador' : 'usuario';
+
+            this.irPagina(rol); // Pasa el rol obtenido a irPagina()
 
             // Limpiar el carrito después del inicio de sesión
             await this.bdService.limpiarCarrito();  // Llama a la función para limpiar el carrito
@@ -161,27 +163,45 @@ export class LoginPage implements OnInit {
 
   }
 
-  irPagina() {
+  // Función para obtener el rol según el correo
+  async obtenerRolPorCorreo(correo: string): Promise<string | null> {
+    try {
+      const sql = `SELECT * FROM rol WHERE id_rol = (SELECT id_rol FROM usuario WHERE correo = ?)`;
+      const res = await this.bdService.database.executeSql(sql, [correo]);
+
+      if (res.rows.length > 0) {
+        const rol = res.rows.item(0).nombre_rol;
+        return rol;
+      } else {
+        return null; // Si no se encuentra el rol
+      }
+    } catch (e) {
+      console.error('Error al obtener el rol:', e);
+      return null;
+    }
+  }
+
+  irPagina(rol: string) {
     let navigationExtras: NavigationExtras = {
       state: { user: this.usuariologin },
     };
   
-    if (this.correologin.includes('@admin')) {
+    if (rol === 'administrador') {
+      // Navegar a la página de administrador y configurar el menú
       this.navegarYConfigurarMenu('/administrador', 'menu-admin', 'menu-usuarios', navigationExtras);
-    } else if (this.correologin.includes('@')) {
+    } else if (rol === 'usuario') {
+      // Navegar a la página de home y configurar el menú
       this.navegarYConfigurarMenu('/home', 'menu-usuarios', 'menu-admin', navigationExtras);
     }
   }
   
-  navegarYConfigurarMenu(
-    ruta: string,
-    habilitarMenu: string,
-    deshabilitarMenu: string,
-    extras: NavigationExtras
-  ) {
-    this.router.navigate([ruta], extras);
-    this.menuController.enable(true, habilitarMenu);
-    this.menuController.enable(false, deshabilitarMenu);
+  navegarYConfigurarMenu(ruta: string, menuActivo: string, menuInactivo: string, navigationExtras: NavigationExtras) {
+    // Habilita el menú correspondiente y deshabilita el otro
+    this.menuCtrl.enable(true, menuActivo);
+    this.menuCtrl.enable(false, menuInactivo);
+  
+    // Navega a la página especificada
+    this.router.navigate([ruta], navigationExtras);
   }
 
   irRegistro(){

@@ -181,6 +181,9 @@ async crearTablas() {
     await this.database.executeSql(this.tablaCompra, []);
     await this.database.executeSql(this.tablaDetalle, []);
 
+    // Insertar los roles después de crear las tablas
+    await this.insertarRoles();
+
     // Marcar la base de datos como lista
     this.isDBReady.next(true);
   } catch (e) {
@@ -279,27 +282,6 @@ async obtenerUsuarios(): Promise<Usuario[]> {
     return [];
   }
 }
-
-//para el login
-async obtenerRoles(): Promise<void> {
-  try {
-    const res = await this.database.executeSql('SELECT * FROM rol', []);
-    const roles: Roles[] = [];
-
-    if (res.rows.length > 0) {
-      for (let i = 0; i < res.rows.length; i++) {
-        roles.push({
-          idrol: res.rows.item(i).id_rol,
-          nombrerol: res.rows.item(i).nombre_rol,
-        });
-      }
-    }
-    this.listaroles.next(roles); // Emitir los roles al observable
-  } catch (error) {
-    console.error('Error al obtener roles:', error);
-  }
-}
-
 
 actualizarDatoslogin(datos: Datoslogin[]) {
   this.listadatoslogin.next(datos); // Actualiza los datos en el observable
@@ -642,6 +624,79 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
   } catch (error) {
     console.error('Error al eliminar el producto:', error);
     this.presentAlert('Error', 'Error al eliminar el producto: ' + JSON.stringify(error));
+  }
+}
+
+//elimina roles duplicados
+async eliminarDuplicados() {
+  try {
+    // Consulta para eliminar los duplicados
+    const sqlDeleteDuplicates = `
+      DELETE FROM rol
+      WHERE rowid NOT IN (
+        SELECT MIN(rowid)
+        FROM rol
+        GROUP BY nombre_rol
+      );
+    `;
+    await this.database.executeSql(sqlDeleteDuplicates, []);
+    console.log('Duplicados eliminados correctamente');
+  } catch (e) {
+    console.error('Error al eliminar duplicados:', e);
+  }
+}
+
+// Llama a esta función después de insertar los roles
+async insertarRoles() {
+  try {
+    // Insertar los roles si no existen (como lo hiciste antes)
+    const sqlCheckAdmin = 'SELECT * FROM rol WHERE nombre_rol = ?';
+    const resAdmin = await this.database.executeSql(sqlCheckAdmin, ['administrador']);
+    if (resAdmin.rows.length === 0) {
+      const sqlAdmin = 'INSERT INTO rol (nombre_rol) VALUES (?)';
+      await this.database.executeSql(sqlAdmin, ['administrador']);
+    }
+
+    const sqlCheckUser = 'SELECT * FROM rol WHERE nombre_rol = ?';
+    const resUser = await this.database.executeSql(sqlCheckUser, ['usuario']);
+    if (resUser.rows.length === 0) {
+      const sqlUser = 'INSERT INTO rol (nombre_rol) VALUES (?)';
+      await this.database.executeSql(sqlUser, ['usuario']);
+    }
+
+    // Eliminar duplicados después de insertar los roles
+    await this.eliminarDuplicados();
+
+    // Obtener los roles para actualizarlos en la interfaz
+    await this.obtenerRoles();
+  } catch (e) {
+    this.presentAlert('Inserción de Roles', 'Error al insertar los roles: ' + JSON.stringify(e));
+    console.error('Error al insertar roles:', e);
+  }
+}
+
+// Función para obtener los roles desde la base de datos
+async obtenerRoles() {
+  try {
+    const res = await this.database.executeSql('SELECT * FROM rol', []);
+    const roles: Roles[] = [];
+    
+    // Verifica la respuesta y muestra los resultados obtenidos
+    console.log('Respuesta de obtenerRoles:', res);
+    
+    for (let i = 0; i < res.rows.length; i++) {
+      const rol = res.rows.item(i);
+      console.log('Rol encontrado:', rol);  // Muestra cada rol que se obtiene de la base de datos
+      roles.push({
+        idrol: rol.id_rol,        // Asegúrate de que estás mapeando los valores correctamente
+        nombrerol: rol.nombre_rol  // Aquí asignamos el nombre del rol
+      });
+    }
+    
+    // Actualiza el observable con los roles obtenidos
+    this.listaroles.next(roles);
+  } catch (e) {
+    console.error('Error al obtener roles:', e);
   }
 }
 
