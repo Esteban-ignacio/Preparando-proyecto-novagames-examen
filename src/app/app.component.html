@@ -49,25 +49,26 @@
       </ion-toolbar>
     </ion-header>
     <ion-content>
-      <ion-item class="administrar-usuarios-admin" [routerDirection]="'root'" [routerLink]="'/administrador'">
+      <ion-item class="administrar-usuarios-admin" (click)="navegarYCerrar('/administrador')">
         <ion-icon class="icon-menu-admin" name="shield"></ion-icon>
         <ion-label>Administrar Usuarios</ion-label>
       </ion-item>
-      <ion-item class="gestion-productos-admin" [routerDirection]="'root'" [routerLink]="'/gestionproductos'">
+      <ion-item class="gestion-productos-admin" (click)="navegarYCerrar('/gestionproductos')">
         <ion-icon class="icon-menu-admin" name="bag-add-sharp"></ion-icon>
         <ion-label>Gestion de Productos</ion-label>
       </ion-item>
-      <ion-item class="historial-ventas-usuarios" [routerDirection]="'root'" [routerLink]="'/historialventasadmin'">
+      <ion-item class="historial-ventas-usuarios" (click)="navegarYCerrar('/historialventasadmin')">
         <ion-icon class="icon-menu-admin" name="reader-sharp"></ion-icon>
         <ion-label>Historial de Ventas Usuarios</ion-label>
       </ion-item>
-      <ion-item class="cerrar-sesion-admin" [routerDirection]="'root'" [routerLink]="'/login'">
+      <ion-item class="cerrar-sesion-admin" (click)="navegarYCerrar('/login')">
         <ion-icon class="icon-menu-admin" name="reload-circle"></ion-icon>
         <ion-label>Cerrar sesión</ion-label>
       </ion-item>
     </ion-content>
   </ion-menu>
-
+  
   <ion-router-outlet id="main-content"></ion-router-outlet>
+  
 
 </ion-app>
