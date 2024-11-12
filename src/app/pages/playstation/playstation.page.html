@@ -8,6 +8,10 @@
       Zona de playstation
       <ion-icon name="logo-playstation"></ion-icon>
     </ion-title>
+    <ion-buttons slot="end">
+      <ion-icon name="cart" class="contador-productos"></ion-icon>
+      <ion-badge color="primary" *ngIf="productosGuardados > 0">{{ productosGuardados }}</ion-badge>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 

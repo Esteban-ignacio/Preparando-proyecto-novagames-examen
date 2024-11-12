@@ -56,4 +56,9 @@ ion-toolbar{
     margin: 16px 0; /* Mantén el margen superior e inferior */
   }
 
+  .contador-productos {
+    font-size: 1.5rem; /* Mismo tamaño que el botón de menú */
+    padding-right: 8px; /* Ajusta este valor para el mismo espaciado que el botón de menú */
+    color: black;
+  }
   

@@ -12,6 +12,8 @@ export class PlaystationPage implements OnInit {
 
   correoUsuario: string = '';
 
+  productosGuardados: number = 0; // Variable para almacenar la cantidad de productos guardados
+
   productosPlayStation: any[] = [
     {
       id: 1,
@@ -81,11 +83,22 @@ export class PlaystationPage implements OnInit {
     const correoUsuario = localStorage.getItem('correoUsuario');
     if (correoUsuario) {
       this.correoUsuario = correoUsuario;
+      this.contarProductosGuardados();  // Llamamos a contar los productos guardados al iniciar
     }
   }  
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
+  }
+
+  // Llamamos a la función contarProductosGuardados para actualizar la cantidad de productos guardados
+  async contarProductosGuardados() {
+    try {
+      this.productosGuardados = await this.bdService.contarProductosGuardados();
+      console.log('Productos guardados:', this.productosGuardados);  // Muestra en consola la cantidad de productos guardados
+    } catch (error) {
+      console.error('Error al contar los productos guardados:', error);
+    }
   }
 
   guardarProductoEnBD(producto: any): void {
@@ -106,6 +119,7 @@ export class PlaystationPage implements OnInit {
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
+          this.contarProductosGuardados();  // Actualizamos la cantidad de productos guardados después de agregar uno
         })
         .catch((error: any) => {
           console.error('Error al guardar el producto', error);
