@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Productos } from 'src/app/service/productos';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 import { AlertController } from '@ionic/angular'; // Importa AlertController
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-playstation',
@@ -77,7 +78,7 @@ export class PlaystationPage implements OnInit {
 
   productos: Productos[] = [];
 
-  constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
+  constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
     const correoUsuario = localStorage.getItem('correoUsuario');
@@ -128,6 +129,9 @@ export class PlaystationPage implements OnInit {
     }
   }
    
+  irAlCarrito() {
+    this.router.navigate(['/carrito']);
+  }
   
   async mostrarAlerta(mensaje: string) {
     const alert = await this.alertController.create({

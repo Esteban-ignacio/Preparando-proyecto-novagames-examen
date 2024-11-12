@@ -9,7 +9,7 @@
       <ion-icon name="logo-xbox"></ion-icon>
     </ion-title>
     <ion-buttons slot="end">
-      <ion-icon name="cart" class="contador-productos"></ion-icon>
+      <ion-icon name="cart" class="contador-productos" (click)="irAlCarrito()"></ion-icon>
       <ion-badge color="primary" *ngIf="productosGuardados > 0">{{ productosGuardados }}</ion-badge>
     </ion-buttons>
   </ion-toolbar>

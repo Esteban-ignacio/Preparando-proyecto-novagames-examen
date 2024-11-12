@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { AlertController } from '@ionic/angular';
 import { Productos } from 'src/app/service/productos';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
@@ -76,7 +77,7 @@ export class XboxPage implements OnInit {
 
   productos: Productos[] = [];
 
-  constructor(private bdService: ServiceBDService, private alertController: AlertController) { }
+  constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
     const correoUsuario = localStorage.getItem('correoUsuario');
@@ -125,6 +126,10 @@ export class XboxPage implements OnInit {
           // Aquí solo se maneja el error en caso de fallo
         });
     }
+  }
+
+  irAlCarrito() {
+    this.router.navigate(['/carrito']);
   }
   
   async mostrarAlerta(mensaje: string) {
