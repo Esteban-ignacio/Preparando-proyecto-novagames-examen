@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuController } from '@ionic/angular';
 
 @Component({
   selector: 'app-gestionproductos',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GestionproductosPage implements OnInit {
 
-  constructor() { }
+  constructor(private menuCtrl: MenuController) {}
 
-  ngOnInit() {
+  ngOnInit() {}
+
+  ionViewWillEnter() {
+    // Habilita el menú de administrador al entrar en esta página
+    this.menuCtrl.enable(true, 'menu-admin');
+    this.menuCtrl.enable(false, 'menu-usuarios');
   }
-
 }
