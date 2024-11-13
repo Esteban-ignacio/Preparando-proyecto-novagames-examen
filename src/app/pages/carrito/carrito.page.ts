@@ -59,13 +59,6 @@ export class CarritoPage implements OnInit {
     });
   }  
 
-   // Función para cargar el contador de productos guardados desde localStorage
-   cargarContadorProductos() {
-    const productosEnCarrito = JSON.parse(localStorage.getItem('productosEnCarrito') || '[]');
-    this.productosGuardados = productosEnCarrito.reduce((total: number, producto: any) => total + producto.cantidad, 0);
-    console.log('Productos guardados al cargar:', this.productosGuardados);
-  }
-
 // Función para convertir el precio dependiendo de la moneda seleccionada
 convertirPrecioMoneda(precio: number): number {
   let precioConvertido = precio;
@@ -174,12 +167,22 @@ async eliminarProducto(producto: any) {
 
           // Actualizamos los productos del carrito después de eliminar
           await this.obtenerProductosCarrito(); // Actualizamos la UI o el estado del carrito
+
+          // Llamamos a cargarContadorProductos para actualizar el contador
+          this.cargarContadorProductos();
         }
       }
     ]
   });
 
   await alert.present();
+}
+
+// Función para cargar el contador de productos guardados en localStorage
+async cargarContadorProductos() {
+  // Usamos el servicio para obtener el número de productos guardados en el carrito
+  this.productosGuardados = await this.bdService.contarProductosGuardados(); 
+  console.log('Productos guardados al cargar:', this.productosGuardados);
 }
 
   // Función para manejar la compra

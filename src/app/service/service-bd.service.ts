@@ -96,6 +96,8 @@ export class ServiceBDService {
 
   private apiUrl = 'https://mindicador.cl/api';
 
+  contarproductosguardados: number = 0; // Propiedad para almacenar el contador de productos guardados
+
   constructor(private sqlite: SQLite, private platform: Platform, private alertController: AlertController, private http: HttpClient) {
     this.createBD();
    }
@@ -620,12 +622,60 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
     // Refrescar la lista de productos después de eliminar
     await this.obtenerProductos(); // Obtener productos actualizados
 
+    // Actualizar el contador de productos en el carrito
+    this.cargarContadorProductos();
+
     this.presentAlert('Éxito', 'Producto eliminado del carrito correctamente.');
   } catch (error) {
     console.error('Error al eliminar el producto:', error);
     this.presentAlert('Error', 'Error al eliminar el producto: ' + JSON.stringify(error));
   }
 }
+
+// Función para cargar el contador de productos guardados
+async cargarContadorProductos(): Promise<void> {
+  const cantidadProductosGuardados = await this.contarProductosGuardados(); // Llama a la función que cuenta los productos guardados en la base de datos
+
+  // Almacenar la cantidad de productos en la propiedad de clase
+  this.contarproductosguardados = cantidadProductosGuardados;
+
+  console.log('Cantidad de productos guardados:', this.contarproductosguardados);
+}
+
+// Función para contar los productos guardados para un usuario
+async contarProductosGuardados(): Promise<number> {
+  // Obtener el correo del usuario desde el BehaviorSubject o lista de usuarios
+  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
+
+  if (!correoUsuario) {
+    this.presentAlert('Error', 'No se encontró el correo del usuario.');
+    return 0;
+  }
+
+  try {
+    // Consultar el idUsuario directamente a partir del correo
+    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
+    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
+    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
+
+    if (idUsuario === null) {
+      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
+      return 0;
+    }
+
+    // Consultar la cantidad de productos guardados por el usuario
+    const sqlContarProductos = 'SELECT COUNT(*) as cantidad FROM detalle WHERE id_user = ?';
+    const resultContar = await this.database.executeSql(sqlContarProductos, [idUsuario]);
+    const cantidadProductos = resultContar.rows.item(0).cantidad;
+
+    return cantidadProductos; // Retorna la cantidad de productos guardados
+  } catch (error) {
+    console.error('Error al contar los productos:', error);
+    this.presentAlert('Error', 'Error al contar los productos: ' + JSON.stringify(error));
+    return 0; // Si ocurre un error, retornamos 0
+  }
+}
+
 
 //elimina roles duplicados
 async eliminarDuplicados() {
@@ -697,40 +747,6 @@ async obtenerRoles() {
     this.listaroles.next(roles);
   } catch (e) {
     console.error('Error al obtener roles:', e);
-  }
-}
-
-// Función para contar los productos guardados para un usuario
-async contarProductosGuardados(): Promise<number> {
-  // Obtener el correo del usuario desde el BehaviorSubject o lista de usuarios
-  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
-
-  if (!correoUsuario) {
-    this.presentAlert('Error', 'No se encontró el correo del usuario.');
-    return 0;
-  }
-
-  try {
-    // Consultar el idUsuario directamente a partir del correo
-    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
-    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
-    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
-
-    if (idUsuario === null) {
-      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
-      return 0;
-    }
-
-    // Consultar la cantidad de productos guardados por el usuario
-    const sqlContarProductos = 'SELECT COUNT(*) as cantidad FROM detalle WHERE id_user = ?';
-    const resultContar = await this.database.executeSql(sqlContarProductos, [idUsuario]);
-    const cantidadProductos = resultContar.rows.item(0).cantidad;
-
-    return cantidadProductos; // Retorna la cantidad de productos guardados
-  } catch (error) {
-    console.error('Error al contar los productos:', error);
-    this.presentAlert('Error', 'Error al contar los productos: ' + JSON.stringify(error));
-    return 0; // Si ocurre un error, retornamos 0
   }
 }
 
