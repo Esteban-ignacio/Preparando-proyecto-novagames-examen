@@ -22,7 +22,8 @@ export class AppComponent {
   // Función para manejar el cierre de sesión
   async cerrarSesion() {
     // Limpiar el carrito
-    await this.bdService.limpiarCarrito(); 
+    await this.bdService.limpiarCarrito();
+    this.bdService.resetearContadorProductos();  // Llama a resetearContadorProductos para limpiar el contador
 
     this.router.navigate(['/login']);
   }

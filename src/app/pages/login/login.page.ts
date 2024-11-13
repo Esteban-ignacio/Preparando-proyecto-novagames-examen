@@ -71,6 +71,9 @@ export class LoginPage implements OnInit {
           if (loginResult.success) {
             this.presentAlert('Iniciado', 'Inicio exitoso');
 
+            // Llamar a resetearContadorProductos aquí después de un inicio de sesión exitoso
+            await this.bdService.resetearContadorProductos();
+
             // Determina el rol en función del correo
             const rol = this.correologin.includes('@admin') ? 'administrador' : 'usuario';
 

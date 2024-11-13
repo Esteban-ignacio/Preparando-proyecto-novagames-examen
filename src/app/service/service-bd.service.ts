@@ -734,6 +734,14 @@ async contarProductosGuardados(): Promise<number> {
   }
 }
 
+// Nueva función para resetear el contador de productos en `localStorage`
+resetearContadorProductos() {
+  localStorage.removeItem('productosEnCarrito'); // Borra los productos del carrito
+  localStorage.removeItem('productosGuardados'); // Borra el contador de productos
+}
+
+
+
 
 }
 
