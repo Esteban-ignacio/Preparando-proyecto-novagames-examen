@@ -88,15 +88,16 @@ export class XboxPage implements OnInit {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
-  
-
   guardarProductoEnBD(producto: any): void {
-    if (producto.cantidad > 0) {
+    if (producto.cantidad > 0 && producto.stock > 0) {
+      // Reducir el stock en 1
+      producto.stock -= 1;
+  
       const productoAGuardar: Productos = {
         id_prod: producto.id,
         nombre: producto.nombre,
         precio: producto.precio,
-        stock: producto.stock,
+        stock: producto.stock,  // Usamos el stock actualizado
         imagen_prod: producto.imagenUrl,
         descripcion: producto.descripcion,
         cantidad: producto.cantidad
@@ -115,6 +116,7 @@ export class XboxPage implements OnInit {
         });
     }
   }
+  
   
   irAlCarrito() {
     this.router.navigate(['/carrito']);
