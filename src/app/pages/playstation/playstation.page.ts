@@ -13,8 +13,6 @@ export class PlaystationPage implements OnInit {
 
   correoUsuario: string = '';
 
-  productosGuardados: number = 0; // Variable para almacenar la cantidad de productos guardados
-
   productosPlayStation: any[] = [
     {
       id: 1,
@@ -84,23 +82,11 @@ export class PlaystationPage implements OnInit {
     const correoUsuario = localStorage.getItem('correoUsuario');
     if (correoUsuario) {
       this.correoUsuario = correoUsuario;
-      this.cargarContadorProductos();
     }
   }  
 
-  ionViewWillEnter() {
-    this.cargarContadorProductos();  // Asegura que el contador se actualice al entrar a la página
-  }
-
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
-  }
-
-  // Función para cargar el contador de productos guardados desde localStorage
-  cargarContadorProductos() {
-    const productosEnCarrito = JSON.parse(localStorage.getItem('productosEnCarrito') || '[]');
-    this.productosGuardados = productosEnCarrito.reduce((total: number, producto: any) => total + producto.cantidad, 0);
-    console.log('Productos guardados al cargar:', this.productosGuardados);
   }
 
   guardarProductoEnBD(producto: any): void {
@@ -121,7 +107,6 @@ export class PlaystationPage implements OnInit {
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
-          this.agregarProductoAlLocalStorage(productoAGuardar);  
         })
         .catch((error: any) => {
           console.error('Error al guardar el producto', error);
@@ -129,21 +114,7 @@ export class PlaystationPage implements OnInit {
         });
     }
   }
-
-    // Función para agregar productos a localStorage y actualizar el contador de productos guardados
-    agregarProductoAlLocalStorage(producto: Productos) {
-      const productosEnCarrito = JSON.parse(localStorage.getItem('productosEnCarrito') || '[]');
-      const productoExistente = productosEnCarrito.find((p: any) => p.id_prod === producto.id_prod);
-      if (productoExistente) {
-        productoExistente.cantidad += producto.cantidad;
-      } else {
-        productosEnCarrito.push(producto);
-      }
   
-      localStorage.setItem('productosEnCarrito', JSON.stringify(productosEnCarrito));
-      this.cargarContadorProductos();  // Actualiza el contador en la página actual
-    }
-    
   irAlCarrito() {
     this.router.navigate(['/carrito']);
   }
