@@ -20,6 +20,8 @@ export class CarritoPage implements OnInit {
   tasaDolar: number = 0;
   tasaUF: number = 0;
 
+  productosGuardados: number = 0; // Variable para almacenar la cantidad de productos guardados
+
   constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
@@ -27,6 +29,10 @@ export class CarritoPage implements OnInit {
     this.tasaDolar = 970.87; // Tasa de conversión de pesos chilenos a dólares
     this.tasaUF = 37995.00;  // Tasa de conversión de pesos chilenos a UF
     this.convertirMoneda();   // Mostrar precios en el formato predeterminado (CLP)
+  }
+
+  ionViewWillEnter() {
+    this.obtenerProductosCarrito(); // Asegura que el contador se actualice al entrar a la página
   }
 
   // Función para obtener los productos del carrito y calcular precios convertidos
@@ -48,8 +54,17 @@ export class CarritoPage implements OnInit {
     
       // Convertimos los precios a la moneda predeterminada (CLP)
       this.convertirMoneda();
+      // Actualizar el contador de productos en el carrito
+      this.cargarContadorProductos();
     });
   }  
+
+   // Función para cargar el contador de productos guardados desde localStorage
+   cargarContadorProductos() {
+    const productosEnCarrito = JSON.parse(localStorage.getItem('productosEnCarrito') || '[]');
+    this.productosGuardados = productosEnCarrito.reduce((total: number, producto: any) => total + producto.cantidad, 0);
+    console.log('Productos guardados al cargar:', this.productosGuardados);
+  }
 
 // Función para convertir el precio dependiendo de la moneda seleccionada
 convertirPrecioMoneda(precio: number): number {
