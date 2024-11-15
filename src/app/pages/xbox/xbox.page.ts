@@ -82,17 +82,24 @@ export class XboxPage implements OnInit {
     if (correoUsuario) {
       this.correoUsuario = correoUsuario;
     }
+    // Recuperar el stock modificado de productos desde localStorage
+    const productosGuardados = localStorage.getItem('productosXbox');
+    if (productosGuardados) {
+      this.productosXbox = JSON.parse(productosGuardados);
+    }
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
+  
+  // Función para reducir el stock local y guardarlo en localStorage, además de guardar el producto en la base de datos
   guardarProductoEnBD(producto: any): void {
     if (producto.cantidad > 0 && producto.stock > 0) {
-      // Reducir el stock en 1
+      // Reducir el stock en 1 de forma local
       producto.stock -= 1;
-  
+
       const productoAGuardar: Productos = {
         id_prod: producto.id,
         nombre: producto.nombre,
@@ -105,19 +112,20 @@ export class XboxPage implements OnInit {
   
       console.log('Producto a guardar:', productoAGuardar);
   
-      // Llamamos a guardarProducto y no necesitamos pasar el correo
+      // Guardar el producto en la base de datos (en el carrito)
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
           this.mostrarAlerta('Producto agregado al carrito correctamente');
         })
         .catch((error: any) => {
           console.error('Error al guardar el producto', error);
-          // Aquí solo se maneja el error en caso de fallo
         });
+
+      // Guardar los productos con el stock actualizado en localStorage
+      localStorage.setItem('productosXbox', JSON.stringify(this.productosXbox));
     }
   }
-  
-  
+
   irAlCarrito() {
     this.router.navigate(['/carrito']);
   }

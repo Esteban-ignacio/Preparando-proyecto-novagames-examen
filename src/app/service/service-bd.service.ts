@@ -610,7 +610,6 @@ async eliminarUsuario(correo: string): Promise<void> {
 }
 
  // Función para obtener productos utilizando el correo del usuario desde el BehaviorSubject
- //modificar esto, para que se use con localstorage y no base de datos
  async obtenerProductos(): Promise<void> {
   // Obtener correo desde BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
@@ -655,7 +654,6 @@ async eliminarUsuario(correo: string): Promise<void> {
 }
 
 // Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
-//modificar esto, para que se use con localstorage y no base de datos
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   // Obtener correo desde el BehaviorSubject o lista de usuarios
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
