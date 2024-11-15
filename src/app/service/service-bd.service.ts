@@ -185,6 +185,8 @@ async crearTablas() {
 
     // Insertar los roles después de crear las tablas
     await this.insertarRoles();
+    await this.insertarCategorias(); // Insertar categorías
+    await this.insertarProductos(); // Aquí se insertan los productos
 
     // Marcar la base de datos como lista
     this.isDBReady.next(true);
@@ -219,7 +221,189 @@ verificarColumnas() {
     this.presentAlert('Base de Datos', 'Error al verificar columnas en detalle: ' + JSON.stringify(e));
   });
 }
+
+// Función para insertar categorías solo si no existen
+async insertarCategorias() {
+  try {
+    const categorias = [
+      { id_cat: 1, nombre_cat: 'Supervivencia' },
+      { id_cat: 2, nombre_cat: 'Deportes' }
+    ];
+
+    // Verificar si ya existen categorías en la base de datos
+    const resultadoCategoria = await this.database.executeSql('SELECT * FROM categoria LIMIT 1', []);
     
+    if (resultadoCategoria.rows.length === 0) {  // Si no hay ninguna categoría
+      // Insertar categorías solo si no hay ninguna en la tabla
+      for (const categoria of categorias) {
+        await this.database.executeSql('INSERT INTO categoria (id_cat, nombre_cat) VALUES (?, ?)', 
+          [categoria.id_cat, categoria.nombre_cat]);
+        console.log(`Categoría ${categoria.nombre_cat} insertada correctamente`);
+      }
+    } else {
+      console.log('Las categorías ya existen. No se insertaron.');
+    }
+
+  } catch (e) {
+    this.presentAlert('Insertar Categorías', 'Error al insertar categorías: ' + JSON.stringify(e));
+    console.error('Error al insertar categorías:', e);
+  }
+}
+
+// Función para insertar productos
+async insertarProductos() {
+  try {
+    // Productos de PlayStation (que pertenecen a 'Supervivencia')
+    const productosPlayStation = [
+      {
+        id_prod: 1,
+        nombre_prod: 'APEX LEGENDS',
+        precio_prod: 4000,
+        stock_prod: 60,
+        foto_prod: 'assets/img/imgplaystation/imagenapex.jfif',
+        descripcion_prod: `En este juego, hasta 60 jugadores forman escuadrones de tres personas y compiten en un campo de batalla en constante 
+                    reducción para ser el último equipo en pie. Los jugadores eligen entre varios personajes, conocidos como "Leyendas",
+                    cada uno con habilidades únicas que pueden afectar el juego, como crear escudos, curar a compañeros, o rastrear enemigos.
+                   ¡Todo esto desde primera persona!`,
+        id_cat: 1 // Usar id_cat 1 para "Supervivencia"
+      },
+      {
+        id_prod: 2,
+        nombre_prod: 'FORTNITE',
+        precio_prod: 4000,
+        stock_prod: 60,
+        foto_prod: 'assets/img/imgplaystation/imagenfornite.jpg',
+        descripcion_prod: ` La experiencia más icónica de todos los battle royale tiene contenido nuevo constantemente y ofrece una gran variedad 
+                     de modos de juego para todos los gustos y estilos.
+                     Sé el último jugador de pie en el modo clásico de Batalla campal, construye estructuras para ganar ventaja sobre otros 
+                     99 jugadores y logra conseguir una victoria campal.`,
+        id_cat: 1 // Usar id_cat 1 para "Supervivencia"
+      },
+      {
+        id_prod: 3,
+        nombre_prod: 'CALL OF DUTTY WARZONE 2',
+        precio_prod: 15000,
+        stock_prod: 55,
+        foto_prod: 'assets/img/imgplaystation/imagenwarzone.jpg',
+        descripcion_prod: ` Es un videojuego battle royale en el que hasta 150 jugadores compiten en un gigantesco mapa para ser el último 
+                     equipo en pie. Los jugadores buscan armas, equipos y recursos mientras se enfrentan a otros equipos y evitan un círculo 
+                     de gas que reduce constantemente el área de juego.`,
+        id_cat: 1 // Usar id_cat 1 para "Supervivencia"
+      },
+      {
+        id_prod: 4,
+        nombre_prod: 'PUBG: BATTLEGROUNDS',
+        precio_prod: 5000,
+        stock_prod: 45,
+        foto_prod: 'assets/img/imgplaystation/imagenpubg.jpg',
+        descripcion_prod: ` En este juego, hasta 100 jugadores se lanzan en paracaídas a una isla y compiten para ser el último en pie. Los jugadores deben 
+                     explorar el entorno, buscar armas, vehículos y equipo, y sobrevivir en un mapa que se reduce gradualmente debido a una 
+                    "zona azul" que daña a los que quedan fuera de ella.`,
+        id_cat: 1 // Usar id_cat 1 para "Supervivencia"
+      },
+      {
+        id_prod: 5,
+        nombre_prod: 'WARFACE: CLUTCH',
+        precio_prod: 10000,
+        stock_prod: 50,
+        foto_prod: 'assets/img/imgplaystation/imagenwarface.jpg',
+        descripcion_prod: ` Este juego de disparos por equipos representa una evolución para la jugabilidad de los battle royale y sigue siento popular 
+                     más de una década después de su lanzamiento.
+                     Elige entre cinco clases únicas: Rifleman, Medic, SED, Engineer y Sniper, cada una con una acción especial, como reponer 
+                     municiones o restaurar armadura.`,
+        id_cat: 1 // Usar id_cat 1 para "Supervivencia"
+      }
+    ];
+
+    // Productos de Xbox (que pertenecen a 'Deportes')
+    const productosXbox = [
+      {
+        id_prod: 6,
+        nombre_prod: 'FC 24',
+        precio_prod: 30000,
+        stock_prod: 55,
+        foto_prod: 'assets/img/imgxbox/imagenfc24.jpg',
+        descripcion_prod: `Sigue la tradición de simulación de fútbol con mejoras en jugabilidad, gráficos y modos de juego. Incluye ligas, clubes y 
+                           jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
+                           gráfico Hypermotion V, que ofrece movimientos más realistas, y la inclusión de equipos femeninos en Ultimate Team, proporcionando 
+                           una experiencia de fútbol aún más diversa y auténtica.`,
+        id_cat: 2 // Usar id_cat 2 para "Deportes"
+      },
+      {
+        id_prod: 7,
+        nombre_prod: 'NBA 2K24',
+        precio_prod: 35000,
+        stock_prod: 40,
+        foto_prod: 'assets/img/imgxbox/imgnba.webp',
+        descripcion_prod: `Arma tu equipo y vive el pasado, el presente y el futuro de la cultura del baloncesto en NBA 2K24. Disfruta de una experiencia 
+                    auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
+                    alineación ideal en MyTEAM. Revive tus épocas favoritas como GM o Comisionado en MyNBA. Siente una jugabilidad de próximo nivel y 
+                    disfruta de visuales ultrarrealistas mientras juegas con tus equipos favoritos de la NBA y la WNBA en JUEGA AHORA.`,
+        id_cat: 2 // Usar id_cat 2 para "Deportes"
+      },
+      {
+        id_prod: 8,
+        nombre_prod: 'GRAN TURISMO 7',
+        precio_prod: 15000,
+        stock_prod: 30,
+        foto_prod: 'assets/img/imgxbox/imggranturismo.jpg',
+        descripcion_prod: `Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
+                           podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
+                           como Campaña GT, Arcade o Escuela de conducción.`,
+        id_cat: 2 // Usar id_cat 2 para "Deportes"
+      },
+      {
+        id_prod: 9,
+        nombre_prod: 'PGA TOUR 2K23',
+        precio_prod: 20000,
+        stock_prod: 30,
+        foto_prod: 'assets/img/imgxbox/imgpga.jpg',
+        descripcion_prod:  `Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
+                            masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.`,
+        id_cat: 2 // Usar id_cat 2 para "Deportes"
+      },
+      {
+        id_prod: 10,
+        nombre_prod: 'EA SPORTS NHL 24',
+        precio_prod: 10000,
+        stock_prod: 25,
+        foto_prod: 'assets/img/imgxbox/imgnhl.jpg',
+        descripcion_prod:  `Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
+                            Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
+                            que se acumula durante las jugadas ofensivas y pasando tiempo en la zona de ataque.`,
+        id_cat: 2 // Usar id_cat 2 para "Deportes"
+      }
+      
+    ];
+
+    // Verificar si ya existen productos en la base de datos
+    const resultadoProducto = await this.database.executeSql('SELECT * FROM producto LIMIT 1', []);
+    
+    if (resultadoProducto.rows.length === 0) {  // Si no hay ningún producto
+      // Insertar productos de PlayStation
+      for (const producto of productosPlayStation) {
+        await this.database.executeSql('INSERT INTO producto (id_prod, nombre_prod, precio_prod, stock_prod, foto_prod, descripcion_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [producto.id_prod, producto.nombre_prod, producto.precio_prod, producto.stock_prod, producto.foto_prod, producto.descripcion_prod, producto.id_cat]);
+        console.log(`Producto ${producto.nombre_prod} insertado correctamente`);
+      }
+
+      // Insertar productos de Xbox
+      for (const producto of productosXbox) {
+        await this.database.executeSql('INSERT INTO producto (id_prod, nombre_prod, precio_prod, stock_prod, foto_prod, descripcion_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [producto.id_prod, producto.nombre_prod, producto.precio_prod, producto.stock_prod, producto.foto_prod, producto.descripcion_prod, producto.id_cat]);
+        console.log(`Producto ${producto.nombre_prod} insertado correctamente`);
+      }
+
+    } else {
+      console.log('Los productos ya existen. No se insertaron.');
+    }
+
+  } catch (e) {
+    this.presentAlert('Insertar Productos', 'Error al insertar productos: ' + JSON.stringify(e));
+    console.error('Error al insertar productos:', e);
+  }
+}
+
 // Método para verificar si el correo ya está registrado
 async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists: boolean; phoneExists: boolean }> {
   const sqlEmail = 'SELECT COUNT(*) as count FROM usuario WHERE correo_user = ?';
@@ -426,6 +610,7 @@ async eliminarUsuario(correo: string): Promise<void> {
 }
 
  // Función para obtener productos utilizando el correo del usuario desde el BehaviorSubject
+ //modificar esto, para que se use con localstorage y no base de datos
  async obtenerProductos(): Promise<void> {
   // Obtener correo desde BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
@@ -470,6 +655,7 @@ async eliminarUsuario(correo: string): Promise<void> {
 }
 
 // Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
+//modificar esto, para que se use con localstorage y no base de datos
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   // Obtener correo desde el BehaviorSubject o lista de usuarios
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
@@ -595,6 +781,7 @@ obtenerCantidadTotal(): number {
 }
 
 // Función para eliminar un producto del carrito
+//modificar esto, para que se use con localstorage y no base de datos
 async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
   // Obtener el correo del usuario desde el BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
@@ -756,8 +943,43 @@ resetearContadorProductos() {
   localStorage.removeItem('productosGuardados'); // Borra el contador de productos
 }
 
+//para obtener los productos y la categoria de estos, que estan guardados en la base de datos.
+async obtenerProductosParaAdmin() {
+  try {
+    // Realizar la consulta para obtener todos los productos junto con el nombre de la categoría
+    const resultado = await this.database.executeSql(`
+      SELECT p.id_prod, p.nombre_prod, p.precio_prod, p.stock_prod, p.foto_prod, p.descripcion_prod, p.id_cat, c.nombre_cat
+      FROM producto p
+      JOIN categoria c ON p.id_cat = c.id_cat
+    `, []);
 
+    const productos: any[] = []; // Array de tipo 'any' para que coincida con los datos que obtienes
 
+    // Iterar sobre los resultados y almacenarlos en un array
+    for (let i = 0; i < resultado.rows.length; i++) {
+      const producto = resultado.rows.item(i);
+      productos.push({
+        id_prod: producto.id_prod,
+        nombre_prod: producto.nombre_prod,
+        precio_prod: producto.precio_prod,
+        stock_prod: producto.stock_prod,
+        foto_prod: producto.foto_prod,
+        descripcion_prod: producto.descripcion_prod,
+        id_cat: producto.id_cat,
+        nombre_cat: producto.nombre_cat
+      });
+    }
+
+    // Devolver los productos obtenidos
+    return productos;
+
+  } catch (error) {
+    console.error('Error al obtener los productos:', error);
+    this.presentAlert('Error', 'Hubo un error al obtener los productos de la base de datos.');
+    // Devolver un array vacío en caso de error
+    return [];  // Aseguramos que se devuelva algo, aunque sea un array vacío
+  }
+}
 
 }
 

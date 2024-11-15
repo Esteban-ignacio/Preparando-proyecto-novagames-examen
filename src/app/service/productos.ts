@@ -1,4 +1,3 @@
-// productos.ts
 export class Productos {
   id_prod: number;
   nombre: string;

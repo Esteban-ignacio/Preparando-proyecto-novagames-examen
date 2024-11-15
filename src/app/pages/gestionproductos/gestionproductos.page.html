@@ -12,5 +12,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-list>
+    <ion-item *ngFor="let producto of productos">
+      <ion-label>
+        <h2>{{ producto.nombre_prod }}</h2> <!-- Asegúrate de que coincida con el nombre del campo en el objeto producto -->
+        <p>Precio: {{ producto.precio_prod | currency }}</p> <!-- Asegúrate de que coincida con el nombre del campo en el objeto producto -->
+        <p>Categoria: {{ producto.nombre_cat }}</p> <!-- Nombre de la categoría -->
+      </ion-label>
+    </ion-item>
+  </ion-list>
   
 </ion-content>
