@@ -83,6 +83,8 @@ export class PlaystationPage implements OnInit {
     if (correoUsuario) {
       this.correoUsuario = correoUsuario;
     }
+    // Al cargar la página, actualizamos los productos con el stock desde localStorage
+    this.cargarProductosDesdeLocalStorage();
   }  
 
   formatCurrency(precio: number): string {
@@ -93,6 +95,9 @@ export class PlaystationPage implements OnInit {
     if (producto.cantidad > 0 && producto.stock > 0) {
       // Reducir el stock en 1
       producto.stock -= 1;
+
+      // Actualizar el stock en el localStorage
+      this.actualizarStockEnLocalStorage(producto.id, producto.stock);
   
       const productoAGuardar: Productos = {
         id_prod: producto.id,
@@ -117,8 +122,46 @@ export class PlaystationPage implements OnInit {
         });
     }
   }
-  
-  
+
+   // Función para actualizar el stock en el localStorage
+  actualizarStockEnLocalStorage(idProducto: number, stock: number): void {
+    let productosEnLocalStorage = JSON.parse(localStorage.getItem('productos') || '[]');
+
+    // Verificar si el producto ya existe en el localStorage
+    const productoIndex = productosEnLocalStorage.findIndex((producto: any) => producto.id_prod === idProducto);
+
+    if (productoIndex !== -1) {
+      // Si el producto existe, actualizamos su stock
+      productosEnLocalStorage[productoIndex].stock = stock;
+    } else {
+      // Si el producto no existe, lo agregamos al localStorage
+      productosEnLocalStorage.push({
+        id_prod: idProducto,
+        stock: stock,
+        // Asegúrate de añadir otros atributos si es necesario
+      });
+    }
+
+    // Guardamos nuevamente los productos actualizados en localStorage
+    localStorage.setItem('productos', JSON.stringify(productosEnLocalStorage));
+
+    console.log('Stock actualizado en localStorage:', productosEnLocalStorage);
+  }
+
+  // Función para cargar los productos desde el localStorage y actualizar el stock
+  cargarProductosDesdeLocalStorage(): void {
+    let productosEnLocalStorage = JSON.parse(localStorage.getItem('productos') || '[]');
+
+    // Recorrer los productos y actualizar su stock
+    this.productosPlayStation.forEach((producto: any) => {
+      const productoEnLocalStorage = productosEnLocalStorage.find((p: any) => p.id_prod === producto.id);
+      if (productoEnLocalStorage) {
+        producto.stock = productoEnLocalStorage.stock; // Asignar el stock guardado
+      }
+    });
+    console.log('Productos cargados con stock desde localStorage:', this.productosPlayStation);
+  }
+
   irAlCarrito() {
     this.router.navigate(['/carrito']);
   }
