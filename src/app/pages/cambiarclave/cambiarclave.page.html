@@ -33,7 +33,13 @@
       required></ion-input>
     </ion-item>
   </form>
-  
-  <ion-button class="boton-confirmar-cambio-contra" (click)="ValidacionCambiarClave()">Confirmar</ion-button>
+  <ion-row>
+    <ion-col class="ion-text-start">
+      <ion-button class="boton-volver-login" (click)="RegresarLogin()">Volver inicio</ion-button>
+    </ion-col>
+    <ion-col class="ion-text-end">
+      <ion-button class="boton-realizar-cambio-contra" (click)="ValidacionCambiarClave()">Realizar cambio</ion-button>
+    </ion-col>
+  </ion-row>   
 
 </ion-content>

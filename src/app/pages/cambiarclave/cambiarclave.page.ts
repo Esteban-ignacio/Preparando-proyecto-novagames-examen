@@ -136,4 +136,12 @@ export class CambiarclavePage implements OnInit {
     let navigationextras: NavigationExtras = {};
     this.router.navigate(['/perfil'], navigationextras);
   }
+
+  RegresarLogin(){
+    let navigationextras: NavigationExtras = {
+      
+    }
+    this.router.navigate(['/login'], navigationextras);
+  }
+
 }

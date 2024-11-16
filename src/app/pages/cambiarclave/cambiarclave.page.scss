@@ -30,8 +30,23 @@ ion-content{
     padding-top: 20px;
     --padding-start: 0;
 }
-.boton-confirmar-cambio-contra{   
+
+.boton-realizar-cambio-contra, .boton-volver-login {
+    padding: 10px 20px;  /* Ajusta el padding para que ambos botones tengan el mismo tamaño */
+    margin-top: 10px;
+    font-size: 14px;  /* Asegura que ambos tengan el mismo tamaño de fuente */
+    width: 100%;  /* Hace que ambos botones ocupen el 100% del ancho disponible en cada columna */
+    box-sizing: border-box;  /* Asegura que el padding no afecte el tamaño del botón */
     padding-top: 20px;
-    padding-left: 130px;
-    margin-top: 20px;
-}
+  }
+  
+  ion-col {
+    display: flex;
+    justify-content: center;  /* Centra los botones dentro de las columnas */
+  }
+  
+  .boton-volver-login, .boton-realizar-cambio-contra {
+    width: 100%;  /* Ambos botones ocuparán todo el ancho de sus columnas */
+  }  
+  
+  
