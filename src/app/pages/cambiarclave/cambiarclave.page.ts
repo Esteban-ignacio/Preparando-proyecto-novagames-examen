@@ -45,25 +45,38 @@ export class CambiarclavePage implements OnInit {
   }  
 
   async ValidacionCambiarClave() {
+    // Verificar que todos los campos estén completos
     if (this.correocambiarclave.trim() === '' || this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
-
+  
     // Validar correo, contraseña y confirmar contraseña con alertas específicas
     if (!this.isCorreoCambiarClaveValido() || !this.isContrasenaCambiarClaveValida() || !this.isConfirmarCambiarClaveValida()) {
       return; // Si alguno de los campos es inválido, no continuar
     }
-
+  
     try {
       // Verificar si el correo existe en la base de datos
       const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
-
+  
       if (existeCorreo) {
-        this.presentAlert('Acceso aprobado', 'Ingrese los datos para confirmar su nueva contraseña');
-        this.mostrarPreguntas = true;  // Mostrar las preguntas
-
-        // No continuamos aquí, ya que se espera que el usuario elija una respuesta y luego se verifique la pregunta
+        // Obtener la página de origen
+        const fromPage = history.state?.['fromPage'] || null;
+  
+        // Condición si el usuario proviene de 'modificarperfil'
+        if (fromPage === 'modificarperfil') {
+          // Si las validaciones son correctas, redirigir a la página de perfil
+          await this.presentAlert('Realizado', 'Cambio de contraseña exitoso');
+          await this.router.navigate(['/perfil']); // Redirige a la página de perfil
+  
+        } else if (fromPage === 'recuperarclave') {
+          // Si proviene de 'recuperarclave', mostrar mensaje de acceso aprobado
+          await this.presentAlert('Acceso aprobado', 'Ingrese los datos para cambiar su contraseña');
+  
+          // Activar la función de siguiente paso
+          this.siguientePaso();
+        }
       } else {
         this.presentAlert('Error', 'El correo no se ha encontrado. Ingrese otro correo o verifique sus datos.');
       }
@@ -71,7 +84,7 @@ export class CambiarclavePage implements OnInit {
       console.error('Error al cambiar la contraseña:', error);
       this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
     }
-  }
+  }  
 
    // Validación para el correo
    isCorreoCambiarClaveValido(): boolean {
@@ -146,23 +159,10 @@ export class CambiarclavePage implements OnInit {
       ) {
         // Mensaje de éxito si coinciden
         await this.presentAlert('Éxito', 'La contraseña ha sido cambiada con éxito.');
-  
-        // Obtener el valor de 'fromPage' del estado de navegación
-        const fromPage = history.state?.['fromPage'] || null;
-  
-        console.log('Redirigiendo desde:', fromPage);
-  
-        // Redirigir según la página de origen
-        if (fromPage === 'modificarperfil') {
-          console.log('Redirigiendo a /perfil');
-          await this.router.navigate(['/perfil']); // Redirige a la página de perfil
-        } else if (fromPage === 'recuperarclave') {
-          console.log('Redirigiendo a /login');
-          await this.router.navigate(['/login']); // Redirige a la página de login
-        } else {
-          console.error('No se encontró el origen. Redirigiendo a /login.');
-          await this.router.navigate(['/login']); // Comportamiento predeterminado
-        }
+        
+        // Redirigir a la página de login
+        console.log('Redirigiendo a /login');
+        await this.router.navigate(['/login']); // Redirige a la página de login
       } else {
         // Mensaje de error si no coinciden
         console.log('Pregunta o respuesta no coinciden.');
@@ -172,7 +172,7 @@ export class CambiarclavePage implements OnInit {
       console.error('Error en la función siguientePaso:', error);
       await this.presentAlert('Error', 'Ocurrió un error inesperado.');
     }
-  }   
+  }    
 
   // Cancelar el proceso de preguntas
   cancelarPreguntas() {
