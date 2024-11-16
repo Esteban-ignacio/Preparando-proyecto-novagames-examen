@@ -42,49 +42,52 @@ export class CambiarclavePage implements OnInit {
   
     // No cargar la respuesta seleccionada automáticamente
     this.respuestaSeleccionada = ''; // Asegúrate de que la respuesta esté vacía
-  }  
+}  
 
-  async ValidacionCambiarClave() {
-    // Verificar que todos los campos estén completos
-    if (this.correocambiarclave.trim() === '' || this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
-      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
-      return; // Salir de la función si algún campo está vacío
-    }
-  
-    // Validar correo, contraseña y confirmar contraseña con alertas específicas
-    if (!this.isCorreoCambiarClaveValido() || !this.isContrasenaCambiarClaveValida() || !this.isConfirmarCambiarClaveValida()) {
-      return; // Si alguno de los campos es inválido, no continuar
-    }
-  
-    try {
-      // Verificar si el correo existe en la base de datos
-      const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
-  
-      if (existeCorreo) {
-        // Obtener la página de origen
-        const fromPage = history.state?.['fromPage'] || null;
-  
-        // Condición si el usuario proviene de 'modificarperfil'
-        if (fromPage === 'modificarperfil') {
-          // Si las validaciones son correctas, redirigir a la página de perfil
-          await this.presentAlert('Realizado', 'Cambio de contraseña exitoso');
-          await this.router.navigate(['/perfil']); // Redirige a la página de perfil
-  
-        } else if (fromPage === 'recuperarclave') {
-          // Si proviene de 'recuperarclave', mostrar mensaje de acceso aprobado
-          await this.presentAlert('Acceso aprobado', 'Ingrese los datos para cambiar su contraseña');
-  
-          // Activar la función de siguiente paso
-          this.siguientePaso();
-        }
-      } else {
-        this.presentAlert('Error', 'El correo no se ha encontrado. Ingrese otro correo o verifique sus datos.');
+async ValidacionCambiarClave() {
+  // Verificar que todos los campos estén completos
+  if (this.correocambiarclave.trim() === '' || this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
+    this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
+    return; // Salir de la función si algún campo está vacío
+  }
+
+  // Validar correo, contraseña y confirmar contraseña con alertas específicas
+  if (!this.isCorreoCambiarClaveValido() || !this.isContrasenaCambiarClaveValida() || !this.isConfirmarCambiarClaveValida()) {
+    return; // Si alguno de los campos es inválido, no continuar
+  }
+
+  try {
+    // Verificar si el correo existe en la base de datos
+    const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
+
+    if (existeCorreo) {
+      // Obtener la página de origen desde las dos posibles fuentes
+      const navigation = this.router.getCurrentNavigation();
+      const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'] || null;
+
+      // Si no se encuentra la página de origen, activar la sección de preguntas
+      if (!fromPage) {
+        this.mostrarPreguntas = true;  // Mostrar la sección de preguntas de seguridad
+        return;  // Salir de la función para que se muestre la sección
       }
-    } catch (error) {
-      console.error('Error al cambiar la contraseña:', error);
-      this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
+
+      // Condición si el usuario proviene de 'modificarperfil'
+      if (fromPage === 'modificarperfil') {
+        // Si las validaciones son correctas, redirigir a la página de perfil
+        await this.presentAlert('Éxito', 'Cambio de contraseña exitoso');
+        await this.router.navigate(['/perfil']); // Redirige a la página de perfil
+      } else {
+        // Si no proviene de 'modificarperfil', mostrar la sección de preguntas
+        this.mostrarPreguntas = true; // Mostrar la sección de preguntas de seguridad
+      }
+    } else {
+      this.presentAlert('Error', 'El correo no se ha encontrado. Ingrese otro correo o verifique sus datos.');
     }
-  }  
+  } catch (error) {
+    console.error('Error al cambiar la contraseña:', error);
+    this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
+  }
+}
 
    // Validación para el correo
    isCorreoCambiarClaveValido(): boolean {
