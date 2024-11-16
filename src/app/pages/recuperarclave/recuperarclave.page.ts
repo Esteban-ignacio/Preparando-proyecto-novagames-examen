@@ -90,8 +90,9 @@ export class RecuperarclavePage implements OnInit {
 // Función para pasar a la siguiente pregunta o finalizar
 siguientePaso() {
   if (this.respuestaSeleccionada) {
-    // Guardamos la respuesta seleccionada en el localStorage
-    localStorage.setItem(`pregunta${this.preguntaSeleccionada.pregunta}`, this.respuestaSeleccionada);
+    // Guardamos la pregunta y respuesta seleccionada en el localStorage
+    localStorage.setItem('preguntaSeleccionada', this.preguntaSeleccionada.pregunta);
+    localStorage.setItem('respuestaSeleccionada', this.respuestaSeleccionada);
 
     // Se termina el proceso cuando se selecciona una respuesta
     this.presentAlert('Éxito', 'Sus respuestas han sido guardadas');

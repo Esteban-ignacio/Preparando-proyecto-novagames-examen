@@ -9,7 +9,8 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form class="correo-cambiar-contra"(ngSubmit)="ValidacionCambiarClave()">
+  <!-- Formulario para el correo -->
+  <form class="correo-cambiar-contra" (ngSubmit)="ValidacionCambiarClave()">
     <ion-item>
       <ion-label position="floating"></ion-label>
       <ion-input class="correo-cambiar-contra" label="Correo" label-placement="floating" fill="solid" 
@@ -17,7 +18,8 @@
     </ion-item>
   </form>
 
-  <form class="cambiar-contraseña"(ngSubmit)="ValidacionCambiarClave()">
+  <!-- Formulario para la contraseña -->
+  <form class="cambiar-contraseña" (ngSubmit)="ValidacionCambiarClave()">
     <ion-item>
       <ion-label position="floating"></ion-label>
       <ion-input type="password" class="cambiar-contraseña" label="Contraseña" label-placement="floating" fill="solid" 
@@ -25,14 +27,16 @@
     </ion-item>
   </form>
 
-  <form class="confirmar-cambiar-contra"(ngSubmit)="ValidacionCambiarClave()">
+  <!-- Formulario para confirmar la contraseña -->
+  <form class="confirmar-cambiar-contra" (ngSubmit)="ValidacionCambiarClave()">
     <ion-item>
       <ion-label position="floating"></ion-label>
-    <ion-input type="password" class="confirmar-cambiar-contra" label="Confirmar Contraseña" label-placement="floating" 
-      fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasenacambiarclave" name="confirmarContrasenacambiarclave" 
-      required></ion-input>
+      <ion-input type="password" class="confirmar-cambiar-contra" label="Confirmar Contraseña" label-placement="floating" 
+        fill="solid" placeholder="Confirme su contraseña" [(ngModel)]="confirmarContrasenacambiarclave" name="confirmarContrasenacambiarclave" 
+        required></ion-input>
     </ion-item>
   </form>
+
   <ion-row>
     <ion-col class="ion-text-start">
       <ion-button class="boton-volver-login" (click)="RegresarLogin()">Volver inicio</ion-button>
@@ -40,6 +44,28 @@
     <ion-col class="ion-text-end">
       <ion-button class="boton-realizar-cambio-contra" (click)="ValidacionCambiarClave()">Realizar cambio</ion-button>
     </ion-col>
-  </ion-row>   
+  </ion-row>
+
+  <!-- Sección para las preguntas de seguridad -->
+  <div *ngIf="mostrarPreguntas">
+    <ion-item>
+      <ion-label>Seleccione una pregunta: </ion-label>
+      <ion-select [(ngModel)]="preguntaSeleccionada" (ionChange)="cargarRespuestas()">
+        <ion-select-option *ngFor="let pregunta of preguntas" [value]="pregunta">{{pregunta.pregunta}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <!-- Mostrar las respuestas dependiendo de la pregunta seleccionada -->
+    <ion-item *ngIf="respuestas.length > 0">
+      <ion-label>Respuestas: </ion-label>
+      <ion-select [(ngModel)]="respuestaSeleccionada" required>
+        <ion-select-option *ngFor="let respuesta of respuestas" [value]="respuesta">{{respuesta}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <ion-button (click)="cancelarPreguntas()">Cancelar</ion-button>
+    <ion-button (click)="siguientePaso()">Siguiente</ion-button>
+  </div>
 
 </ion-content>
+

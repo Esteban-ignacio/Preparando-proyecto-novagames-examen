@@ -14,59 +14,63 @@ export class CambiarclavePage implements OnInit {
   contrasenacambiarclave: string = "";
   confirmarContrasenacambiarclave: string = "";
 
+  preguntaSeleccionada: any = null;
+  respuestaSeleccionada: string = '';
+  mostrarPreguntas: boolean = false;
+  respuestas: string[] = [];
+
+  preguntas = [
+    { pregunta: "¿Cuál es tu color favorito?", respuestas: ["Rojo", "Verde", "Azul"] },
+    { pregunta: "¿En qué ciudad naciste?", respuestas: ["Madrid", "Barcelona", "Valencia"] },
+    { pregunta: "¿Cuál es tu mascota favorita?", respuestas: ["Perro", "Gato", "Conejo"] }
+  ];
+
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
     const navigation = this.router.getCurrentNavigation();
-    const fromPage = navigation?.extras?.state?.['fromPage'] || history.state.fromPage;
-
+    const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'];
+  
     console.log('From page:', fromPage); // Verificar de dónde viene el usuario
-  }
+  
+    // Obtener la pregunta seleccionada del localStorage
+    const preguntaRecuperada = localStorage.getItem('preguntaSeleccionada');
+  
+    if (preguntaRecuperada) {
+      this.preguntaSeleccionada = { pregunta: preguntaRecuperada, respuestas: [] };
+    }
+  
+    // No cargar la respuesta seleccionada automáticamente
+    this.respuestaSeleccionada = ''; // Asegúrate de que la respuesta esté vacía
+  }  
 
- async ValidacionCambiarClave(){
-    if (this.correocambiarclave.trim() === ''|| this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
+  async ValidacionCambiarClave() {
+    if (this.correocambiarclave.trim() === '' || this.contrasenacambiarclave.trim() === '' || this.confirmarContrasenacambiarclave.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
 
     // Validar correo, contraseña y confirmar contraseña con alertas específicas
-    if (!this.isCorreoCambiarClaveValido() || !this.isContrasenaCambiarClaveValida()
-      || !this.isConfirmarCambiarClaveValida()) {
-        return; // Si alguno de los campos es inválido, no continuar
+    if (!this.isCorreoCambiarClaveValido() || !this.isContrasenaCambiarClaveValida() || !this.isConfirmarCambiarClaveValida()) {
+      return; // Si alguno de los campos es inválido, no continuar
+    }
+
+    try {
+      // Verificar si el correo existe en la base de datos
+      const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
+
+      if (existeCorreo) {
+        this.presentAlert('Acceso aprobado', 'Ingrese los datos para confirmar su nueva contraseña');
+        this.mostrarPreguntas = true;  // Mostrar las preguntas
+
+        // No continuamos aquí, ya que se espera que el usuario elija una respuesta y luego se verifique la pregunta
+      } else {
+        this.presentAlert('Error', 'El correo no se ha encontrado. Ingrese otro correo o verifique sus datos.');
       }
-  
-      try {
-        // Verificar si el correo existe en la base de datos
-        const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
-  
-        if (existeCorreo) {
-          // Actualizar la contraseña
-          await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
-          this.presentAlert('Éxito', 'La contraseña ha sido modificada con éxito.');
-
-          // Limpiar los campos de entrada
-        this.limpiarCampos();
-
-        
-        const navigation = this.router.getCurrentNavigation();
-        const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'];
-
-        console.log('From page:', fromPage);
-
-        if (fromPage === 'modificarperfil') {
-          this.IrPerfil(); // Navegar a la página de perfil
-        } else if (fromPage === 'recuperarclave') {
-          this.router.navigate(['/login']); // Navegar a la página de login
-        } else {
-          this.IrPerfil(); // Por defecto, navegar a la página de perfil
-        }
-        } else {
-          this.presentAlert('Error', 'El correo ingresado no se encuentra registrado.');
-        }
-      } catch (error) {
-        console.error('Error al cambiar la contraseña:', error);
-        this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
-      }
+    } catch (error) {
+      console.error('Error al cambiar la contraseña:', error);
+      this.presentAlert('Error', 'Hubo un problema al intentar cambiar la contraseña.');
+    }
   }
 
    // Validación para el correo
@@ -115,8 +119,67 @@ export class CambiarclavePage implements OnInit {
 
     );
   }
+
+  // Cargar respuestas según la pregunta seleccionada
+  cargarRespuestas() {
+    if (this.preguntaSeleccionada) {
+      this.respuestas = this.preguntaSeleccionada.respuestas;
+    }
+  }
+
+  // Continuar al siguiente paso
+  async siguientePaso() {
+    try {
+      // Obtén los valores almacenados en localStorage
+      const preguntaGuardada = localStorage.getItem('preguntaSeleccionada');
+      const respuestaGuardada = localStorage.getItem('respuestaSeleccionada');
   
-  async presentAlert(titulo:string, msj:string) {
+      console.log('Pregunta seleccionada:', this.preguntaSeleccionada);
+      console.log('Respuesta seleccionada:', this.respuestaSeleccionada);
+      console.log('Pregunta guardada:', preguntaGuardada);
+      console.log('Respuesta guardada:', respuestaGuardada);
+  
+      // Validar si la pregunta y respuesta coinciden
+      if (
+        this.respuestaSeleccionada.trim() === respuestaGuardada &&
+        this.preguntaSeleccionada?.pregunta === preguntaGuardada
+      ) {
+        // Mensaje de éxito si coinciden
+        await this.presentAlert('Éxito', 'La contraseña ha sido cambiada con éxito.');
+  
+        // Obtener el valor de 'fromPage' del estado de navegación
+        const fromPage = history.state?.['fromPage'] || null;
+  
+        console.log('Redirigiendo desde:', fromPage);
+  
+        // Redirigir según la página de origen
+        if (fromPage === 'modificarperfil') {
+          console.log('Redirigiendo a /perfil');
+          await this.router.navigate(['/perfil']); // Redirige a la página de perfil
+        } else if (fromPage === 'recuperarclave') {
+          console.log('Redirigiendo a /login');
+          await this.router.navigate(['/login']); // Redirige a la página de login
+        } else {
+          console.error('No se encontró el origen. Redirigiendo a /login.');
+          await this.router.navigate(['/login']); // Comportamiento predeterminado
+        }
+      } else {
+        // Mensaje de error si no coinciden
+        console.log('Pregunta o respuesta no coinciden.');
+        await this.presentAlert('Error', 'La pregunta o respuesta elegida no coincide con su elección anterior.');
+      }
+    } catch (error) {
+      console.error('Error en la función siguientePaso:', error);
+      await this.presentAlert('Error', 'Ocurrió un error inesperado.');
+    }
+  }   
+
+  // Cancelar el proceso de preguntas
+  cancelarPreguntas() {
+    this.mostrarPreguntas = false;
+  }
+
+  async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({
       header: titulo,
       message: msj,
