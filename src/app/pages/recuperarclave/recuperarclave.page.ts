@@ -12,6 +12,17 @@ export class RecuperarclavePage implements OnInit {
 
   correorecuperarclave: string = "";
 
+  preguntaSeleccionada: any = null;
+  respuestaSeleccionada: string = '';
+  mostrarPreguntas: boolean = false;
+  respuestas: string[] = [];
+
+  preguntas = [
+    { pregunta: "¿Cuál es tu color favorito?", respuestas: ["Rojo", "Verde", "Azul"] },
+    { pregunta: "¿En qué ciudad naciste?", respuestas: ["Madrid", "Barcelona", "Valencia"] },
+    { pregunta: "¿Cuál es tu mascota favorita?", respuestas: ["Perro", "Gato", "Conejo"] }
+  ];
+
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
   ngOnInit() {
@@ -40,7 +51,9 @@ export class RecuperarclavePage implements OnInit {
       // Si el formulario es válido, muestra un mensaje de éxito
       this.presentAlert('Acceso aprobado','Ingrese los datos para cambiar su contraseña');
       this.correorecuperarclave = ''; // Limpiar campo tras éxito
-      this.Ircambiarcontra(); // Navegar a la página de inicio si el registro es exitoso
+
+       // Si todo está bien, mostrar preguntas
+       this.mostrarPreguntas = true;
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
@@ -66,6 +79,32 @@ export class RecuperarclavePage implements OnInit {
 
     );
   }
+
+ // Cargar las respuestas cuando se seleccione una pregunta
+ cargarRespuestas() {
+  if (this.preguntaSeleccionada) {
+    this.respuestas = this.preguntaSeleccionada.respuestas;
+  }
+}
+
+// Función para pasar a la siguiente pregunta o finalizar
+siguientePaso() {
+  if (this.respuestaSeleccionada) {
+    // Guardamos la respuesta seleccionada en el localStorage
+    localStorage.setItem(`pregunta${this.preguntaSeleccionada.pregunta}`, this.respuestaSeleccionada);
+
+    // Se termina el proceso cuando se selecciona una respuesta
+    this.presentAlert('Éxito', 'Sus respuestas han sido guardadas');
+    this.router.navigate(['/cambiarclave']);
+  } else {
+    this.presentAlert('Error', 'Por favor, selecciona una respuesta antes de continuar.');
+  }
+}
+
+// Función para cancelar el proceso
+cancelarPreguntas() {
+  this.mostrarPreguntas = false;
+}
 
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({
