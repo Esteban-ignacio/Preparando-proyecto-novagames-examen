@@ -48,7 +48,7 @@
 
   <!-- Sección para las preguntas de seguridad -->
   <div *ngIf="mostrarPreguntas">
-    <ion-item>
+    <ion-item class="custom-label">
       <ion-label>Seleccione una pregunta: </ion-label>
       <ion-select [(ngModel)]="preguntaSeleccionada" (ionChange)="cargarRespuestas()">
         <ion-select-option *ngFor="let pregunta of preguntas" [value]="pregunta">{{pregunta.pregunta}}</ion-select-option>
@@ -56,15 +56,15 @@
     </ion-item>
 
     <!-- Mostrar las respuestas dependiendo de la pregunta seleccionada -->
-    <ion-item *ngIf="respuestas.length > 0">
+    <ion-item class="custom-label" *ngIf="respuestas.length > 0">
       <ion-label>Respuestas: </ion-label>
       <ion-select [(ngModel)]="respuestaSeleccionada" required>
         <ion-select-option *ngFor="let respuesta of respuestas" [value]="respuesta">{{respuesta}}</ion-select-option>
       </ion-select>
     </ion-item>
 
-    <ion-button (click)="cancelarPreguntas()">Cancelar</ion-button>
-    <ion-button (click)="siguientePaso()">Siguiente</ion-button>
+    <ion-button class="boton-cancelar" (click)="cancelarPreguntas()">Cancelar</ion-button>
+    <ion-button class="boton-siguente" (click)="siguientePaso()">Siguiente</ion-button>
   </div>
 
 </ion-content>

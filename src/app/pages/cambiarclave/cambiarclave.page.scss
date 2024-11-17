@@ -12,20 +12,23 @@ ion-content{
 }
 .correo-cambiar-contra{
     margin: auto;
-    width: 350px;
+    padding-left: 5px;
+    padding-right: 5px;
     padding-top: 20px;
     --padding-start: 0;
 }
 .cambiar-contraseña{
     margin: auto;
-    width: 350px;
+    padding-left: 5px;
+    padding-right: 5px;
     height: 60px;
     padding-top: 10px;
     --padding-start: 0;
 }
 .confirmar-cambiar-contra{
     margin: auto;
-    width: 350px;
+    padding-left: 5px;
+    padding-right: 5px;
     height: 60px;
     padding-top: 20px;
     --padding-start: 0;
@@ -47,6 +50,23 @@ ion-content{
   
   .boton-volver-login, .boton-realizar-cambio-contra {
     width: 100%;  /* Ambos botones ocuparán todo el ancho de sus columnas */
+  }
+  
+  .custom-label {
+    white-space: nowrap; /* Evita que el texto se divida en varias líneas */
+    padding-left: 5px;
+    padding-right: 5px; 
   }  
+
+.boton-cancelar{
+    padding-top: 10px;
+    margin-top: 10px;
+    padding-left: 50px;
+}
+.boton-siguente{
+    padding-top: 10px;
+    margin-top: 10px;
+    padding-left: 60px;
+}
   
   
