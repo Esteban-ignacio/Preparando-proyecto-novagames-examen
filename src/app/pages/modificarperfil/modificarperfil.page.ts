@@ -52,45 +52,49 @@ export class ModificarperfilPage implements OnInit {
   };
 
   async ValidacionModificarPerfil() {
-    // Primero validamos el formulario
-    if (!this.isFormValid()) {
-      this.presentAlert('Error', 'Por favor, complete todos los campos requeridos y asegúrese de que los datos sean válidos.');
-      return; // Salir de la función si la validación falla
-    }
-
     if (!this.datosPerfil) {
-    this.presentAlert('Error', 'No se encontró información del perfil.');
-    return; // Salir si datosPerfil es undefined
-  }
-
-  if (!this.datosPerfil.correo_user) {
-    this.presentAlert('Error', 'El correo del usuario no está disponible.');
-    return; // Salir si correo_user es undefined
-  }
-
-  // Preparar los datos para actualizar
-  const usuarioActualizar: Extraerdatosusuario = {
-    iduser: this.datosPerfil.iduser,
-    nombreuser: this.nombremodificarperfil || this.datosPerfil.nombreuser, // Mantener el valor anterior si está vacío
-    apellidouser: this.apellidomodificarperfil || this.datosPerfil.apellidouser, // Mantener el valor anterior si está vacío
-    correo_user: this.datosPerfil.correo_user, // No se modifica
-    clave_user: this.datosPerfil.clave_user, // No se modifica
-    telefono_user: this.telefonomodificarperfil || this.datosPerfil.telefono_user, // Mantener el valor anterior si está vacío
-    imagen_user: this.datosPerfil.imagen_user
-  };
-
-  // Actualizar en la base de datos
-  try {
-    await this.bdService.actualizarUsuario(usuarioActualizar);
-    this.presentAlert('Realizado', 'Perfil Modificado con éxito');
-    this.limpiarCampos(); // Limpiar los campos tras una actualización exitosa
-    this.VolveralPerfil(); // Navegar a la página de inicio si el registro es exitoso
-  } catch (error) {
-    console.error('Error al actualizar el perfil:', error);
-    this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
-  }
-  }
-
+      this.presentAlert('Error', 'No se encontró información del perfil.');
+      return; // Salir si datosPerfil es undefined
+    }
+  
+    if (!this.datosPerfil.correo_user) {
+      this.presentAlert('Error', 'El correo del usuario no está disponible.');
+      return; // Salir si correo_user es undefined
+    }
+  
+    // Verificar si no se realizaron cambios en ningún campo
+    const nombreCambiado = this.nombremodificarperfil !== this.datosPerfil.nombreuser;
+    const apellidoCambiado = this.apellidomodificarperfil !== this.datosPerfil.apellidouser;
+    const telefonoCambiado = this.telefonomodificarperfil !== this.datosPerfil.telefono_user;
+  
+    if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado) {
+      this.presentAlert('Información', 'No se realizaron cambios en el perfil.');
+      return; // Salir si no se modificó ningún campo
+    }
+  
+    // Preparar los datos para actualizar
+    const usuarioActualizar: Extraerdatosusuario = {
+      iduser: this.datosPerfil.iduser,
+      nombreuser: nombreCambiado ? this.nombremodificarperfil : this.datosPerfil.nombreuser, // Mantener el valor anterior si no cambió
+      apellidouser: apellidoCambiado ? this.apellidomodificarperfil : this.datosPerfil.apellidouser, // Igual para el apellido
+      correo_user: this.datosPerfil.correo_user, // No se modifica
+      clave_user: this.datosPerfil.clave_user, // No se modifica
+      telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user, // Igual para el teléfono
+      imagen_user: this.datosPerfil.imagen_user // No se modifica
+    };
+  
+    // Actualizar en la base de datos
+    try {
+      await this.bdService.actualizarUsuario(usuarioActualizar);
+      this.presentAlert('Realizado', 'Perfil modificado con éxito.');
+      this.limpiarCampos(); // Limpiar los campos tras una actualización exitosa
+      this.VolveralPerfil(); // Navegar a la página de perfil
+    } catch (error) {
+      console.error('Error al actualizar el perfil:', error);
+      this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
+    }
+  }  
+  
   limpiarCampos() {
     this.nombremodificarperfil = '';
     this.apellidomodificarperfil = '';
@@ -127,25 +131,43 @@ isTelefonoModificarPerfilValido(): boolean {
   return true;
 }
 
-  isFormValid(): boolean {
-    const regex = /^[a-zA-Z]+$/; // Solo letras
-    const regexPhone = /^\d{1,9}$/; // Solo números y hasta 9 dígitos
-   
-    return (
-      this.nombremodificarperfil.trim() !== '' && // No debe estar vacío
-      this.nombremodificarperfil.length >= 2 &&
-      this.nombremodificarperfil.length <= 10 &&
-      regex.test(this.nombremodificarperfil) &&
+isFormValid(): boolean {
+  const regex = /^[a-zA-Z]+$/; // Solo letras
+  const regexPhone = /^\d{9}$/; // Solo números y exactamente 9 dígitos
 
-      this.apellidomodificarperfil.trim() !== '' && // Apellido no debe estar vacío
-      this.apellidomodificarperfil.length >= 2 && 
-      this.apellidomodificarperfil.length <= 10 && 
-      regex.test(this.apellidomodificarperfil) && // Validación del apellido
+  let isValid = true;
 
-      this.telefonomodificarperfil.trim() !== '' && // Teléfono no debe estar vacío
-      regexPhone.test(this.telefonomodificarperfil) // Validación del teléfono
-    );
+  if (this.nombremodificarperfil.trim() !== '') {
+    if (
+      this.nombremodificarperfil.length < 2 || 
+      this.nombremodificarperfil.length > 10 || 
+      !regex.test(this.nombremodificarperfil)
+    ) {
+      this.presentAlert('Error', 'El nombre debe tener entre 2 y 10 letras y solo puede contener caracteres alfabéticos.');
+      isValid = false;
+    }
   }
+
+  if (this.apellidomodificarperfil.trim() !== '') {
+    if (
+      this.apellidomodificarperfil.length < 2 || 
+      this.apellidomodificarperfil.length > 10 || 
+      !regex.test(this.apellidomodificarperfil)
+    ) {
+      this.presentAlert('Error', 'El apellido debe tener entre 2 y 10 letras y solo puede contener caracteres alfabéticos.');
+      isValid = false;
+    }
+  }
+
+  if (this.telefonomodificarperfil.trim() !== '') {
+    if (!regexPhone.test(this.telefonomodificarperfil)) {
+      this.presentAlert('Error', 'El teléfono debe contener exactamente 9 dígitos.');
+      isValid = false;
+    }
+  }
+
+  return isValid;
+}
 
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({
