@@ -12,3 +12,23 @@ ion-content{
     color: black;
     font-weight: bold;
 }
+.lista-productos{
+    --background: #a8f6c6;
+}
+.datos-productos-admin{
+    color: black;
+    font-weight: bold;
+    text-align: center;
+}
+ion-list {
+    margin: 0;
+    padding: 0;
+    --background: #a8f6c6;
+  }
+  
+  .boton-agregar-stock {
+    width: 50%; /* Ajusta el ancho según lo que prefieras */
+    margin: 0 auto; /* Centra horizontalmente el botón */
+    display: block; /* Asegura que el botón sea tratado como un bloque */
+  }
+  

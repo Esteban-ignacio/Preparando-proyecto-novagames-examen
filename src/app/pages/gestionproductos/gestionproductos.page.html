@@ -13,13 +13,27 @@
 
 <ion-content [fullscreen]="true">
   <ion-list>
-    <ion-item *ngFor="let producto of productos">
-      <ion-label>
-        <h2>{{ producto.nombre_prod }}</h2> <!-- Asegúrate de que coincida con el nombre del campo en el objeto producto -->
-        <p>Precio: {{ producto.precio_prod | currency }}</p> <!-- Asegúrate de que coincida con el nombre del campo en el objeto producto -->
-        <p>Categoria: {{ producto.nombre_cat }}</p> <!-- Nombre de la categoría -->
+    <ion-item class="lista-productos" *ngFor="let producto of productos">
+      <ion-label class="lista-productos">
+        <h2 class="datos-productos-admin">{{ producto.nombre_prod }}</h2> <!-- Nombre del producto -->
+        <p class="datos-productos-admin">Precio: {{ producto.precio_prod | currency }}</p> <!-- Precio -->
+        <p class="datos-productos-admin">Categoria: {{ producto.nombre_cat }}</p> <!-- Categoría -->
+        <p class="datos-productos-admin">Stock máximo: {{ producto.stock_prod }}</p> <!-- Stock máximo -->
+        <p class="datos-productos-admin">Stock actual:</p> <!-- Stock actual -->
+  
+        <!-- Caja de texto y botón debajo de los datos -->
+        <div class="datos-productos-admin">
+          <ion-input 
+            type="number" 
+            placeholder="Insertar cantidad:" 
+            class="input-agregar-stock">
+          </ion-input>
+          <ion-button class="boton-agregar-stock" color="primary">
+            Agregar Stock
+          </ion-button>
+        </div>
       </ion-label>
     </ion-item>
-  </ion-list>
+  </ion-list> 
   
 </ion-content>
