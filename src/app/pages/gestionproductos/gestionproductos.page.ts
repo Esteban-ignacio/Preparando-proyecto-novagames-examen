@@ -28,5 +28,9 @@ export class GestionproductosPage implements OnInit {
     // Llamar al servicio para obtener los productos
     this.productos = await this.serviceBD.obtenerProductosParaAdmin(); // Esperar los productos y asignarlos a la variable
   }
+
+  formatCurrency(precio: number): string {
+    return `$${precio.toLocaleString('es-CL')}`;
+  }
   
 }

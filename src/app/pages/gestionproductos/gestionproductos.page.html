@@ -16,7 +16,7 @@
     <ion-item class="lista-productos" *ngFor="let producto of productos">
       <ion-label class="lista-productos">
         <h2 class="datos-productos-admin">{{ producto.nombre_prod }}</h2> <!-- Nombre del producto -->
-        <p class="datos-productos-admin">Precio: {{ producto.precio_prod | currency }}</p> <!-- Precio -->
+        <p class="datos-productos-admin">Precio: {{ formatCurrency(producto.precio_prod) }}</p> <!-- Precio -->
         <p class="datos-productos-admin">Categoria: {{ producto.nombre_cat }}</p> <!-- Categoría -->
         <p class="datos-productos-admin">Stock máximo: {{ producto.stock_prod }}</p> <!-- Stock máximo -->
         <p class="datos-productos-admin">Stock actual:</p> <!-- Stock actual -->
