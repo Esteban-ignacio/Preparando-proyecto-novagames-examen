@@ -5,6 +5,7 @@ export class Usuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: number;
+    imagen_user!: Blob; 
 }
     
 export class Datoslogin {
@@ -33,6 +34,7 @@ export class Extraerdatosusuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: string;
+    imagen_user?: Blob; 
 }
 
 export class Correousuario {

@@ -55,6 +55,12 @@ export class RegistroPage implements OnInit {
       return; // Si alguno de los campos es inválido, no continuar
     }
 
+    // Verificar si la imagen ha sido proporcionada
+  if (!this.imagen) {
+    this.presentAlert('Error', 'Por favor, suba una imagen para el perfil.');
+    return; // Salir de la función si la imagen no está proporcionada
+  }
+
     // Verificar si el usuario ya está registrado
   const { emailExists, phoneExists } = await this.bdService.verificarUsuario(this.correo, this.telefono);
   
@@ -75,7 +81,8 @@ export class RegistroPage implements OnInit {
   nuevoUsuario.correo_user = this.correo;
   nuevoUsuario.clave_user = this.contrasena; // Puedes encriptar la contraseña aquí
   nuevoUsuario.telefono_user = parseInt(this.telefono, 10); // Convertir a número
-
+  // Agregar la imagen al nuevo usuario (aquí guardamos el valor de la imagen en la base de datos)
+  nuevoUsuario.imagen_user = this.imagen; // Aquí se asigna la imagen que se ha tomado
   await this.bdService.insertarUsuario(nuevoUsuario);
   this.presentAlert('Éxito', 'Registro exitoso.'); // Mensaje de éxito
   // Limpiar los campos de entrada después del registro exitoso

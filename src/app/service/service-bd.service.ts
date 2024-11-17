@@ -165,6 +165,7 @@ createBD() {
       this.crearTablas().then(() => {
         // Llamar a la verificación de columnas después de crear las tablas
         this.verificarColumnas();
+        this.verificarColumnasUsuario();
       });
     }).catch(e => {
       this.presentAlert('Base de Datos', 'Error en crear la BD: ' + JSON.stringify(e));
@@ -219,6 +220,31 @@ verificarColumnas() {
     }
   }).catch(e => {
     this.presentAlert('Base de Datos', 'Error al verificar columnas en detalle: ' + JSON.stringify(e));
+  });
+}
+
+// Función para verificar si la columna 'imagen_user' ya existe en la tabla 'usuario'
+verificarColumnasUsuario() {
+  const verificarSQL = "PRAGMA table_info(usuario);";
+  
+  this.database.executeSql(verificarSQL, []).then((result) => {
+    const columnaExiste = Array.from({ length: result.rows.length }, (_, i) => result.rows.item(i))
+                               .some(row => row.name === 'imagen_user');
+    
+    if (!columnaExiste) {
+      // Si no existe la columna 'imagen_user', la agregamos
+      const alterTableSQL = "ALTER TABLE usuario ADD COLUMN imagen_user BLOB;";
+      
+      this.database.executeSql(alterTableSQL, []).then(() => {
+        console.log("Columna 'imagen_user' añadida exitosamente a la tabla 'usuario'");
+      }).catch(e => {
+        this.presentAlert('Base de Datos', 'Error al añadir la columna imagen_user: ' + JSON.stringify(e));
+      });
+    } else {
+      console.log("La columna 'imagen_user' ya existe en la tabla 'usuario'");
+    }
+  }).catch(e => {
+    this.presentAlert('Base de Datos', 'Error al verificar columnas en usuario: ' + JSON.stringify(e));
   });
 }
 
@@ -422,14 +448,14 @@ async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists:
   return { emailExists, phoneExists }; // Retorna si el correo y teléfono existen
 }
 
-
-
 // Método para insertar un nuevo usuario en la pagina de registro
 async insertarUsuario(usuario: Usuario): Promise<void> {
   try {
-    const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user) VALUES (?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user, imagen_user) VALUES (?, ?, ?, ?, ?, ?)';
+
+    // Usamos 'usuario.imagen_user' que debe ser un Blob (la imagen del perfil)
     await this.database.executeSql(sql, [
-      usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user
+      usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user, usuario.imagen_user
     ]);
     await this.obtenerUsuarios(); // Refrescar la lista de usuarios
 
@@ -440,7 +466,6 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
     this.presentAlert('Error', 'Error al insertar el usuario: ' + JSON.stringify(error));
   }
 }
-
 
 //obtiene los usuarios en la pagina de admin
 async obtenerUsuarios(): Promise<Usuario[]> {
@@ -456,7 +481,8 @@ async obtenerUsuarios(): Promise<Usuario[]> {
           apellidouser: res.rows.item(i).apellido_user,
           correo_user: res.rows.item(i).correo_user,
           clave_user: res.rows.item(i).clave_user,
-          telefono_user: res.rows.item(i).telefono_user
+          telefono_user: res.rows.item(i).telefono_user,
+          imagen_user: res.rows.item(i).imagen_user // Recuperar la imagen (Blob) desde la base de datos
         });
       }
     }
@@ -475,14 +501,13 @@ actualizarDatoslogin(datos: Datoslogin[]) {
 
 async transferirDatosPerfil(correo: string): Promise<void> {
   try {
-    // Obtener datos del usuario por correo
     const sql = 'SELECT * FROM usuario WHERE correo_user = ?';
     const res = await this.database.executeSql(sql, [correo]);
 
     if (res.rows.length > 0) {
       const user = res.rows.item(0);
 
-      // Crear objeto de datos del perfil
+      // Crear objeto de datos del perfil con la imagen incluida
       const datosPerfil: Extraerdatosusuario = {
         iduser: user.id_user,
         nombreuser: user.nombre_user,
@@ -490,6 +515,7 @@ async transferirDatosPerfil(correo: string): Promise<void> {
         correo_user: user.correo_user,
         clave_user: user.clave_user,
         telefono_user: user.telefono_user,
+        imagen_user: user.imagen_user // Incluir la imagen en los datos
       };
 
       // Actualiza el observable con los datos extraídos

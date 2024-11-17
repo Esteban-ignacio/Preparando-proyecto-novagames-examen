@@ -76,6 +76,7 @@ export class ModificarperfilPage implements OnInit {
     correo_user: this.datosPerfil.correo_user, // No se modifica
     clave_user: this.datosPerfil.clave_user, // No se modifica
     telefono_user: this.telefonomodificarperfil || this.datosPerfil.telefono_user, // Mantener el valor anterior si está vacío
+    imagen_user: this.datosPerfil.imagen_user
   };
 
   // Actualizar en la base de datos

@@ -29,9 +29,17 @@ export class PerfilPage implements OnInit {
   loadProfile() {
     this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
       if (datos.length > 0) {
-        this.datosPerfil = datos[0]; // Esto mostrará los datos actualizados
+        this.datosPerfil = {
+          ...datos[0],
+          imagen_user: datos[0].imagen_user ?? undefined // Usa undefined en lugar de null
+        };
       }
     });
+  }  
+  
+  // Función para convertir el Blob de la imagen en una URL de objeto
+  getImageUrl(blob: Blob): string {
+    return URL.createObjectURL(blob);
   }
   
   Home(){
