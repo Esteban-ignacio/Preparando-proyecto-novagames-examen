@@ -64,5 +64,19 @@ ion-toolbar{
     --background: #a8f6c6;
   }
 
-
+  .contenedor-foto {
+    display: flex;
+    flex-direction: column; /* Ordena en columna: imagen arriba, botón abajo */
+    align-items: center; /* Centra horizontalmente */
+    justify-content: center; /* Centra verticalmente */
+    gap: 15px; /* Espacio entre la imagen y el botón */
+  }
+  
+  .foto {
+    height: 150px;
+    width: 150px;
+    border-radius: 50%; /* Foto circular */
+    object-fit: cover; /* Evita distorsión */
+    border: 2px solid rgb(16, 180, 158);
+  }
   
