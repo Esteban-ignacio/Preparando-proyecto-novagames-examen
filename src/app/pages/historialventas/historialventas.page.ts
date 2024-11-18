@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
   selector: 'app-historialventas',
@@ -8,10 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HistorialventasPage implements OnInit {
 
-constructor() { }
+
+constructor(private bdService: ServiceBDService) { }
 
 ngOnInit() {
- 
+  
 }
 
+
+
 }
+
+
+
+
+

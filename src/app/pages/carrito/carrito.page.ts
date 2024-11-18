@@ -22,6 +22,8 @@ export class CarritoPage implements OnInit {
 
   productosGuardados: number = 0; // Variable para almacenar la cantidad de productos guardados
 
+  correoUsuario: string = '';  // Se debe obtener del usuario logueado
+
   constructor(private alertController: AlertController, private bdService: ServiceBDService) { }
 
   ngOnInit() {
@@ -185,11 +187,55 @@ async cargarContadorProductos() {
   console.log('Productos guardados al cargar:', this.productosGuardados);
 }
 
-  // Función para manejar la compra
-  Comprar() {
-    this.presentAlert('Comprado', 'Compra Realizada');
+// Llamar a la función guardarCompra cuando se confirme la compra
+async confirmarCompra() {
+  // Creamos un arreglo con los productos del carrito para enviar a la base de datos
+  const productosCarrito = this.productos.map(producto => ({
+    id_prod: producto.id_prod,
+    nombre_prod: producto.nombre,
+    cantidad: producto.cantidad,
+    precio_prod: producto.precio,
+    foto_prod: producto.imagen_prod // Ahora también incluimos la foto del producto
+  }));
+
+  // Verificar los productos que se están enviando
+  console.log('Productos en el carrito:', productosCarrito);
+
+  try {
+    // Inicializamos las variables para los totales
+    let vVenta = 0; // Valor individual de venta
+    let totalCompra = 0; // Total de la compra
+
+    // Calculamos la venta por cada producto
+    if (productosCarrito.length === 1) {
+      const producto = productosCarrito[0];
+      vVenta = producto.precio_prod * producto.cantidad; // Solo un producto
+    } else {
+      // Si hay más de un producto, sumamos el total de todos los productos
+      totalCompra = productosCarrito.reduce((total, producto) => {
+        return total + (producto.precio_prod * producto.cantidad);
+      }, 0);
+    }
+
+    console.log('Total de la compra:', totalCompra); // Verificar el total de la compra
+
+    // Llamamos a la función del servicio para guardar la compra en la base de datos
+    await this.bdService.guardarCompra(productosCarrito, vVenta, totalCompra);
+
+    // Mostramos un mensaje de éxito al usuario
+    await this.presentAlert('Compra Exitosa', 'Tu compra ha sido procesada correctamente.');
+
+    // Aquí podrías agregar lógica para vaciar el carrito o hacer otros ajustes si es necesario
+    this.productos = []; // Vaciar carrito (si es necesario)
+
+  } catch (error) {
+    console.error('Error al procesar la compra:', error); // Mostrar el error en consola
+    // En caso de error, mostramos una alerta con el mensaje correspondiente
+    await this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
   }
 }
 
+
+}
 
 

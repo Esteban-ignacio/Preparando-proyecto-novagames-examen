@@ -5,6 +5,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { Correousuario, Datoslogin, Extraerdatosusuario, Roles, Usuario, Verificarcorreo } from './usuario';
 import { Productos } from './productos';
 import { HttpClient } from '@angular/common/http';
+import { Compra } from './compra';
+
 
 
 @Injectable({
@@ -91,6 +93,8 @@ export class ServiceBDService {
 
   listaobtenercorreousuario = new BehaviorSubject <Correousuario[]>([]);
 
+  listacompras = new BehaviorSubject <Compra[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -144,6 +148,10 @@ fetchProductos(): Observable<Productos[]>{
 
 fetchCorreousuario(): Observable<Correousuario[]>{
   return this.listaobtenercorreousuario.asObservable();
+}
+
+fetchCompra(): Observable<Compra[]>{
+  return this.listacompras.asObservable();
 }
 
 dbState(){
@@ -448,7 +456,7 @@ async verificarUsuario(correo: string, telefono: string): Promise<{ emailExists:
   return { emailExists, phoneExists }; // Retorna si el correo y teléfono existen
 }
 
-// Método para insertar un nuevo usuario en la pagina de registro
+// Método para insertar un nuevo usuario en la página de registro
 async insertarUsuario(usuario: Usuario): Promise<void> {
   try {
     const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user, imagen_user) VALUES (?, ?, ?, ?, ?, ?)';
@@ -457,6 +465,22 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
     await this.database.executeSql(sql, [
       usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user, usuario.imagen_user
     ]);
+
+    // Obtener el id del último registro insertado
+    const result = await this.database.executeSql('SELECT last_insert_rowid() AS id', []);
+    const newUserId = result.rows.item(0).id;
+
+    console.log('Nuevo ID de usuario insertado:', newUserId);
+
+    // Verificar si se ha obtenido el ID correctamente
+    if (newUserId) {
+      // Mostrar una alerta con el ID del nuevo usuario insertado
+      await this.presentAlert('Éxito', `Nuevo usuario registrado con ID: ${newUserId}`);
+    } else {
+      // Si no se obtiene el ID, mostrar un mensaje de error
+      await this.presentAlert('Error', 'No se pudo obtener el ID del nuevo usuario');
+    }
+
     await this.obtenerUsuarios(); // Refrescar la lista de usuarios
 
     // Llamar al método para transferir datos al perfil
@@ -805,7 +829,6 @@ obtenerCantidadTotal(): number {
 }
 
 // Función para eliminar un producto del carrito
-//modificar esto, para que se use con localstorage y no base de datos
 async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
   // Obtener el correo del usuario desde el BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
@@ -842,6 +865,70 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
     this.presentAlert('Error', 'Error al eliminar el producto: ' + JSON.stringify(error));
   }
 }
+
+async guardarCompra(
+  productos: { id_prod: number, nombre_prod: string, cantidad: number, precio_prod: number, foto_prod: string }[], 
+  vVenta: number, 
+  totalCompra: number
+): Promise<void> {
+  try {
+    // Obtener el correo del usuario directamente desde localStorage
+    const correoUsuario = localStorage.getItem('correoUsuario');  // Recuperar el correo guardado en localStorage
+
+    if (!correoUsuario) {
+      throw new Error('El correo del usuario no se ha encontrado.');
+    }
+
+    // Obtener el id_user basado en el correo del usuario
+    const resultadoIdUser = await this.database.executeSql(
+      `SELECT id_user FROM usuario WHERE correo_user = ?`,
+      [correoUsuario]
+    );
+
+    const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
+
+    if (!idUser) {
+      throw new Error('No se encontró el usuario con ese correo');
+    }
+
+    // Determinar el valor de la compra
+    const valorCompra = productos.length === 1 ? vVenta : totalCompra;
+
+    // Insertar la compra en la tabla 'compra' usando el id_user
+    const resCompra = await this.database.executeSql(
+      `INSERT INTO compra (id_user, total_compra, v_venta) VALUES (?, ?, ?)`,
+      [idUser, valorCompra, valorCompra]
+    );
+
+    if (resCompra.insertId) {
+      const idCompra = resCompra.insertId;
+
+      // Insertar los detalles de la compra en la tabla 'detalle'
+      for (const producto of productos) {
+        await this.database.executeSql(
+          `INSERT INTO detalle (id_compra, id_prod, cantidad_detalle, subtotal_detalle, foto_prod) VALUES (?, ?, ?, ?, ?)`,
+          [
+            idCompra,
+            producto.id_prod,
+            producto.cantidad,
+            producto.precio_prod * producto.cantidad,
+            producto.foto_prod // Aquí se inserta la foto del producto
+          ]
+        );
+      }
+
+      console.log('Compra y detalles guardados correctamente');
+      // Solo mostrar alerta de éxito si no hubo error
+      this.presentAlert('Éxito', 'Compra procesada correctamente');
+    } else {
+      throw new Error('No se pudo obtener el ID de la compra');
+    }
+  } catch (e: any) { // Especificamos el tipo de 'e' como 'any'
+    console.error('Error al guardar la compra:', e);
+    this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+  }
+}
+
 
 // Función para cargar el contador de productos guardados
 async cargarContadorProductos(): Promise<void> {
