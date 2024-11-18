@@ -17,6 +17,8 @@ export class PerfilPage implements OnInit {
   contrasena: string = "";
 
   datosPerfil: Extraerdatosusuario | null = null;
+
+  imagen: any;
   
   constructor(private router: Router, private bdService: ServiceBDService) { 
     
@@ -31,16 +33,13 @@ export class PerfilPage implements OnInit {
       if (datos.length > 0) {
         this.datosPerfil = {
           ...datos[0],
-          imagen_user: datos[0].imagen_user ?? undefined // Usa undefined en lugar de null
+          imagen_user: datos[0].imagen_user ?? undefined // Usa undefined si no hay imagen
         };
+        this.imagen = datos[0].imagen_user;
+
       }
     });
   }  
-  
-  // Función para convertir el Blob de la imagen en una URL de objeto
-  getImageUrl(blob: Blob): string {
-    return URL.createObjectURL(blob);
-  }
   
   Home(){
     let navigationextras: NavigationExtras = {

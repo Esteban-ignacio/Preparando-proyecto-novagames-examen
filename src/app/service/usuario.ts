@@ -5,7 +5,7 @@ export class Usuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: number;
-    imagen_user!: Blob; 
+    imagen_user!: any; 
 }
     
 export class Datoslogin {

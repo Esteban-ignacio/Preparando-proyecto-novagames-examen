@@ -461,12 +461,18 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
   try {
     const sql = 'INSERT INTO usuario (nombre_user, apellido_user, correo_user, clave_user, telefono_user, imagen_user) VALUES (?, ?, ?, ?, ?, ?)';
 
-    // Usamos 'usuario.imagen_user' que debe ser un Blob (la imagen del perfil)
+    // Verificar si la imagen existe antes de insertar
+    if (!usuario.imagen_user) {
+      await this.presentAlert('Advertencia', 'No se ha proporcionado una imagen de perfil.'); // Mostrar advertencia si no hay imagen
+      return;
+    }
+
+    // Insertar los datos del usuario
     await this.database.executeSql(sql, [
       usuario.nombreuser, usuario.apellidouser, usuario.correo_user, usuario.clave_user, usuario.telefono_user, usuario.imagen_user
     ]);
 
-    // Obtener el id del último registro insertado
+    // Obtener el ID del último registro insertado
     const result = await this.database.executeSql('SELECT last_insert_rowid() AS id', []);
     const newUserId = result.rows.item(0).id;
 
@@ -474,11 +480,14 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
 
     // Verificar si se ha obtenido el ID correctamente
     if (newUserId) {
-      // Mostrar una alerta con el ID del nuevo usuario insertado
       await this.presentAlert('Éxito', `Nuevo usuario registrado con ID: ${newUserId}`);
+
+      // Mostrar mensaje si la imagen del usuario se guardó correctamente
+      if (usuario.imagen_user) {
+        await this.presentAlert('Éxito', 'La foto de perfil se guardó correctamente.');
+      }
     } else {
-      // Si no se obtiene el ID, mostrar un mensaje de error
-      await this.presentAlert('Error', 'No se pudo obtener el ID del nuevo usuario');
+      await this.presentAlert('Error', 'No se pudo obtener el ID del nuevo usuario.');
     }
 
     await this.obtenerUsuarios(); // Refrescar la lista de usuarios
