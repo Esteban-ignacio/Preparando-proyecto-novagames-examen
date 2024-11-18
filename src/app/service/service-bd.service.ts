@@ -480,12 +480,6 @@ async insertarUsuario(usuario: Usuario): Promise<void> {
 
     // Verificar si se ha obtenido el ID correctamente
     if (newUserId) {
-      await this.presentAlert('Éxito', `Nuevo usuario registrado con ID: ${newUserId}`);
-
-      // Mostrar mensaje si la imagen del usuario se guardó correctamente
-      if (usuario.imagen_user) {
-        await this.presentAlert('Éxito', 'La foto de perfil se guardó correctamente.');
-      }
     } else {
       await this.presentAlert('Error', 'No se pudo obtener el ID del nuevo usuario.');
     }

@@ -69,8 +69,17 @@ export class ModificarperfilPage implements OnInit {
     const telefonoCambiado = this.telefonomodificarperfil !== this.datosPerfil.telefono_user;
     const imagencambiada = this.imagenmodificarperfil !== this.datosPerfil.imagen_user;
   
-    if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado  && !imagencambiada) {
+    // Verificar que los campos no estén vacíos si se desea hacer un cambio
+    if ((nombreCambiado && !this.nombremodificarperfil.trim()) || 
+        (apellidoCambiado && !this.apellidomodificarperfil.trim()) ||
+        (telefonoCambiado && !this.telefonomodificarperfil.trim())) {
+      this.presentAlert('Error', 'Los campos de nombre, apellido y teléfono no pueden estar vacíos.');
+      return; // Salir si algún campo es vacío cuando se intenta modificarlo
+    }
+  
+    if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado && !imagencambiada) {
       this.presentAlert('Información', 'No se realizaron cambios en el perfil.');
+      this.VolveralPerfil(); // Redirigir a la página de perfil
       return; // Salir si no se modificó ningún campo
     }
   
@@ -83,27 +92,19 @@ export class ModificarperfilPage implements OnInit {
       clave_user: this.datosPerfil.clave_user, // No se modifica
       telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user,
       imagen_user: imagencambiada ? this.imagenmodificarperfil : this.datosPerfil.imagen_user // Aquí se corrigió
-    };      
+    };
   
     // Actualizar en la base de datos
     try {
       await this.bdService.actualizarUsuario(usuarioActualizar);
       this.presentAlert('Realizado', 'Perfil modificado con éxito.');
-      this.limpiarCampos(); // Limpiar los campos tras una actualización exitosa
       this.VolveralPerfil(); // Navegar a la página de perfil
     } catch (error) {
       console.error('Error al actualizar el perfil:', error);
       this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
     }
-  }  
+  }   
   
-  limpiarCampos() {
-    this.nombremodificarperfil = '';
-    this.apellidomodificarperfil = '';
-    this.telefonomodificarperfil = '';
-    this.imagenmodificarperfil = '';
-  }  
-
    // Validación para el nombre y el apellido
    isNombreApellidoModificarPerfilValido(): boolean {
   const regexNombreApellido = /^[a-zA-Z]{2,9}$/; // Letras de 2 a 9 caracteres
@@ -185,7 +186,6 @@ isFormValid(): boolean {
     let navigationextras: NavigationExtras = {
 
     }
-    this.limpiarCampos(); // Limpiar los campos al regresar
     this.router.navigate(['/perfil'], navigationextras);
   }
   irCambiarcontra(){
