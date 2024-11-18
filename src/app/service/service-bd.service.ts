@@ -561,13 +561,22 @@ async transferirDatosPerfil(correo: string): Promise<void> {
 }
 
 async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
-  const sql = 'UPDATE usuario SET nombre_user = ?, apellido_user = ?, telefono_user = ? WHERE correo_user = ?';
+  const sql = `
+    UPDATE usuario 
+    SET 
+      nombre_user = ?, 
+      apellido_user = ?, 
+      telefono_user = ?, 
+      imagen_user = ? 
+    WHERE correo_user = ?
+  `;
 
   try {
     const res = await this.database.executeSql(sql, [
       usuario.nombreuser,
       usuario.apellidouser,
       usuario.telefono_user,
+      usuario.imagen_user, // Imagen incluida en los parámetros
       usuario.correo_user
     ]);
 
@@ -580,7 +589,10 @@ async actualizarUsuario(usuario: Extraerdatosusuario): Promise<void> {
       await this.obtenerUsuarios(); // Actualiza la lista de usuarios en el administrador
     } else {
       console.warn('No se encontró un usuario con el correo especificado.');
-      this.presentAlert('Advertencia', 'No se encontró el usuario para actualizar. Asegúrate de que el correo esté correcto.');
+      this.presentAlert(
+        'Advertencia',
+        'No se encontró el usuario para actualizar. Asegúrate de que el correo esté correcto.'
+      );
     }
   } catch (error) {
     console.error('Error al actualizar usuario:', error);

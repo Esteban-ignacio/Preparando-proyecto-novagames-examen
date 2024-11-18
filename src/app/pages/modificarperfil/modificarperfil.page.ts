@@ -69,7 +69,7 @@ export class ModificarperfilPage implements OnInit {
     const telefonoCambiado = this.telefonomodificarperfil !== this.datosPerfil.telefono_user;
     const imagencambiada = this.imagenmodificarperfil !== this.datosPerfil.imagen_user;
   
-    if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado) {
+    if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado  && !imagencambiada) {
       this.presentAlert('Información', 'No se realizaron cambios en el perfil.');
       return; // Salir si no se modificó ningún campo
     }
@@ -77,13 +77,13 @@ export class ModificarperfilPage implements OnInit {
     // Preparar los datos para actualizar
     const usuarioActualizar: Extraerdatosusuario = {
       iduser: this.datosPerfil.iduser,
-      nombreuser: nombreCambiado ? this.nombremodificarperfil : this.datosPerfil.nombreuser, // Mantener el valor anterior si no cambió
-      apellidouser: apellidoCambiado ? this.apellidomodificarperfil : this.datosPerfil.apellidouser, // Igual para el apellido
+      nombreuser: nombreCambiado ? this.nombremodificarperfil : this.datosPerfil.nombreuser,
+      apellidouser: apellidoCambiado ? this.apellidomodificarperfil : this.datosPerfil.apellidouser,
       correo_user: this.datosPerfil.correo_user, // No se modifica
       clave_user: this.datosPerfil.clave_user, // No se modifica
-      telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user, // Igual para el teléfono
-      imagen_user: imagencambiada ? this.datosPerfil.imagen_user : this.datosPerfil.imagen_user
-    };
+      telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user,
+      imagen_user: imagencambiada ? this.imagenmodificarperfil : this.datosPerfil.imagen_user // Aquí se corrigió
+    };      
   
     // Actualizar en la base de datos
     try {
@@ -101,6 +101,7 @@ export class ModificarperfilPage implements OnInit {
     this.nombremodificarperfil = '';
     this.apellidomodificarperfil = '';
     this.telefonomodificarperfil = '';
+    this.imagenmodificarperfil = '';
   }  
 
    // Validación para el nombre y el apellido
