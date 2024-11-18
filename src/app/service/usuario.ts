@@ -34,7 +34,7 @@ export class Extraerdatosusuario {
     correo_user!: string;
     clave_user!: string;
     telefono_user!: string;
-    imagen_user?: Blob; 
+    imagen_user!: any; 
 }
 
 export class Correousuario {

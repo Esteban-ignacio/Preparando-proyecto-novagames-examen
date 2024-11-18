@@ -18,7 +18,7 @@ export class ModificarperfilPage implements OnInit {
 
   datosPerfil: Extraerdatosusuario | undefined; // Cambiar a un tipo más específico
 
-  imagen: any;
+  imagenmodificarperfil: any;
   
   constructor(private alertController: AlertController, private router: Router, private bdService: ServiceBDService) { }
 
@@ -29,6 +29,7 @@ export class ModificarperfilPage implements OnInit {
         this.nombremodificarperfil = this.datosPerfil.nombreuser || '';
         this.apellidomodificarperfil = this.datosPerfil.apellidouser || '';
         this.telefonomodificarperfil = this.datosPerfil.telefono_user || '';
+        this.imagenmodificarperfil = this.datosPerfil.imagen_user || '';
       } else {
         this.presentAlert('Error', 'No se encontraron datos del perfil.');
       }
@@ -46,7 +47,7 @@ export class ModificarperfilPage implements OnInit {
     // You can access the original file using image.path, which can be
     // passed to the Filesystem API to read the raw data of the image,
     // if desired (or pass resultType: CameraResultType.Base64 to getPhoto)
-    this.imagen = image.webPath;
+    this.imagenmodificarperfil = image.webPath;
   
     
   };
@@ -66,6 +67,7 @@ export class ModificarperfilPage implements OnInit {
     const nombreCambiado = this.nombremodificarperfil !== this.datosPerfil.nombreuser;
     const apellidoCambiado = this.apellidomodificarperfil !== this.datosPerfil.apellidouser;
     const telefonoCambiado = this.telefonomodificarperfil !== this.datosPerfil.telefono_user;
+    const imagencambiada = this.imagenmodificarperfil !== this.datosPerfil.imagen_user;
   
     if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado) {
       this.presentAlert('Información', 'No se realizaron cambios en el perfil.');
@@ -80,7 +82,7 @@ export class ModificarperfilPage implements OnInit {
       correo_user: this.datosPerfil.correo_user, // No se modifica
       clave_user: this.datosPerfil.clave_user, // No se modifica
       telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user, // Igual para el teléfono
-      imagen_user: this.datosPerfil.imagen_user // No se modifica
+      imagen_user: imagencambiada ? this.datosPerfil.imagen_user : this.datosPerfil.imagen_user
     };
   
     // Actualizar en la base de datos
