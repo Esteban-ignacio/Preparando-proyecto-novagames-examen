@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { LocalNotifications } from '@capacitor/local-notifications';
 import { AlertController } from '@ionic/angular';
 import { Productos } from 'src/app/service/productos'; 
 import { ServiceBDService } from 'src/app/service/service-bd.service';
@@ -187,51 +188,30 @@ async cargarContadorProductos() {
   console.log('Productos guardados al cargar:', this.productosGuardados);
 }
 
-// Llamar a la función guardarCompra cuando se confirme la compra
-async confirmarCompra() {
-  // Creamos un arreglo con los productos del carrito para enviar a la base de datos
-  const productosCarrito = this.productos.map(producto => ({
-    id_prod: producto.id_prod,
-    nombre_prod: producto.nombre,
-    cantidad: producto.cantidad,
-    precio_prod: producto.precio,
-    foto_prod: producto.imagen_prod // Ahora también incluimos la foto del producto
-  }));
-
-  // Verificar los productos que se están enviando
-  console.log('Productos en el carrito:', productosCarrito);
-
+// Función cuando se presiona el botón de compra
+async Notificacioncompra() {
   try {
-    // Inicializamos las variables para los totales
-    let vVenta = 0; // Valor individual de venta
-    let totalCompra = 0; // Total de la compra
+    // Aquí deberías agregar el código para procesar la compra,
+    // como la lógica de pago y la actualización de la base de datos
 
-    // Calculamos la venta por cada producto
-    if (productosCarrito.length === 1) {
-      const producto = productosCarrito[0];
-      vVenta = producto.precio_prod * producto.cantidad; // Solo un producto
-    } else {
-      // Si hay más de un producto, sumamos el total de todos los productos
-      totalCompra = productosCarrito.reduce((total, producto) => {
-        return total + (producto.precio_prod * producto.cantidad);
-      }, 0);
-    }
-
-    console.log('Total de la compra:', totalCompra); // Verificar el total de la compra
-
-    // Llamamos a la función del servicio para guardar la compra en la base de datos
-    await this.bdService.guardarCompra(productosCarrito, vVenta, totalCompra);
-
-    // Mostramos un mensaje de éxito al usuario
-    await this.presentAlert('Compra Exitosa', 'Tu compra ha sido procesada correctamente.');
-
-    // Aquí podrías agregar lógica para vaciar el carrito o hacer otros ajustes si es necesario
-    this.productos = []; // Vaciar carrito (si es necesario)
-
+    // Enviar una notificación local
+    await LocalNotifications.requestPermissions(); // Solicita permisos
+    await LocalNotifications.schedule({
+      notifications: [
+        {
+          title: 'Compra Confirmada',
+          body: 'Tu compra se ha procesado con éxito.',
+          id: 1,
+          schedule: { at: new Date(Date.now() + 1000) }, // Se mostrará 1 segundo después
+          sound: 'default',
+          // El campo `attachments` se ha eliminado ya que no lo necesitas
+          actionTypeId: '',
+          extra: null
+        }
+      ]
+    });
   } catch (error) {
-    console.error('Error al procesar la compra:', error); // Mostrar el error en consola
-    // En caso de error, mostramos una alerta con el mensaje correspondiente
-    await this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+    console.error('Error al procesar la compra y mostrar notificación:', error);
   }
 }
 
