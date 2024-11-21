@@ -18,8 +18,8 @@
         <h2 class="datos-productos-admin">{{ producto.nombre_prod }}</h2> <!-- Nombre del producto -->
         <p class="datos-productos-admin">Precio: {{ formatCurrency(producto.precio_prod) }}</p> <!-- Precio -->
         <p class="datos-productos-admin">Categoria: {{ producto.nombre_cat }}</p> <!-- Categoría -->
-        <p class="datos-productos-admin">Stock máximo: {{ producto.stock_prod }}</p> <!-- Stock máximo -->
-        <p class="datos-productos-admin">Stock actual:</p> <!-- Stock actual -->
+        <p class="datos-productos-admin">Stock máximo: {{ getStockMaximo(producto.id_prod) }}</p><!-- Stock máximo -->
+        <p class="datos-productos-admin">Stock actual: {{ producto.stock_prod }}</p> <!-- Stock actual -->
   
         <!-- Caja de texto y botón debajo de los datos -->
         <div class="datos-productos-admin">

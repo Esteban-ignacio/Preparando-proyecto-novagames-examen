@@ -9,6 +9,19 @@ import { ServiceBDService } from 'src/app/service/service-bd.service';
 })
 export class GestionproductosPage implements OnInit {
 
+  productosTotales: any[] = [
+    { idproducto: 1, stockmaximo: 60 },
+    { idproducto: 2, stockmaximo: 60 },
+    { idproducto: 3, stockmaximo: 55 },
+    { idproducto: 4, stockmaximo: 45 },
+    { idproducto: 5, stockmaximo: 50 },
+    { idproducto: 6, stockmaximo: 55 },
+    { idproducto: 7, stockmaximo: 40 },
+    { idproducto: 8, stockmaximo: 30 },
+    { idproducto: 9, stockmaximo: 30 },
+    { idproducto: 10, stockmaximo: 25 }
+  ];
+
   constructor(private menuCtrl: MenuController,  private serviceBD: ServiceBDService) {}
 
   productos: any[] = []; // Variable para almacenar los productos
@@ -32,5 +45,13 @@ export class GestionproductosPage implements OnInit {
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }
+
+  getStockMaximo(id_prod: number): number {
+    // Busca el stock máximo según el ID del producto
+    const productoEncontrado = this.productosTotales.find(
+      producto => producto.idproducto === id_prod
+    );
+    return productoEncontrado ? productoEncontrado.stockmaximo : 0; // Devuelve el stock o 0 si no se encuentra
+  }  
   
 }
