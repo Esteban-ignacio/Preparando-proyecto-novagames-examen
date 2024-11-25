@@ -15,12 +15,17 @@ export class HomePage implements OnInit {
       const navigation = this.router.getCurrentNavigation()?.extras?.state;
       if (navigation) {
         this.Usuario = navigation['user']; // Asigna el usuario recibido
+        localStorage.setItem('Usuario', this.Usuario); // Guarda el usuario en localStorage
       }
     });
   }
   
-  
   ngOnInit() {
+    // Al cargar la página, verifica si ya existe un usuario en localStorage
+    const storedUser = localStorage.getItem('Usuario');
+    if (storedUser) {
+      this.Usuario = storedUser; // Recupera el usuario del localStorage
+    }
   }
 
   irPlaystation(){

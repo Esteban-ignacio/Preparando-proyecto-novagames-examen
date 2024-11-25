@@ -21,6 +21,7 @@ export class AppComponent {
 
   // Función para manejar el cierre de sesión
   async cerrarSesion() {
+    localStorage.removeItem('Usuario'); // Elimina el usuario del localStorage
     // Limpiar el carrito
     await this.bdService.limpiarCarrito();
     this.bdService.resetearContadorProductos();  // Llama a resetearContadorProductos para limpiar el contador

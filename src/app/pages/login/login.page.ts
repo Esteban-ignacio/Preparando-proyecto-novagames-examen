@@ -65,6 +65,8 @@ export class LoginPage implements OnInit {
       // Hacemos la validación de los datos
       if (this.isFormValid()) {
         try {
+          // Eliminar el usuario del localStorage antes de proceder
+          localStorage.removeItem('Usuario'); // Elimina el usuario del localStorage
           // Llamar al método de login del servicio
           const loginResult = await this.bdService.login(this.usuariologin, this.correologin, this.contrasenalogin);
           
@@ -99,7 +101,6 @@ export class LoginPage implements OnInit {
         this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
       }
     }
-    
 
   // Validación para el nombre y el apellido
   isUsuarioLoginValido(): boolean {
