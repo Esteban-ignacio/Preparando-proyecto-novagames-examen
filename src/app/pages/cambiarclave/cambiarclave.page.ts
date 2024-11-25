@@ -19,6 +19,8 @@ export class CambiarclavePage implements OnInit {
   mostrarPreguntas: boolean = false;
   respuestas: string[] = [];
 
+  datosPerfil: any;
+
   preguntas = [
     { pregunta: "¿Cuál es tu color favorito?", respuestas: ["Rojo", "Verde", "Azul"] },
     { pregunta: "¿En qué ciudad naciste?", respuestas: ["Madrid", "Barcelona", "Valencia"] },
@@ -42,7 +44,20 @@ export class CambiarclavePage implements OnInit {
   
     // No cargar la respuesta seleccionada automáticamente
     this.respuestaSeleccionada = ''; // Asegúrate de que la respuesta esté vacía
+
+    // Obtener los datos del perfil solo si el usuario proviene de la página 'modificarperfil'
+    if (fromPage === 'modificarperfil') {
+      this.loadProfile();
+    }
 }  
+
+loadProfile() {
+  this.bdService.fetchExtraerdatosusuario().subscribe(datos => {
+    if (datos.length > 0) {
+      this.datosPerfil = datos[0]; // Asignar los datos del perfil
+    }
+  });
+}
 
 async ValidacionCambiarClave() {
   // Verificar que todos los campos estén completos
@@ -57,29 +72,26 @@ async ValidacionCambiarClave() {
   }
 
   try {
-    // Verificar si el correo existe en la base de datos
     const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correocambiarclave);
 
     if (existeCorreo) {
-      // Obtener la página de origen desde las dos posibles fuentes
       const navigation = this.router.getCurrentNavigation();
-      const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'] || null;
+      const fromPage = navigation?.extras?.state?.['fromPage'] || history.state?.['fromPage'];
 
-      // Si no se encuentra la página de origen, activar la sección de preguntas
-      if (!fromPage) {
-        this.mostrarPreguntas = true;  // Mostrar la sección de preguntas de seguridad
-        return;  // Salir de la función para que se muestre la sección
-      }
-
-      // Condición si el usuario proviene de 'modificarperfil'
       if (fromPage === 'modificarperfil') {
+        // Comparar el correo ingresado con el correo del perfil (directamente desde this.datosPerfil)
+        if (this.datosPerfil && this.datosPerfil.correo_user !== this.correocambiarclave) {
+          this.presentAlert('Error', 'El correo ingresado no coincide con el correo de la sesión actual.');
+          return;
+        }
+
+        // Si los correos coinciden, proceder a cambiar la contraseña
         await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
-        // Si las validaciones son correctas, redirigir a la página de perfil
         await this.presentAlert('Éxito', 'Cambio de contraseña exitoso');
-        await this.router.navigate(['/perfil']); // Redirige a la página de perfil
+        await this.router.navigate(['/perfil']);
       } else {
-        // Si no proviene de 'modificarperfil', mostrar la sección de preguntas
-        this.mostrarPreguntas = true; // Mostrar la sección de preguntas de seguridad
+        this.mostrarPreguntas = true;
+        await this.presentAlert('Preguntas de seguridad', 'Eliga la pregunta y respuesta de acuerdo a lo que ha escogido anteriormente.');
       }
     } else {
       this.presentAlert('Error', 'El correo no se ha encontrado. Ingrese otro correo o verifique sus datos.');
