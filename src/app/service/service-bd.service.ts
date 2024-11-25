@@ -279,7 +279,6 @@ async insertarCategorias() {
     }
 
   } catch (e) {
-    this.presentAlert('Insertar Categorías', 'Error al insertar categorías: ' + JSON.stringify(e));
     console.error('Error al insertar categorías:', e);
   }
 }
@@ -418,22 +417,18 @@ async insertarProductos() {
       for (const producto of productosPlayStation) {
         await this.database.executeSql('INSERT INTO producto (id_prod, nombre_prod, precio_prod, stock_prod, foto_prod, descripcion_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?, ?)',
           [producto.id_prod, producto.nombre_prod, producto.precio_prod, producto.stock_prod, producto.foto_prod, producto.descripcion_prod, producto.id_cat]);
-        console.log(`Producto ${producto.nombre_prod} insertado correctamente`);
       }
 
       // Insertar productos de Xbox
       for (const producto of productosXbox) {
         await this.database.executeSql('INSERT INTO producto (id_prod, nombre_prod, precio_prod, stock_prod, foto_prod, descripcion_prod, id_cat) VALUES (?, ?, ?, ?, ?, ?, ?)',
           [producto.id_prod, producto.nombre_prod, producto.precio_prod, producto.stock_prod, producto.foto_prod, producto.descripcion_prod, producto.id_cat]);
-        console.log(`Producto ${producto.nombre_prod} insertado correctamente`);
       }
-
+      
     } else {
       console.log('Los productos ya existen. No se insertaron.');
     }
-
   } catch (e) {
-    this.presentAlert('Insertar Productos', 'Error al insertar productos: ' + JSON.stringify(e));
     console.error('Error al insertar productos:', e);
   }
 }
@@ -1079,11 +1074,11 @@ async obtenerProductosParaAdmin() {
       JOIN categoria c ON p.id_cat = c.id_cat
     `, []);
 
-    const productos: any[] = []; // Array de tipo 'any' para que coincida con los datos que obtienes
+    const productos: any[] = []; // Array de tipo 'any' para almacenar los productos obtenidos
 
     // Iterar sobre los resultados y almacenarlos en un array
     for (let i = 0; i < resultado.rows.length; i++) {
-      const producto = resultado.rows.item(i);
+      const producto = resultado.rows.item(i);  // Obtener cada producto de los resultados
       productos.push({
         id_prod: producto.id_prod,
         nombre_prod: producto.nombre_prod,
@@ -1091,8 +1086,8 @@ async obtenerProductosParaAdmin() {
         stock_prod: producto.stock_prod,
         foto_prod: producto.foto_prod,
         descripcion_prod: producto.descripcion_prod,
-        id_cat: producto.id_cat,
-        nombre_cat: producto.nombre_cat
+        id_cat: producto.id_cat,  // ID de la categoría
+        nombre_cat: producto.nombre_cat  // Nombre de la categoría
       });
     }
 
@@ -1101,11 +1096,44 @@ async obtenerProductosParaAdmin() {
 
   } catch (error) {
     console.error('Error al obtener los productos:', error);
+    // Mostrar una alerta si ocurre un error
     this.presentAlert('Error', 'Hubo un error al obtener los productos de la base de datos.');
-    // Devolver un array vacío en caso de error
-    return [];  // Aseguramos que se devuelva algo, aunque sea un array vacío
+    // Devolver un array vacío en caso de error para evitar problemas en el flujo de la aplicación
+    return [];
   }
 }
+
+
+async eliminarTodosLosProductosYCategorias(): Promise<void> {
+  try {
+    // Eliminar registros de la tabla 'detalle' y obtener el número de eliminaciones
+    const resultDetalle = await this.database.executeSql('DELETE FROM detalle', []);
+    const deletedDetalleCount = resultDetalle.rowsAffected;
+    
+    // Eliminar productos de la tabla 'producto' y obtener el número de eliminaciones
+    const resultProducto = await this.database.executeSql('DELETE FROM producto', []);
+    const deletedProductoCount = resultProducto.rowsAffected;
+    
+    // Eliminar categorías de la tabla 'categoria' y obtener el número de eliminaciones
+    const resultCategoria = await this.database.executeSql('DELETE FROM categoria', []);
+    const deletedCategoriaCount = resultCategoria.rowsAffected;
+    
+    // Crear el mensaje detallado
+    let message = 'Eliminaciones realizadas:\n';
+    message += `${deletedDetalleCount} registros eliminados de la tabla 'detalle'.\n`;
+    message += `${deletedProductoCount} registros eliminados de la tabla 'producto'.\n`;
+    message += `${deletedCategoriaCount} registros eliminados de la tabla 'categoria'.\n`;
+    
+    // Mostrar el mensaje informativo con las eliminaciones
+    this.presentAlert('Éxito', message);
+    
+  } catch (error) {
+    console.error('Error al eliminar productos, categorías y detalles:', error);
+    // Mostrar un mensaje de error si algo sale mal
+    this.presentAlert('Error', 'Hubo un problema al eliminar los productos, categorías y detalles.');
+  }
+}
+
 
 }
 

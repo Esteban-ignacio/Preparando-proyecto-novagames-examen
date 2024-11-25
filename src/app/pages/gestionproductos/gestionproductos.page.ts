@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MenuController } from '@ionic/angular';
+import { AlertController, MenuController } from '@ionic/angular';
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 
 @Component({
@@ -22,7 +22,7 @@ export class GestionproductosPage implements OnInit {
     { idproducto: 10, stockmaximo: 25 }
   ];
 
-  constructor(private menuCtrl: MenuController,  private serviceBD: ServiceBDService) {}
+  constructor(private menuCtrl: MenuController,  private serviceBD: ServiceBDService, private alertController: AlertController) {}
 
   productos: any[] = []; // Variable para almacenar los productos
 
@@ -38,8 +38,53 @@ export class GestionproductosPage implements OnInit {
   }
 
   async obtenerProductosParaAdmin() {
-    // Llamar al servicio para obtener los productos
-    this.productos = await this.serviceBD.obtenerProductosParaAdmin(); // Esperar los productos y asignarlos a la variable
+    try {
+      // Llamar al servicio para obtener los productos
+      this.productos = await this.serviceBD.obtenerProductosParaAdmin();
+  
+      // Verificar si los productos fueron obtenidos correctamente
+      if (this.productos && this.productos.length > 0) {
+        this.presentAlert('Éxito', 'Productos obtenidos correctamente');
+      } else {
+        this.presentAlert('Información', 'No se encontraron productos');
+      }
+  
+    } catch (error) {
+      // Mostrar una alerta si ocurre un error
+      this.presentAlert('Error', 'Error al obtener los productos: ' + error);
+    }
+  }  
+
+  // Método para eliminar todos los productos, categorías y detalles
+  async eliminarProductosYCategorias() {
+    const alert = await this.alertController.create({
+      header: 'Confirmar eliminación',
+      message: '¿Estás seguro de que deseas eliminar todos los productos, categorías y detalles?',
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel',
+          handler: () => {
+            console.log('Eliminación cancelada');
+          }
+        },
+        {
+          text: 'Eliminar',
+          handler: async () => {
+            try {
+              // Llamada a la función del servicio para eliminar productos y categorías
+              await this.serviceBD.eliminarTodosLosProductosYCategorias();
+              this.productos = []; // Limpiar la lista de productos en el componente
+              this.presentAlert('Éxito', 'Todos los productos, categorías y detalles han sido eliminados.');
+            } catch (error) {
+              this.presentAlert('Error', 'Hubo un problema al eliminar los productos, categorías y detalles.');
+            }
+          }
+        }
+      ]
+    });
+
+    await alert.present();
   }
 
   formatCurrency(precio: number): string {
@@ -52,6 +97,16 @@ export class GestionproductosPage implements OnInit {
       producto => producto.idproducto === id_prod
     );
     return productoEncontrado ? productoEncontrado.stockmaximo : 0; // Devuelve el stock o 0 si no se encuentra
+  }  
+
+  async presentAlert(header: string, message: string) {
+    const alert = await this.alertController.create({
+      header: header,
+      message: message,
+      buttons: ['OK']
+    });
+  
+    await alert.present();
   }  
   
 }
