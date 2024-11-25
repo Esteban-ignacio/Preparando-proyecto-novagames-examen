@@ -73,6 +73,7 @@ async ValidacionCambiarClave() {
 
       // Condición si el usuario proviene de 'modificarperfil'
       if (fromPage === 'modificarperfil') {
+        await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
         // Si las validaciones son correctas, redirigir a la página de perfil
         await this.presentAlert('Éxito', 'Cambio de contraseña exitoso');
         await this.router.navigate(['/perfil']); // Redirige a la página de perfil
@@ -160,6 +161,7 @@ async ValidacionCambiarClave() {
         this.respuestaSeleccionada.trim() === respuestaGuardada &&
         this.preguntaSeleccionada?.pregunta === preguntaGuardada
       ) {
+        await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
         // Mensaje de éxito si coinciden
         await this.presentAlert('Éxito', 'La contraseña ha sido cambiada con éxito.');
         

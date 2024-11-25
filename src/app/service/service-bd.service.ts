@@ -617,7 +617,6 @@ async actualizarClaveUsuario(correo: string, nuevaClave: string): Promise<void> 
   }
 }
 
-
 //verifica si el usuario o admin ya esta registrado en la bd, esto a traves de si coincide su nombre, correo y contraseña
 // Método de login modificado para incluir la transferencia de datos al perfil
 async login(nombre: string, correo: string, clave: string): Promise<any> {
