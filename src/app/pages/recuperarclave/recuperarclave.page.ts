@@ -95,7 +95,6 @@ siguientePaso() {
     localStorage.setItem('respuestaSeleccionada', this.respuestaSeleccionada);
 
     // Se termina el proceso cuando se selecciona una respuesta
-    this.presentAlert('Éxito', 'Sus respuestas han sido guardadas');
     this.router.navigate(['/cambiarclave']);
   } else {
     this.presentAlert('Error', 'Por favor, selecciona una respuesta antes de continuar.');

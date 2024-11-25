@@ -1103,7 +1103,7 @@ async obtenerProductosParaAdmin() {
   }
 }
 
-
+//hay que eliminar esto
 async eliminarTodosLosProductosYCategorias(): Promise<void> {
   try {
     // Eliminar registros de la tabla 'detalle' y obtener el número de eliminaciones
