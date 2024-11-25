@@ -34,7 +34,7 @@ ion-content{
     --padding-start: 0;
 }
 
-.boton-realizar-cambio-contra, .boton-volver-login {
+.boton-realizar-cambio-contra, .boton-volver-login, .boton-volver-perfil {
     padding: 10px 20px;  /* Ajusta el padding para que ambos botones tengan el mismo tamaño */
     margin-top: 10px;
     font-size: 14px;  /* Asegura que ambos tengan el mismo tamaño de fuente */
@@ -48,7 +48,7 @@ ion-content{
     justify-content: center;  /* Centra los botones dentro de las columnas */
   }
   
-  .boton-volver-login, .boton-realizar-cambio-contra {
+  .boton-volver-login, .boton-realizar-cambio-contra, .boton-volver-perfil {
     width: 100%;  /* Ambos botones ocuparán todo el ancho de sus columnas */
   }
   

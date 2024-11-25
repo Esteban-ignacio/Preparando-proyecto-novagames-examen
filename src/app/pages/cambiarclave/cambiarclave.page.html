@@ -38,13 +38,21 @@
   </form>
 
   <ion-row>
-    <ion-col class="ion-text-start">
+    <!-- Botón para volver al perfil -->
+    <ion-col class="ion-text-start" *ngIf="mostrarBotonPerfil">
+      <ion-button class="boton-volver-perfil" (click)="RegresarPerfil()">Volver perfil</ion-button>
+    </ion-col>
+  
+    <!-- Botón para volver al login -->
+    <ion-col class="ion-text-start" *ngIf="mostrarBotonLogin">
       <ion-button class="boton-volver-login" (click)="RegresarLogin()">Volver inicio</ion-button>
     </ion-col>
+  
+    <!-- Botón para realizar el cambio de contraseña -->
     <ion-col class="ion-text-end">
       <ion-button class="boton-realizar-cambio-contra" (click)="ValidacionCambiarClave()">Realizar cambio</ion-button>
     </ion-col>
-  </ion-row>
+  </ion-row>  
 
   <!-- Sección para las preguntas de seguridad -->
   <div *ngIf="mostrarPreguntas">

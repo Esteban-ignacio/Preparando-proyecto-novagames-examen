@@ -21,6 +21,10 @@ export class CambiarclavePage implements OnInit {
 
   datosPerfil: any;
 
+  mostrarBotonPerfil: boolean = false;
+
+  mostrarBotonLogin: boolean = false;
+
   preguntas = [
     { pregunta: "¿Cuál es tu color favorito?", respuestas: ["Rojo", "Verde", "Azul"] },
     { pregunta: "¿En qué ciudad naciste?", respuestas: ["Madrid", "Barcelona", "Valencia"] },
@@ -44,6 +48,10 @@ export class CambiarclavePage implements OnInit {
   
     // No cargar la respuesta seleccionada automáticamente
     this.respuestaSeleccionada = ''; // Asegúrate de que la respuesta esté vacía
+
+    // Mostrar el botón de "Volver" solo si el usuario proviene de 'modificarperfil'
+    this.mostrarBotonPerfil = fromPage === 'modificarperfil';
+    this.mostrarBotonLogin = fromPage !== 'modificarperfil';
 
     // Obtener los datos del perfil solo si el usuario proviene de la página 'modificarperfil'
     if (fromPage === 'modificarperfil') {
@@ -157,7 +165,6 @@ async ValidacionCambiarClave() {
   }
 
   // Continuar al siguiente paso
-  // Continuar al siguiente paso
 async siguientePaso() {
   try {
     // Obtén los valores almacenados en localStorage
@@ -223,11 +230,15 @@ async siguientePaso() {
     this.router.navigate(['/perfil'], navigationextras);
   }
 
-  RegresarLogin(){
+  RegresarPerfil(){
     let navigationextras: NavigationExtras = {
       
     }
-    this.router.navigate(['/login'], navigationextras);
+    this.router.navigate(['/perfil'], navigationextras);
   }
+
+  RegresarLogin() {
+    this.router.navigate(['/login']);
+  }  
 
 }
