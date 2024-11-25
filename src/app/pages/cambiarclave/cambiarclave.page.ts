@@ -145,39 +145,45 @@ async ValidacionCambiarClave() {
   }
 
   // Continuar al siguiente paso
-  async siguientePaso() {
-    try {
-      // Obtén los valores almacenados en localStorage
-      const preguntaGuardada = localStorage.getItem('preguntaSeleccionada');
-      const respuestaGuardada = localStorage.getItem('respuestaSeleccionada');
-  
-      console.log('Pregunta seleccionada:', this.preguntaSeleccionada);
-      console.log('Respuesta seleccionada:', this.respuestaSeleccionada);
-      console.log('Pregunta guardada:', preguntaGuardada);
-      console.log('Respuesta guardada:', respuestaGuardada);
-  
-      // Validar si la pregunta y respuesta coinciden
-      if (
-        this.respuestaSeleccionada.trim() === respuestaGuardada &&
-        this.preguntaSeleccionada?.pregunta === preguntaGuardada
-      ) {
+  // Continuar al siguiente paso
+async siguientePaso() {
+  try {
+    // Obtén los valores almacenados en localStorage
+    const preguntaGuardada = localStorage.getItem('preguntaSeleccionada');
+    const respuestaGuardada = localStorage.getItem('respuestaSeleccionada');
+
+    console.log('Pregunta seleccionada:', this.preguntaSeleccionada);
+    console.log('Respuesta seleccionada:', this.respuestaSeleccionada);
+    console.log('Pregunta guardada:', preguntaGuardada);
+    console.log('Respuesta guardada:', respuestaGuardada);
+
+    // Validar si la pregunta y respuesta coinciden
+    if (
+      this.respuestaSeleccionada.trim() === respuestaGuardada &&
+      this.preguntaSeleccionada?.pregunta === preguntaGuardada
+    ) {
+      // Cambiar la contraseña en la base de datos usando actualizarClaveUsuario
+      try {
         await this.bdService.actualizarClaveUsuario(this.correocambiarclave, this.contrasenacambiarclave);
-        // Mensaje de éxito si coinciden
         await this.presentAlert('Éxito', 'La contraseña ha sido cambiada con éxito.');
         
         // Redirigir a la página de login
         console.log('Redirigiendo a /login');
         await this.router.navigate(['/login']); // Redirige a la página de login
-      } else {
-        // Mensaje de error si no coinciden
-        console.log('Pregunta o respuesta no coinciden.');
-        await this.presentAlert('Error', 'La pregunta o respuesta elegida no coincide con su elección anterior.');
+      } catch (error) {
+        console.error('Error al actualizar la contraseña:', error);
+        await this.presentAlert('Error', 'No se pudo cambiar la contraseña. Intente nuevamente.');
       }
-    } catch (error) {
-      console.error('Error en la función siguientePaso:', error);
-      await this.presentAlert('Error', 'Ocurrió un error inesperado.');
+    } else {
+      // Mensaje de error si no coinciden
+      console.log('Pregunta o respuesta no coinciden.');
+      await this.presentAlert('Error', 'La pregunta o respuesta elegida no coincide con su elección anterior.');
     }
-  }    
+  } catch (error) {
+    console.error('Error en la función siguientePaso:', error);
+    await this.presentAlert('Error', 'Ocurrió un error inesperado.');
+  }
+} 
 
   // Cancelar el proceso de preguntas
   cancelarPreguntas() {
