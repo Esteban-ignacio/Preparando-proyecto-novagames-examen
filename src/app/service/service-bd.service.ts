@@ -678,6 +678,7 @@ async eliminarUsuario(correo: string): Promise<void> {
   // Obtener correo desde BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
 
+  //mensaje de no se encontro el correo del usuario al querer guardar y obtener productos
   if (!correoUsuario) {
     this.presentAlert('Error', 'No se encontró el correo del usuario.');
     return;

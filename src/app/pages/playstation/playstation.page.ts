@@ -11,8 +11,6 @@ import { Router } from '@angular/router';
 })
 export class PlaystationPage implements OnInit {
 
-  correoUsuario: string = '';
-
   productosPlayStation: any[] = [
     {
       id: 1,
@@ -79,15 +77,6 @@ export class PlaystationPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
-    const correoUsuario = localStorage.getItem('correoUsuario');
-    if (correoUsuario) {
-      this.correoUsuario = correoUsuario;
-    }
-     // Recuperar el stock modificado de productos desde localStorage
-     const productosGuardados = localStorage.getItem('productosPlayStation');
-     if (productosGuardados) {
-       this.productosPlayStation = JSON.parse(productosGuardados);
-     }
   }  
 
   formatCurrency(precio: number): string {
