@@ -11,8 +11,6 @@ import { ServiceBDService } from 'src/app/service/service-bd.service';
 })
 export class XboxPage implements OnInit {
 
-  correoUsuario: string = '';
-
   productosXbox: any[] = [
     {
       id: 6,
@@ -78,10 +76,6 @@ export class XboxPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
-    const correoUsuario = localStorage.getItem('correoUsuario');
-    if (correoUsuario) {
-      this.correoUsuario = correoUsuario;
-    }
     // Recuperar el stock modificado de productos desde localStorage
     const productosGuardados = localStorage.getItem('productosXbox');
     if (productosGuardados) {

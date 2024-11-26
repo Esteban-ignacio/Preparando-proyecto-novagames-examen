@@ -77,6 +77,11 @@ export class PlaystationPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
+    // Recuperar el stock modificado de productos desde localStorage
+    const productosGuardados = localStorage.getItem('productosPlayStation');
+    if (productosGuardados) {
+      this.productosPlayStation = JSON.parse(productosGuardados);
+    }
   }  
 
   formatCurrency(precio: number): string {
