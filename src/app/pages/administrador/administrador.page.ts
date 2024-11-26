@@ -37,28 +37,43 @@ export class AdministradorPage implements OnInit {
     this.menuController.enable(false, 'menu-admin');
   }
 
-
-  eliminarUsuario() {
+  async eliminarUsuario() {
     if (this.correoAEliminar) {
-      this.bdService.eliminarUsuario(this.correoAEliminar)
-        .then(() => {
-          // Eliminación exitosa
-          this.presentAlert('Éxito', 'El usuario ha sido eliminado correctamente.');
-          this.correoAEliminar = ''; // Limpiar el campo de entrada
-          this.bdService.obtenerUsuarios(); // Actualiza la lista de usuarios
-        })
-        .catch(() => {
-          // Mostrar alerta de error genérico
-          this.presentAlert('Error', 'Este correo no se ha encontrado.');
-        });
+      const alert = await this.alertController.create({
+        header: 'Eliminar Usuario',
+        message: '¿Estás seguro de que deseas eliminar este usuario?',
+        buttons: [
+          {
+            text: 'Cancelar',
+            role: 'cancel',
+          },
+          {
+            text: 'Eliminar',
+            handler: async () => {
+              try {
+                // Llamamos al servicio para eliminar el usuario
+                await this.bdService.eliminarUsuario(this.correoAEliminar);
+                // Eliminación exitosa
+                this.presentAlert('Éxito', 'El usuario ha sido eliminado correctamente.');
+                this.correoAEliminar = ''; // Limpiar el campo de entrada
+                // Actualiza la lista de usuarios
+                this.bdService.obtenerUsuarios();
+              } catch (error) {
+                // Mostrar alerta de error si no se encuentra el usuario
+                this.presentAlert('Error', 'Este correo no se ha encontrado.');
+              }
+            }
+          }
+        ]
+      });
+  
+      // Presenta la alerta
+      await alert.present();
     } else {
       this.presentAlert('Error', 'Por favor ingresa un correo válido.');
     }
   }
   
-  
-  
-
   async presentAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header: header,

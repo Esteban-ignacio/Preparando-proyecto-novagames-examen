@@ -44,7 +44,6 @@ export class GestionproductosPage implements OnInit {
   
       // Verificar si los productos fueron obtenidos correctamente
       if (this.productos && this.productos.length > 0) {
-        this.presentAlert('Éxito', 'Productos obtenidos correctamente');
       } else {
         this.presentAlert('Información', 'No se encontraron productos');
       }
