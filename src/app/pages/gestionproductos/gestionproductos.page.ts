@@ -55,38 +55,6 @@ export class GestionproductosPage implements OnInit {
     }
   }  
 
-  // Método para eliminar todos los productos, categorías y detalles
-  async eliminarProductosYCategorias() {
-    const alert = await this.alertController.create({
-      header: 'Confirmar eliminación',
-      message: '¿Estás seguro de que deseas eliminar todos los productos, categorías y detalles?',
-      buttons: [
-        {
-          text: 'Cancelar',
-          role: 'cancel',
-          handler: () => {
-            console.log('Eliminación cancelada');
-          }
-        },
-        {
-          text: 'Eliminar',
-          handler: async () => {
-            try {
-              // Llamada a la función del servicio para eliminar productos y categorías
-              await this.serviceBD.eliminarTodosLosProductosYCategorias();
-              this.productos = []; // Limpiar la lista de productos en el componente
-              this.presentAlert('Éxito', 'Todos los productos, categorías y detalles han sido eliminados.');
-            } catch (error) {
-              this.presentAlert('Error', 'Hubo un problema al eliminar los productos, categorías y detalles.');
-            }
-          }
-        }
-      ]
-    });
-
-    await alert.present();
-  }
-
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }

@@ -1103,36 +1103,7 @@ async obtenerProductosParaAdmin() {
   }
 }
 
-//hay que eliminar esto
-async eliminarTodosLosProductosYCategorias(): Promise<void> {
-  try {
-    // Eliminar registros de la tabla 'detalle' y obtener el número de eliminaciones
-    const resultDetalle = await this.database.executeSql('DELETE FROM detalle', []);
-    const deletedDetalleCount = resultDetalle.rowsAffected;
-    
-    // Eliminar productos de la tabla 'producto' y obtener el número de eliminaciones
-    const resultProducto = await this.database.executeSql('DELETE FROM producto', []);
-    const deletedProductoCount = resultProducto.rowsAffected;
-    
-    // Eliminar categorías de la tabla 'categoria' y obtener el número de eliminaciones
-    const resultCategoria = await this.database.executeSql('DELETE FROM categoria', []);
-    const deletedCategoriaCount = resultCategoria.rowsAffected;
-    
-    // Crear el mensaje detallado
-    let message = 'Eliminaciones realizadas:\n';
-    message += `${deletedDetalleCount} registros eliminados de la tabla 'detalle'.\n`;
-    message += `${deletedProductoCount} registros eliminados de la tabla 'producto'.\n`;
-    message += `${deletedCategoriaCount} registros eliminados de la tabla 'categoria'.\n`;
-    
-    // Mostrar el mensaje informativo con las eliminaciones
-    this.presentAlert('Éxito', message);
-    
-  } catch (error) {
-    console.error('Error al eliminar productos, categorías y detalles:', error);
-    // Mostrar un mensaje de error si algo sale mal
-    this.presentAlert('Error', 'Hubo un problema al eliminar los productos, categorías y detalles.');
-  }
-}
+
 
 
 }
