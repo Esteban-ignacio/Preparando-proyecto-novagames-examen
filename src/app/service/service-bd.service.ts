@@ -668,54 +668,38 @@ async eliminarUsuario(correo: string): Promise<void> {
   }
 }
 
- // Función para obtener productos utilizando el correo del usuario desde el BehaviorSubject
- async obtenerProductos(): Promise<void> {
+ // Función para obtener productos desde el BehaviorSubject
+async obtenerProductos(): Promise<void> {
   // Obtener correo desde BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
 
-  //mensaje de no se encontro el correo del usuario al querer guardar y obtener productos
   if (!correoUsuario) {
     this.presentAlert('Error', 'No se encontró el correo del usuario.');
     return;
   }
 
   try {
-    // Consultar productos y sus cantidades desde la base de datos, filtrando por el correo
-    const sql = `
-      SELECT p.id_prod, p.nombre_prod, p.descripcion_prod, p.foto_prod, p.precio_prod, p.stock_prod, d.cantidad_detalle
-      FROM producto p
-      LEFT JOIN detalle d ON p.id_prod = d.id_prod
-      LEFT JOIN usuario u ON d.id_user = u.id_user
-      WHERE u.correo_user = ?  -- Filtramos por el correo del usuario
-    `;
-    const result = await this.database.executeSql(sql, [correoUsuario]);
+    // Obtener los productos desde el BehaviorSubject
+    const productos = this.listaobtenerproductos.getValue();
     
-    const productos: Productos[] = [];
-    for (let i = 0; i < result.rows.length; i++) {
-      const item = result.rows.item(i);
-      // Instanciar el producto con los datos obtenidos
-      productos.push(new Productos(
-        item.id_prod,
-        item.nombre_prod,
-        item.descripcion_prod,
-        item.foto_prod,
-        item.precio_prod,
-        item.stock_prod,
-        item.cantidad_detalle || 0  // Aseguramos que la cantidad no sea null
-      ));
+    // Verificar si hay productos
+    if (productos.length === 0) {
+      this.presentAlert('No hay productos', 'No se han agregado productos al carrito.');
+      return;
     }
 
-    // Actualizamos el BehaviorSubject con los productos obtenidos
-    this.listaobtenerproductos.next(productos);
+    // Actualizar el BehaviorSubject o realizar cualquier otra lógica adicional si es necesario
+    this.listaobtenerproductos.next(productos); // Esto puede no ser necesario, pero lo dejo por si quieres realizar algún procesamiento adicional.
+
   } catch (error) {
     console.error('Error al obtener los productos:', error);
     this.presentAlert('Error', 'Error al obtener los productos: ' + JSON.stringify(error));
   }
 }
 
-// Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
+// Función para agregar un producto al carrito (en memoria)
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
-  // Obtener correo desde el BehaviorSubject
+  // Obtener correo desde BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
 
   if (!correoUsuario) {
@@ -724,26 +708,12 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   }
 
   try {
-    // Obtener el idUsuario a partir del correo
-    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
-    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
-    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
+    // Crear el nuevo producto con la cantidad asignada
+    const productoConCantidad = { ...producto, cantidad_detalle: cantidad };
 
-    if (idUsuario === null) {
-      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
-      return;
-    }
+    // Actualizamos el BehaviorSubject con el nuevo producto agregado al carrito
+    this.listaobtenerproductos.next([...this.listaobtenerproductos.getValue(), productoConCantidad]);
 
-    // Insertar la cantidad del producto en la tabla 'detalle', asociando el producto con el usuario
-    const sqlDetalle = `
-      INSERT INTO detalle (id_prod, id_user, cantidad_detalle, subtotal_detalle)
-      VALUES (?, ?, ?, ?)
-    `;
-    const subtotal = producto.precio * cantidad; // Calculamos el subtotal
-    await this.database.executeSql(sqlDetalle, [producto.id_prod, idUsuario, cantidad, subtotal]);
-
-    // Refrescar la lista de productos después de la inserción
-    await this.obtenerProductos();
   } catch (error) {
     console.error('Error al guardar el producto:', error);
     this.presentAlert('Error', 'Error al guardar el producto: ' + JSON.stringify(error));
