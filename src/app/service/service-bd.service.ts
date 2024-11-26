@@ -89,8 +89,6 @@ export class ServiceBDService {
 
   listaextraerdatosusuario = new BehaviorSubject <Extraerdatosusuario[]>([]);
 
-  listaobtenerproductos = new BehaviorSubject <Productos[]>([]);
-
   listaobtenercorreousuario = new BehaviorSubject <Correousuario[]>([]);
 
   listacompras = new BehaviorSubject <Compra[]>([]);
@@ -140,10 +138,6 @@ fetchRoles(): Observable<Roles[]>{
 
 fetchExtraerdatosusuario(): Observable<Extraerdatosusuario[]>{
   return this.listaextraerdatosusuario.asObservable();
-}
-
-fetchProductos(): Observable<Productos[]>{
-  return this.listaobtenerproductos.asObservable();
 }
 
 fetchCorreousuario(): Observable<Correousuario[]>{
@@ -668,28 +662,22 @@ async eliminarUsuario(correo: string): Promise<void> {
   }
 }
 
- // Función para obtener productos desde el BehaviorSubject
-async obtenerProductos(): Promise<void> {
-  // Obtener correo desde BehaviorSubject
-  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
-
-  if (!correoUsuario) {
-    this.presentAlert('Error', 'No se encontró el correo del usuario.');
-    return;
-  }
-
+ // Función para obtener productos desde el localstorage
+ async obtenerProductos(): Promise<void> {
   try {
-    // Obtener los productos desde el BehaviorSubject
-    const productos = this.listaobtenerproductos.getValue();
-    
-    // Verificar si hay productos
-    if (productos.length === 0) {
+    // Obtener los productos desde localStorage
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    // Verificar si hay productos en el carrito
+    if (carrito.length === 0) {
       this.presentAlert('No hay productos', 'No se han agregado productos al carrito.');
       return;
     }
 
-    // Actualizar el BehaviorSubject o realizar cualquier otra lógica adicional si es necesario
-    this.listaobtenerproductos.next(productos); // Esto puede no ser necesario, pero lo dejo por si quieres realizar algún procesamiento adicional.
+    // Procesar los productos obtenidos (por ejemplo, mostrarlos en consola o UI)
+    console.log('Productos en el carrito:', carrito);
+
+    // Aquí puedes realizar alguna lógica adicional si es necesario
 
   } catch (error) {
     console.error('Error al obtener los productos:', error);
@@ -697,22 +685,22 @@ async obtenerProductos(): Promise<void> {
   }
 }
 
-// Función para agregar un producto al carrito (en memoria)
+// Función para agregar un producto al carrito (en localstorage)
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
-  // Obtener correo desde BehaviorSubject
-  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
-
-  if (!correoUsuario) {
-    this.presentAlert('Error', 'No se encontró el correo del usuario.');
-    return;
-  }
-
   try {
+    // Obtener el carrito actual desde localStorage
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
     // Crear el nuevo producto con la cantidad asignada
     const productoConCantidad = { ...producto, cantidad_detalle: cantidad };
 
-    // Actualizamos el BehaviorSubject con el nuevo producto agregado al carrito
-    this.listaobtenerproductos.next([...this.listaobtenerproductos.getValue(), productoConCantidad]);
+    // Agregar el producto como una nueva entrada, sin verificar duplicados
+    carrito.push(productoConCantidad);
+
+    // Guardar el carrito actualizado en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+
+    console.log('Producto guardado en el carrito:', productoConCantidad);
 
   } catch (error) {
     console.error('Error al guardar el producto:', error);
@@ -721,6 +709,7 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
 }
 
 // Obtiene los correos de los usuarios
+//usar para la compra
 async obtenerCorreoUsuario(correo: string): Promise<void> {
   try {
     // Hacemos la verificación usando la base de datos local (si usas fetch para API, cambia esto)
@@ -749,15 +738,11 @@ async obtenerCorreoUsuario(correo: string): Promise<void> {
   }
 }
 
-//eliminar los productos que se muestran en el carrito una vez se cierra sesion
+// Función para limpiar el carrito al cerrar sesión
 async limpiarCarrito(): Promise<void> {
   try {
-    // Eliminar todos los productos del carrito (tabla detalle)
-    const sql = 'DELETE FROM detalle';
-    await this.database.executeSql(sql, []);
-
-    // Actualizar el estado del carrito (vaciar el BehaviorSubject)
-    this.listaobtenerproductos.next([]);  // Actualiza el carrito a vacío
+    // Eliminar todos los productos del carrito en localStorage
+    localStorage.removeItem('carrito');
 
     console.log('Carrito limpiado exitosamente');
   } catch (error) {

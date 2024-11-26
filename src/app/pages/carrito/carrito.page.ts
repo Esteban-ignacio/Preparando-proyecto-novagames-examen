@@ -38,29 +38,35 @@ export class CarritoPage implements OnInit {
     this.obtenerProductosCarrito(); // Asegura que el contador se actualice al entrar a la página
   }
 
-  // Función para obtener los productos del carrito y calcular precios convertidos
-  obtenerProductosCarrito() {
-    this.bdService.fetchProductos().subscribe((productos) => {
-      console.log('Productos obtenidos de la base de datos:', productos);
-      const carrito = this.bdService.obtenerCarrito();
-      console.log('Contenido del carrito:', carrito);
-    
-      this.productos = productos.map((producto) => {
-        const productoEnCarrito = carrito.find((p) => p.id_prod === producto.id_prod);
-        if (productoEnCarrito) {
-          producto.cantidad = Math.min(productoEnCarrito.cantidad, producto.stock); // Limitar la cantidad al stock máximo
-        } else {
-          producto.cantidad = 1;
-        }
-        return producto;
-      });
-    
-      // Convertimos los precios a la moneda predeterminada (CLP)
+  // Función para obtener productos del carrito desde el localStorage
+  async obtenerProductosCarrito(): Promise<void> {
+    try {
+      // Obtener los productos desde localStorage
+      const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+      // Verificar si hay productos en el carrito
+      if (carrito.length === 0) {
+        this.presentAlert('Carrito vacío', 'No hay productos en el carrito.');
+        this.productos = [];
+        this.productosConvertidos = [];
+        return;
+      }
+
+      // Procesar los productos obtenidos
+      console.log('Productos en el carrito:', carrito);
+      this.productos = carrito;
+
+      // Convertir los precios a la moneda seleccionada
       this.convertirMoneda();
-      // Actualizar el contador de productos en el carrito
+
+      // Actualizar el contador de productos
       this.cargarContadorProductos();
-    });
-  }  
+
+    } catch (error) {
+      console.error('Error al obtener los productos:', error);
+      this.presentAlert('Error', 'No se pudieron cargar los productos del carrito.');
+    }
+  }
 
 // Función para convertir el precio dependiendo de la moneda seleccionada
 convertirPrecioMoneda(precio: number): number {
