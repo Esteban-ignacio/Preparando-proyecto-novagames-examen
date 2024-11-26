@@ -28,32 +28,32 @@ export class RecuperarclavePage implements OnInit {
   ngOnInit() {
   }
 
-  async ValidacionRecuperarClave(){
+  async ValidacionRecuperarClave() {
     if (this.correorecuperarclave.trim() === '') {
       this.presentAlert('Error', 'Por favor, complete todos los campos requeridos.');
       return; // Salir de la función si algún campo está vacío
     }
-
-     // Verificar si el correo existe en la base de datos
-     const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correorecuperarclave);
-
-     if (!existeCorreo) {
+  
+    // Verificar si el correo existe en la base de datos
+    const existeCorreo = await this.bdService.verificarCorreoenrecuperarcontra(this.correorecuperarclave);
+  
+    if (!existeCorreo) {
       this.presentAlert('Error', 'El correo no se ha encontrado.');
       return; // Si el correo no existe, detener la ejecución
     }
-      // Validar correo, contraseña y confirmar contraseña con alertas específicas
-      if (!this.isCorreoRecuperarClaveValido()) {
-          return; // Si alguno de los campos es inválido, no continuar
-        }
+  
+    // Validar correo, contraseña y confirmar contraseña con alertas específicas
+    if (!this.isCorreoRecuperarClaveValido()) {
+      return; // Si alguno de los campos es inválido, no continuar
+    }
   
     // Hacemos la validación de los datos
     if (this.isFormValid()) {
       // Si el formulario es válido, muestra un mensaje de éxito
-      this.presentAlert('Acceso aprobado','Ingrese los datos para cambiar su contraseña');
-      this.correorecuperarclave = ''; // Limpiar campo tras éxito
-
-       // Si todo está bien, mostrar preguntas
-       this.mostrarPreguntas = true;
+      this.presentAlert('Acceso aprobado', 'Ingrese los datos para cambiar su contraseña');
+  
+      // Si todo está bien, mostrar preguntas
+      this.mostrarPreguntas = true;
     } else {
       // Si el formulario es inválido, muestra un mensaje de error en la alerta
       this.presentAlert('Error', 'Datos inválidos, por favor revise los datos ingresados.');
@@ -93,6 +93,9 @@ siguientePaso() {
     // Guardamos la pregunta y respuesta seleccionada en el localStorage
     localStorage.setItem('preguntaSeleccionada', this.preguntaSeleccionada.pregunta);
     localStorage.setItem('respuestaSeleccionada', this.respuestaSeleccionada);
+
+    // Limpiar el campo de correo solo cuando el proceso sea exitoso
+    this.correorecuperarclave = '';
 
     // Se termina el proceso cuando se selecciona una respuesta
     this.router.navigate(['/cambiarclave']);
