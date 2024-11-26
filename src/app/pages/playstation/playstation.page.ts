@@ -83,37 +83,39 @@ export class PlaystationPage implements OnInit {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
-  // Función para reducir el stock local y guardarlo en localStorage, además de guardar el producto en la base de datos
-  guardarProductoEnBD(producto: any): void {
-    if (producto.cantidad > 0 && producto.stock > 0) {
-      // Reducir el stock en 1 de forma local
-      producto.stock -= 1;
+  // Función para reducir el stock local y guardar el producto en la base de datos
+guardarProductoEnBD(producto: any): void {
+  if (producto.cantidad > 0 && producto.stock > 0) {
+    // Reducir el stock en 1 de forma local
+    producto.stock -= 1;
 
-      const productoAGuardar: Productos = {
-        id_prod: producto.id,
-        nombre: producto.nombre,
-        precio: producto.precio,
-        stock: producto.stock,  // Usamos el stock actualizado
-        imagen_prod: producto.imagenUrl,
-        descripcion: producto.descripcion,
-        cantidad: producto.cantidad
-      };
-  
-      console.log('Producto a guardar:', productoAGuardar);
-  
-      // Guardar el producto en la base de datos (en el carrito)
-      this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
-        .then(() => {
-          this.mostrarAlerta('Producto agregado al carrito correctamente');
-        })
-        .catch((error: any) => {
-          console.error('Error al guardar el producto', error);
-        });
+    const productoAGuardar: Productos = {
+      id_prod: producto.id,
+      nombre: producto.nombre,
+      precio: producto.precio,
+      stock: producto.stock,  // Usamos el stock actualizado
+      imagen_prod: producto.imagenUrl,
+      descripcion: producto.descripcion,
+      cantidad: producto.cantidad
+    };
 
-      // Guardar los productos con el stock actualizado en localStorage
-      localStorage.setItem('productosPlayStation', JSON.stringify(this.productosPlayStation));
-    }
+    // Guardar el producto en la base de datos (en el carrito)
+    this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
+      .then(() => {
+        this.mostrarAlerta('Producto agregado al carrito correctamente');
+      })
+      .catch((error: any) => {
+        console.error('Error al guardar el producto', error);
+        this.mostrarAlerta('Error al agregar el producto al carrito.');
+      });
+
+    // Guardar los productos con el stock actualizado en localStorage
+    localStorage.setItem('productosPlayStation', JSON.stringify(this.productosPlayStation));
+  } else {
+    // Mensaje de error si no hay stock o cantidad suficiente
+    this.mostrarAlerta('No hay suficiente stock para agregar este producto al carrito.');
   }
+}
 
   irAlCarrito() {
     this.router.navigate(['/carrito']);

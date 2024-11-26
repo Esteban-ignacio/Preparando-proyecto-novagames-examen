@@ -715,7 +715,7 @@ async eliminarUsuario(correo: string): Promise<void> {
 
 // Función para guardar un producto y asociarlo con el usuario, usando el correo del usuario desde el BehaviorSubject
 async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
-  // Obtener correo desde el BehaviorSubject o lista de usuarios
+  // Obtener correo desde el BehaviorSubject
   const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
 
   if (!correoUsuario) {
@@ -724,39 +724,26 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
   }
 
   try {
-    // Consultar el idUsuario directamente a partir del correo
+    // Obtener el idUsuario a partir del correo
     const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
     const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
     const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
-    
+
     if (idUsuario === null) {
       this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
       return;
     }
 
-    // Insertar el producto en la tabla 'producto' si aún no existe
-    const sqlProducto = `INSERT INTO producto (nombre_prod, descripcion_prod, foto_prod, precio_prod, stock_prod)
-                         VALUES (?, ?, ?, ?, ?)`;
-    await this.database.executeSql(sqlProducto, [
-      producto.nombre,
-      producto.descripcion,
-      producto.imagen_prod,
-      producto.precio,
-      producto.stock
-    ]);
-
-    // Obtener el ID del producto recién insertado
-    const sqlLastInsertId = 'SELECT last_insert_rowid() as id';
-    const result = await this.database.executeSql(sqlLastInsertId, []);
-    const idProducto = result.rows.item(0).id;
-
     // Insertar la cantidad del producto en la tabla 'detalle', asociando el producto con el usuario
-    const sqlDetalle = 'INSERT INTO detalle (id_prod, id_user, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?, ?)';
+    const sqlDetalle = `
+      INSERT INTO detalle (id_prod, id_user, cantidad_detalle, subtotal_detalle)
+      VALUES (?, ?, ?, ?)
+    `;
     const subtotal = producto.precio * cantidad; // Calculamos el subtotal
-    await this.database.executeSql(sqlDetalle, [idProducto, idUsuario, cantidad, subtotal]);
+    await this.database.executeSql(sqlDetalle, [producto.id_prod, idUsuario, cantidad, subtotal]);
 
     // Refrescar la lista de productos después de la inserción
-    await this.obtenerProductos(); // Obtener productos actualizados
+    await this.obtenerProductos();
   } catch (error) {
     console.error('Error al guardar el producto:', error);
     this.presentAlert('Error', 'Error al guardar el producto: ' + JSON.stringify(error));
