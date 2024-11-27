@@ -46,7 +46,6 @@ export class CarritoPage implements OnInit {
 
       // Verificar si hay productos en el carrito
       if (carrito.length === 0) {
-        this.presentAlert('Carrito vacío', 'No hay productos en el carrito.');
         this.productos = [];
         this.productosConvertidos = [];
         return;

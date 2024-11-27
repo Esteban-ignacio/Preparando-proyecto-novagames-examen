@@ -663,21 +663,13 @@ async eliminarUsuario(correo: string): Promise<void> {
 }
 
  // Función para obtener productos desde el localstorage
- async obtenerProductos(): Promise<void> {
+async obtenerProductos(): Promise<void> {
   try {
     // Obtener los productos desde localStorage
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-    // Verificar si hay productos en el carrito
-    if (carrito.length === 0) {
-      this.presentAlert('No hay productos', 'No se han agregado productos al carrito.');
-      return;
-    }
-
     // Procesar los productos obtenidos (por ejemplo, mostrarlos en consola o UI)
     console.log('Productos en el carrito:', carrito);
-
-    // Aquí puedes realizar alguna lógica adicional si es necesario
 
   } catch (error) {
     console.error('Error al obtener los productos:', error);
@@ -780,33 +772,20 @@ obtenerCantidadTotal(): number {
   return carrito.reduce((total, producto) => total + producto.cantidad, 0);
 }
 
-// Función para eliminar un producto del carrito
+// Función para eliminar un producto del carrito desde localStorage
 async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
-  // Obtener el correo del usuario desde el BehaviorSubject
-  const correoUsuario = this.listaobtenercorreousuario.getValue()[0]?.correo_usuario;
-
-  if (!correoUsuario) {
-    this.presentAlert('Error', 'No se encontró el correo del usuario.');
-    return;
-  }
-
   try {
-    // Consultar el id del usuario a partir del correo
-    const sqlUsuario = 'SELECT id_user FROM usuario WHERE correo_user = ?';
-    const resultUsuario = await this.database.executeSql(sqlUsuario, [correoUsuario]);
-    const idUsuario = resultUsuario.rows.length > 0 ? resultUsuario.rows.item(0).id_user : null;
+    // Obtener el carrito actual desde localStorage
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-    if (idUsuario === null) {
-      this.presentAlert('Error', 'No se encontró el usuario con el correo proporcionado.');
-      return;
-    }
+    // Filtrar los productos, eliminando el producto seleccionado
+    const carritoActualizado = carrito.filter((item: Productos) => item.id_prod !== producto.id_prod);
 
-    // Eliminar la relación del producto con el usuario en la tabla 'detalle'
-    const sqlEliminarDetalle = 'DELETE FROM detalle WHERE id_prod = ? AND id_user = ?';
-    await this.database.executeSql(sqlEliminarDetalle, [producto.id_prod, idUsuario]);
+    // Guardar el carrito actualizado en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carritoActualizado));
 
-    // Refrescar la lista de productos después de eliminar
-    await this.obtenerProductos(); // Obtener productos actualizados
+    // Refrescar la lista de productos del carrito
+    await this.obtenerProductos(); // Obtener productos actualizados desde localStorage
 
     // Actualizar el contador de productos en el carrito
     this.cargarContadorProductos();
