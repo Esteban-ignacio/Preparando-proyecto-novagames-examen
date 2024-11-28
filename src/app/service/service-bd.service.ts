@@ -1007,6 +1007,41 @@ async obtenerProductosParaAdmin() {
   }
 }
 
+async obtenerProductosPlayStation(): Promise<any[]> {
+  try {
+    // Consulta para obtener los productos de PlayStation de categoría supervivencia
+    const resultado = await this.database.executeSql(`
+      SELECT p.id_prod, p.nombre_prod, p.precio_prod, p.stock_prod, p.foto_prod, p.descripcion_prod, p.id_cat, c.nombre_cat
+      FROM producto p
+      JOIN categoria c ON p.id_cat = c.id_cat
+      WHERE c.nombre_cat = 'Supervivencia' AND p.plataforma = 'PlayStation'
+    `, []);
+
+    const productos: any[] = [];
+
+    // Iterar sobre los resultados y almacenarlos en un array
+    for (let i = 0; i < resultado.rows.length; i++) {
+      const producto = resultado.rows.item(i);
+      productos.push({
+        id_prod: producto.id_prod,
+        nombre_prod: producto.nombre_prod,
+        precio_prod: producto.precio_prod,
+        stock_prod: producto.stock_prod,
+        foto_prod: producto.foto_prod,
+        descripcion_prod: producto.descripcion_prod,
+        id_cat: producto.id_cat,
+        nombre_cat: producto.nombre_cat,
+      });
+    }
+
+    return productos;
+
+  } catch (error) {
+    console.error('Error al obtener los productos de PlayStation:', error);
+    this.presentAlert('Error', 'Hubo un error al obtener los productos de PlayStation de la base de datos.');
+    return [];
+  }
+}
 
 
 
