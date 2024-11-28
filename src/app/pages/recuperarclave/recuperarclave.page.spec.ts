@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RecuperarclavePage } from './recuperarclave.page';
 import { SQLite } from '@awesome-cordova-plugins/sqlite/ngx';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('RecuperarclavePage', () => {
   let component: RecuperarclavePage;
@@ -9,7 +10,7 @@ describe('RecuperarclavePage', () => {
   beforeEach(async() => {
     await TestBed.configureTestingModule({
       declarations: [RecuperarclavePage],
-      providers: [SQLite]
+      providers: [SQLite , HttpClient, HttpHandler]
     }).compileComponents();
     fixture = TestBed.createComponent(RecuperarclavePage);
     component = fixture.componentInstance;
