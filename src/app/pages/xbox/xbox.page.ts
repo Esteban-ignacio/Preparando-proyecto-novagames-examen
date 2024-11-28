@@ -11,67 +11,7 @@ import { ServiceBDService } from 'src/app/service/service-bd.service';
 })
 export class XboxPage implements OnInit {
 
-  productosXbox: any[] = [
-    {
-      id: 6,
-      nombre: 'FC 24',
-      precio: 30000,
-      stock: 55,
-      imagenUrl: 'assets/img/imgxbox/imagenfc24.jpg',
-      descripcion: `Sigue la tradición de simulación de fútbol con mejoras en jugabilidad, gráficos y modos de juego. Incluye ligas, clubes y 
-                    jugadores licenciados, con modos populares como Ultimate Team, Carrera y Volta Football. EAFC 24 se destaca por su motor 
-                    gráfico Hypermotion V, que ofrece movimientos más realistas, y la inclusión de equipos femeninos en Ultimate Team, proporcionando 
-                    una experiencia de fútbol aún más diversa y auténtica.`,
-      cantidad: 1
-    },
-    {
-      id: 7,
-      nombre: 'NBA 2K24',
-      precio: 35000,
-      stock: 40,
-      imagenUrl: 'assets/img/imgxbox/imgnba.webp',
-      descripcion: `Arma tu equipo y vive el pasado, el presente y el futuro de la cultura del baloncesto en NBA 2K24. Disfruta de una experiencia 
-                    auténtica con opciones personalizadas ilimitadas de MyPLAYER, en MyCAREER. Colecciona una gran variedad de leyendas y arma tu 
-                    alineación ideal en MyTEAM. Revive tus épocas favoritas como GM o Comisionado en MyNBA. Siente una jugabilidad de próximo nivel y 
-                    disfruta de visuales ultrarrealistas mientras juegas con tus equipos favoritos de la NBA y la WNBA en JUEGA AHORA.`,
-      cantidad: 1
-    },
-    {
-      id: 8,
-      nombre: 'GRAN TURISMO 7',
-      precio: 15000,
-      stock: 30,
-      imagenUrl: 'assets/img/imgxbox/imggranturismo.jpg',
-      descripcion: `Ya te guste competir, pilotar por diversión, coleccionar coches, optimizarlos, crear diseños o sacar fotografías, 
-                    podrás encontrar tu trazada con esta increíble colección de modos de juego, que incluye algunos tan emblemáticos 
-                    como Campaña GT, Arcade o Escuela de conducción.`,
-      cantidad: 1
-    },
-    {
-      id: 9,
-      nombre: 'PGA TOUR 2K23',
-      precio: 20000,
-      stock: 30,
-      imagenUrl: 'assets/img/imgxbox/imgpga.jpg',
-      descripcion: `Adéntrate en el deporte del swing con el simulador de golf más realista que hay. Elige entre 14 profesionales jugables
-                    masculinos y femeninos y disfruta de 20 campos reales, desde Quail Hollow hasta el Riviera Country Club.`,
-      cantidad: 1
-    },
-    {
-      id: 10,
-      nombre: 'EA SPORTS NHL 24',
-      precio: 10000,
-      stock: 25,
-      imagenUrl: 'assets/img/imgxbox/imgnhl.jpg',
-      descripcion: `Entra en el hielo y disfruta de los bloqueos, los slapshots y las jugadas ofensivas de la NHL.
-                    Siente el crujido de cada golpe con las físicas y animaciones mejoradas mientras el nuevo Exhaust Engine se centra en la presión 
-                    que se acumula durante las jugadas ofensivas y pasando tiempo en la zona de ataque.`,
-      cantidad: 1
-    },
-    
-];
-
-  productos: Productos[] = [];
+  productosXbox: any[] = []; // Inicializamos el array vacío
 
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
@@ -80,14 +20,34 @@ export class XboxPage implements OnInit {
     const productosGuardados = localStorage.getItem('productosXbox');
     if (productosGuardados) {
       this.productosXbox = JSON.parse(productosGuardados);
-    }
+    } else {
+        this.cargarProductosXbox();
+      }
+  }
+
+  async cargarProductosXbox() {
+    // Llamar a la función para obtener productos desde la base de datos
+    const productosBD = await this.bdService.obtenerProductosXbox();
+  
+    // Mapear los datos para que coincidan con las propiedades del HTML
+    this.productosXbox = productosBD.map((producto: any) => ({
+      id: producto.id_prod,
+      nombre: producto.nombre_prod,
+      imagenUrl: producto.foto_prod, // URL de la imagen
+      precio: producto.precio_prod,
+      stock: producto.stock,
+      descripcion: producto.descripcion_prod,
+      cantidad: 1, // Se inicializa la cantidad
+    }));
+  
+    // Guardar en localStorage para persistencia
+    localStorage.setItem('productosXbox', JSON.stringify(this.productosXbox));
   }
 
   formatCurrency(precio: number): string {
     return `$${precio.toLocaleString('es-CL')}`;
   }
 
-  
  // Función para reducir el stock local y guardar el producto en la base de datos
  guardarProductoEnBD(producto: any): void {
   if (producto.cantidad > 0 && producto.stock > 0) {
