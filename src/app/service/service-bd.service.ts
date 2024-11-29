@@ -683,16 +683,32 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
     // Obtener el carrito actual desde localStorage
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-    // Crear el nuevo producto con la cantidad asignada
-    const productoConCantidad = { ...producto, cantidad_detalle: cantidad };
+    // Verificar si el producto ya existe en el carrito
+    const productoExistente = carrito.find((item: any) => item.id_prod === producto.id_prod);
 
-    // Agregar el producto como una nueva entrada, sin verificar duplicados
-    carrito.push(productoConCantidad);
+    if (productoExistente) {
+      // Si el producto ya está en el carrito, incrementar su cantidad
+      this.presentAlert(
+        'Producto encontrado',
+        `Cantidad anterior: ${productoExistente.cantidad_detalle}`
+      );
+
+      productoExistente.cantidad_detalle += cantidad;
+
+      this.presentAlert(
+        'Producto actualizado',
+        `Nueva cantidad: ${productoExistente.cantidad_detalle}`
+      );
+    } else {
+      // Si no está, agregar el producto como una nueva entrada
+      const productoConCantidad = { ...producto, cantidad_detalle: cantidad };
+      carrito.push(productoConCantidad);
+
+      this.presentAlert('Nuevo producto', `Producto agregado con cantidad: ${cantidad}`);
+    }
 
     // Guardar el carrito actualizado en localStorage
     localStorage.setItem('carrito', JSON.stringify(carrito));
-
-    console.log('Producto guardado en el carrito:', productoConCantidad);
 
   } catch (error) {
     console.error('Error al guardar el producto:', error);
@@ -749,20 +765,22 @@ obtenerCarrito(): Productos[] {
 }
 
 // Función para agregar o actualizar un producto en el carrito
-agregarProducto(producto: Productos): void {
-  let carrito = this.obtenerCarrito();
+agregarProducto(producto: any): void {
+  // Obtener el carrito actual
+  let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-  // Verifica si el producto ya existe en el carrito
-  const index = carrito.findIndex(p => p.id_prod === producto.id_prod);
-  if (index !== -1) {
-    // Si el producto existe, solo actualizamos la cantidad
-    carrito[index].cantidad = producto.cantidad;
+  // Verificar si el producto ya está en el carrito
+  const productoExistente = carrito.find((item: any) => item.id === producto.id);
+
+  if (productoExistente) {
+    // Si el producto ya está en el carrito, incrementar su cantidad
+    productoExistente.cantidad += producto.cantidad;
   } else {
-    // Si no existe, agregamos el producto al carrito con la cantidad actual
+    // Si no está, agregar el producto como un nuevo item
     carrito.push(producto);
   }
 
-  // Guardamos el carrito actualizado en localStorage
+  // Guardar el carrito actualizado en localStorage
   localStorage.setItem('carrito', JSON.stringify(carrito));
 }
 
