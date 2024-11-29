@@ -45,7 +45,7 @@
         </div>
         <div class="datos-row">
           <span class="datos-label">Cantidad:</span>
-          <button (click)="modificarCantidad('decrementar', producto)" [disabled]="producto.cantidad <= 1">-</button>
+          <button (click)="modificarCantidad('decrementar', producto)" [disabled]="producto.cantidad_detalle <= 1">-</button>
           <span class="datos-value">{{ producto.cantidad_detalle}}</span>
           <button (click)="modificarCantidad('incrementar', producto)">+</button>
         </div>
