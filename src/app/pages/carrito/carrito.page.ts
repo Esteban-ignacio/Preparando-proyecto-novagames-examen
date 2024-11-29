@@ -138,24 +138,45 @@ formatCurrency(precio: number): string {
     await alert.present();
   }
 
-    // Modificar la cantidad de un producto
-    async modificarCantidad(accion: string, producto: any): Promise<void> {
-      if (accion === 'incrementar') {
-        if (producto.cantidad_detalle < producto.stock) {
-          producto.cantidad_detalle += 1;
-        } else {
-          // Mostrar alerta si se intenta agregar más productos que el stock disponible
-          await this.presentAlert('Stock máximo alcanzado', `No puedes agregar más de ${producto.stock} unidades de este producto.`);
-          return; // No continuar si se alcanzó el stock máximo
-        }
-      } else if (accion === 'decrementar' && producto.cantidad_detalle > 1) {
-        producto.cantidad_detalle -= 1;
-      }
-  
-      // Guardar el carrito actualizado en localStorage
-      this.bdService.agregarProducto(producto); // Actualizamos el producto con la nueva cantidad
-      console.log('Cantidad actualizada:', producto.cantidad_detalle);
-    }  
+// Modificar la cantidad de un producto
+async modificarCantidad(accion: string, producto: any): Promise<void> {
+  // Obtener el carrito actual desde localStorage
+  const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+  // Buscar el producto en el carrito
+  const productoExistente = carrito.find((item: any) => item.id_prod === producto.id_prod);
+
+  if (!productoExistente) {
+    console.error("Producto no encontrado en el carrito.");
+    return;
+  }
+
+  if (accion === 'incrementar') {
+    // Verificar si hay stock disponible para incrementar
+    if (productoExistente.cantidad_detalle < producto.stock) {
+      productoExistente.cantidad_detalle += 1;
+    } else {
+      await this.presentAlert('Stock máximo alcanzado', `No puedes agregar más de ${producto.stock} unidades de este producto.`);
+      return;
+    }
+  } else if (accion === 'decrementar') {
+    // Verificar si se puede decrementar la cantidad
+    if (productoExistente.cantidad_detalle > 1) {
+      productoExistente.cantidad_detalle -= 1;
+    } else {
+      await this.presentAlert('Cantidad mínima alcanzada', `No puedes tener menos de 1 unidad.`);
+      return;
+    }
+  }
+
+  // Guardar el carrito actualizado en localStorage
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+
+  // Actualizar la referencia del producto en la interfaz
+  producto.cantidad_detalle = productoExistente.cantidad_detalle;
+
+  console.log('Carrito actualizado:', carrito);
+}
 
 // Función para eliminar un producto del carrito
 async eliminarProducto(producto: any) {
