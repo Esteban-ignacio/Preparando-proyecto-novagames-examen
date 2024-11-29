@@ -688,23 +688,12 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
 
     if (productoExistente) {
       // Si el producto ya está en el carrito, incrementar su cantidad
-      this.presentAlert(
-        'Producto encontrado',
-        `Cantidad anterior: ${productoExistente.cantidad_detalle}`
-      );
-
       productoExistente.cantidad_detalle += cantidad;
-
-      this.presentAlert(
-        'Producto actualizado',
-        `Nueva cantidad: ${productoExistente.cantidad_detalle}`
-      );
     } else {
       // Si no está, agregar el producto como una nueva entrada
       const productoConCantidad = { ...producto, cantidad_detalle: cantidad };
       carrito.push(productoConCantidad);
 
-      this.presentAlert('Nuevo producto', `Producto agregado con cantidad: ${cantidad}`);
     }
 
     // Guardar el carrito actualizado en localStorage
