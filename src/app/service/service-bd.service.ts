@@ -754,18 +754,18 @@ obtenerCarrito(): Productos[] {
 }
 
 // Función para agregar o actualizar un producto en el carrito
-agregarProducto(producto: any): void {
+agregarProducto(producto: Productos) {
   // Obtener el carrito actual
-  let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+  const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
 
-  // Verificar si el producto ya está en el carrito
-  const productoExistente = carrito.find((item: any) => item.id === producto.id);
+  // Buscar si el producto ya existe en el carrito
+  const productoExistente = carrito.find((item: Productos) => item.id_prod === producto.id_prod);
 
   if (productoExistente) {
-    // Si el producto ya está en el carrito, incrementar su cantidad
-    productoExistente.cantidad += producto.cantidad;
+    // Si el producto ya existe, sumamos la cantidad
+    productoExistente.cantidad_detalle += producto.cantidad;
   } else {
-    // Si no está, agregar el producto como un nuevo item
+    // Si el producto no existe, lo agregamos al carrito
     carrito.push(producto);
   }
 
