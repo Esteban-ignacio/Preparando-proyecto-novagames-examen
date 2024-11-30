@@ -882,6 +882,7 @@ async guardarCompra(
       console.log('Compra y detalles guardados correctamente');
       // Solo mostrar alerta de éxito si no hubo error
       this.presentAlert('Éxito', 'Compra procesada correctamente');
+
       // Aquí llamamos a la función obtenerCompra para actualizar el observable con la compra guardada
       this.obtenerCompras();
       return true;  // Retorna true si todo se procesó correctamente
@@ -931,54 +932,47 @@ async obtenerCompras(): Promise<void> {
       throw new Error('No se encontró el usuario con ese correo.');
     }
 
-    // Consultar las compras del usuario con el id_user
+    // Consultar las compras del usuario
     const resultadoCompras = await this.database.executeSql(
       'SELECT * FROM compra WHERE id_user = ?',
       [idUser]
     );
 
-    const compras: Compra[] = [];
+    const compras: any[] = [];
     for (let i = 0; i < resultadoCompras.rows.length; i++) {
       const compra = resultadoCompras.rows.item(i);
+
+      // Obtener los detalles de la compra (productos y cantidades)
+      const productosCompra: { id_prod: number, cantidad: number, subtotal: number }[] = [];
+      const resultadoDetalleCompra = await this.database.executeSql(
+        'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
+        [compra.id_compra]
+      );
+      for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
+        productosCompra.push(resultadoDetalleCompra.rows.item(j));
+      }
 
       // Obtener el correo del usuario asociado a la compra
       const resultadoCorreoUsuario = await this.database.executeSql(
         'SELECT correo_user FROM usuario WHERE id_user = ?',
         [compra.id_user]
       );
-      const correoUsuario = resultadoCorreoUsuario.rows.length > 0 ? resultadoCorreoUsuario.rows.item(0).correo_user : null;
 
-      // Obtener los detalles de la compra (productos y cantidades)
-      const productosCompra: { id_prod: number, cantidad: number, subtotal: number }[] = [];
-      const resultadoDetalleCompra = await this.database.executeSql(
-        'SELECT * FROM detalle WHERE id_compra = ?',
-        [compra.id_compra]
-      );
-      for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
-        const detalle = resultadoDetalleCompra.rows.item(j);
-        productosCompra.push({
-          id_prod: detalle.id_prod,
-          cantidad: detalle.cantidad_detalle,
-          subtotal: detalle.subtotal_detalle
-        });
-      }
+      const correoUsuarioCompra = resultadoCorreoUsuario.rows.length > 0 
+        ? resultadoCorreoUsuario.rows.item(0).correo_user 
+        : null;
 
       compras.push({
         id_compra: compra.id_compra,
-        v_venta: compra.v_venta,
         total_compra: compra.total_compra,
-        correo_usuario: correoUsuario,
-        id_prod: compra.id_prod,
-        cantidad: compra.cantidad,
-        subtotal: compra.subtotal,
-        total: compra.total,
-        productos: productosCompra // Agregar los productos de la compra
+        v_venta: compra.v_venta,
+        productos: productosCompra, // Agregar los productos de la compra
+        correo_usuario: correoUsuarioCompra // Agregar el correo del usuario
       });
     }
 
     // Actualizar la lista de compras
     this.listacompras.next(compras);
-
   } catch (error) {
     console.error('Error al obtener las compras:', error);
     this.presentAlert('Error', 'Hubo un problema al obtener tus compras. Intenta nuevamente.');

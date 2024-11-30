@@ -13,29 +13,34 @@
 
 <ion-content [fullscreen]="true">
   <!-- Mostrar un mensaje si no hay compras -->
-  <div *ngIf="compras.length === 0">
-    <ion-text color="primary">
-      <h2>No tienes compras registradas</h2>
-    </ion-text>
-  </div>
+<div *ngIf="compras.length === 0">
+  <ion-text color="primary">
+    <h2>No tienes compras registradas</h2>
+  </ion-text>
+</div>
 
-  <!-- Mostrar las compras cuando existan -->
-  <ion-list *ngIf="compras.length > 0">
-    <ion-item *ngFor="let compra of compras">
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Compra #{{ compra.id_compra }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-          <p><strong>Valor de la venta:</strong> {{ compra.v_venta | currency }}</p>
-          <p><strong>Total de la compra:</strong> {{ compra.total_compra | currency }}</p>
-          <p><strong>Correo del usuario:</strong> {{ compra.correo_usuario }}</p>
-          <p><strong>ID del producto:</strong> {{ compra.id_prod }}</p>
-          <p><strong>Cantidad:</strong> {{ compra.cantidad }}</p>
-        </ion-card-content>
-      </ion-card>
-    </ion-item>
-  </ion-list>
+<!-- Mostrar las compras cuando existan -->
+<ion-list *ngIf="compras.length > 0">
+  <ion-item *ngFor="let compra of compras">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Compra #{{ compra.id_compra }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Correo del usuario:</strong> {{ compra.correo_usuario }}</p>
+
+        <!-- Iterar sobre los productos asociados a la compra -->
+        <ion-list>
+          <ion-item *ngFor="let producto of compra.productos">
+            <p><strong>ID del producto:</strong> {{ producto.id_prod }}</p>
+            <p><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
+            <p><strong>Total:</strong> {{ producto.subtotal | currency }}</p>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+  </ion-item>
+</ion-list>
 
 </ion-content>
 
