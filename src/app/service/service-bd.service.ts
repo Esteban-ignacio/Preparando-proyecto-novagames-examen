@@ -882,6 +882,8 @@ async guardarCompra(
       console.log('Compra y detalles guardados correctamente');
       // Solo mostrar alerta de éxito si no hubo error
       this.presentAlert('Éxito', 'Compra procesada correctamente');
+      // Aquí llamamos a la función obtenerCompra para actualizar el observable con la compra guardada
+      this.obtenerCompras();
       return true;  // Retorna true si todo se procesó correctamente
     } else {
       throw new Error('No se pudo obtener el ID de la compra');
@@ -903,6 +905,61 @@ async guardarCompra(
   }
 }
 
+async obtenerCompras(): Promise<void> {
+  try {
+    // Obtener el correo del usuario desde el observable
+    let correoUsuario: string | null = null;
+    this.listadatoslogin.subscribe(datos => {
+      if (datos.length > 0) {
+        correoUsuario = datos[0]?.correologin; // Obtener el correo desde el observable
+      }
+    });
+
+    if (!correoUsuario) {
+      throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
+    }
+
+    // Obtener el id_user basado en el correo del usuario
+    const resultadoIdUser = await this.database.executeSql(
+      'SELECT id_user FROM usuario WHERE correo_user = ?',
+      [correoUsuario]
+    );
+
+    const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
+
+    if (!idUser) {
+      throw new Error('No se encontró el usuario con ese correo.');
+    }
+
+    // Consultar las compras del usuario con el id_user
+    const resultadoCompras = await this.database.executeSql(
+      'SELECT * FROM compra WHERE id_user = ?',
+      [idUser]
+    );
+
+    const compras: Compra[] = [];
+    for (let i = 0; i < resultadoCompras.rows.length; i++) {
+      const compra = resultadoCompras.rows.item(i);
+      compras.push({
+        id_compra: compra.id_compra,
+        v_venta: compra.v_venta,
+        total_compra: compra.total_compra,
+        correo_usuario: compra.correo_usuario,
+        id_prod: compra.id_prod,
+        cantidad: compra.cantidad,
+        subtotal: compra.subtotal,
+        total: compra.total
+      });
+    }
+
+    // Actualizar la lista de compras
+    this.listacompras.next(compras);
+
+  } catch (error) {
+    console.error('Error al obtener las compras:', error);
+    this.presentAlert('Error', 'Hubo un problema al obtener tus compras. Intenta nuevamente.');
+  }
+}
 
 // Función para cargar el contador de productos guardados
 async cargarContadorProductos(): Promise<void> {
