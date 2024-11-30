@@ -940,15 +940,39 @@ async obtenerCompras(): Promise<void> {
     const compras: Compra[] = [];
     for (let i = 0; i < resultadoCompras.rows.length; i++) {
       const compra = resultadoCompras.rows.item(i);
+
+      // Obtener el correo del usuario asociado a la compra
+      const resultadoCorreoUsuario = await this.database.executeSql(
+        'SELECT correo_user FROM usuario WHERE id_user = ?',
+        [compra.id_user]
+      );
+      const correoUsuario = resultadoCorreoUsuario.rows.length > 0 ? resultadoCorreoUsuario.rows.item(0).correo_user : null;
+
+      // Obtener los detalles de la compra (productos y cantidades)
+      const productosCompra: { id_prod: number, cantidad: number, subtotal: number }[] = [];
+      const resultadoDetalleCompra = await this.database.executeSql(
+        'SELECT * FROM detalle WHERE id_compra = ?',
+        [compra.id_compra]
+      );
+      for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
+        const detalle = resultadoDetalleCompra.rows.item(j);
+        productosCompra.push({
+          id_prod: detalle.id_prod,
+          cantidad: detalle.cantidad_detalle,
+          subtotal: detalle.subtotal_detalle
+        });
+      }
+
       compras.push({
         id_compra: compra.id_compra,
         v_venta: compra.v_venta,
         total_compra: compra.total_compra,
-        correo_usuario: compra.correo_usuario,
+        correo_usuario: correoUsuario,
         id_prod: compra.id_prod,
         cantidad: compra.cantidad,
         subtotal: compra.subtotal,
-        total: compra.total
+        total: compra.total,
+        productos: productosCompra // Agregar los productos de la compra
       });
     }
 

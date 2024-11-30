@@ -7,6 +7,7 @@ export class Compra {
     cantidad!: number;      // Cantidad del producto comprado
     subtotal!: number;   // Subtotal de ese producto
     total!: number;      // Total a pagar por el producto
+    productos?: { id_prod: number, cantidad: number, subtotal: number }[]; // Propiedad para los productos
     
 }
 
