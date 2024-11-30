@@ -805,28 +805,34 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
 }
 
 async guardarCompra(
-  productos: { id_prod: number, nombre_prod: string, cantidad: number, precio_prod: number, foto_prod: string }[], 
+  productos: Compra[],  // Usando la clase Compra directamente
   vVenta: number, 
   totalCompra: number
-): Promise<void> {
+): Promise<boolean> {  // Cambié el tipo de retorno a booleano
   try {
-    // Obtener el correo del usuario directamente desde localStorage
-    const correoUsuario = localStorage.getItem('correoUsuario');  // Recuperar el correo guardado en localStorage
+    // Obtener el correo del usuario desde el observable
+    let correoUsuario: string | null = null;
+    this.listadatoslogin.subscribe(datos => {
+      if (datos.length > 0) {
+        correoUsuario = datos[0]?.correologin; // Obtener el correo desde el observable
+      }
+    });
 
+    // Verificar si se encontró el correo del usuario
     if (!correoUsuario) {
-      throw new Error('El correo del usuario no se ha encontrado.');
+      throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
     }
 
     // Obtener el id_user basado en el correo del usuario
     const resultadoIdUser = await this.database.executeSql(
-      `SELECT id_user FROM usuario WHERE correo_user = ?`,
+      'SELECT id_user FROM usuario WHERE correo_user = ?',
       [correoUsuario]
     );
 
     const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
 
     if (!idUser) {
-      throw new Error('No se encontró el usuario con ese correo');
+      throw new Error('No se encontró el usuario con ese correo.');
     }
 
     // Determinar el valor de la compra
@@ -834,36 +840,66 @@ async guardarCompra(
 
     // Insertar la compra en la tabla 'compra' usando el id_user
     const resCompra = await this.database.executeSql(
-      `INSERT INTO compra (id_user, total_compra, v_venta) VALUES (?, ?, ?)`,
+      'INSERT INTO compra (id_user, total_compra, v_venta) VALUES (?, ?, ?)',
       [idUser, valorCompra, valorCompra]
     );
 
     if (resCompra.insertId) {
       const idCompra = resCompra.insertId;
 
-      // Insertar los detalles de la compra en la tabla 'detalle'
+      // Insertar los detalles de la compra en la tabla 'detalle', ahora usando la clase 'Compra'
       for (const producto of productos) {
-        await this.database.executeSql(
-          `INSERT INTO detalle (id_compra, id_prod, cantidad_detalle, subtotal_detalle, foto_prod) VALUES (?, ?, ?, ?, ?)`,
-          [
-            idCompra,
-            producto.id_prod,
-            producto.cantidad,
-            producto.precio_prod * producto.cantidad,
-            producto.foto_prod // Aquí se inserta la foto del producto
-          ]
-        );
+        // Validar que la cantidad del producto sea mayor a 0
+        if (producto.cantidad <= 0 || !producto.cantidad) {
+          const errorMessage = `La cantidad del producto con ID ${producto.id_prod} debe ser mayor que 0.`;
+          console.error(errorMessage);
+          this.presentAlert('Error en los detalles', errorMessage);
+          return false;  // Retorna false en caso de error en la cantidad
+        }
+
+        try {
+          await this.database.executeSql(
+            'INSERT INTO detalle (id_compra, id_prod, cantidad_detalle, subtotal_detalle) VALUES (?, ?, ?, ?)',
+            [
+              idCompra,
+              producto.id_prod,  // ID del producto
+              producto.cantidad,  // Cantidad del producto
+              producto.total_compra   // El total de la compra como subtotal
+            ]
+          );
+        } catch (error: any) {
+          console.error('Error al guardar el detalle del producto:', error);
+          
+          // Crear un mensaje de error detallado
+          const errorMessage = error.message || 'Hubo un problema al guardar los detalles del producto.';
+          
+          // Mostrar alerta con el error específico
+          this.presentAlert('Error en los detalles', `Hubo un problema al guardar los detalles de los productos. Error: ${errorMessage}`);
+          return false;  // Retorna false en caso de error al guardar los detalles
+        }
       }
 
       console.log('Compra y detalles guardados correctamente');
       // Solo mostrar alerta de éxito si no hubo error
       this.presentAlert('Éxito', 'Compra procesada correctamente');
+      return true;  // Retorna true si todo se procesó correctamente
     } else {
       throw new Error('No se pudo obtener el ID de la compra');
     }
-  } catch (e: any) { // Especificamos el tipo de 'e' como 'any'
+  } catch (e: any) { 
     console.error('Error al guardar la compra:', e);
-    this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+
+    // Alertas específicas según el tipo de error
+    if (e.message.includes('correo')) {
+      this.presentAlert('Error en el correo', 'No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
+    } else if (e.message.includes('usuario')) {
+      this.presentAlert('Error en el usuario', 'No se encontró el usuario con ese correo. Verifica tus credenciales.');
+    } else if (e.message.includes('ID de la compra')) {
+      this.presentAlert('Error en la compra', 'Hubo un problema al registrar tu compra. Intenta nuevamente.');
+    } else {
+      this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+    }
+    return false;  // Retorna false en caso de cualquier error
   }
 }
 

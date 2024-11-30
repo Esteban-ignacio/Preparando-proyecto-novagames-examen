@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalNotifications } from '@capacitor/local-notifications';
 import { AlertController } from '@ionic/angular';
+import { Compra } from 'src/app/service/compra';
 import { Productos } from 'src/app/service/productos'; 
 import { ServiceBDService } from 'src/app/service/service-bd.service';
 
@@ -217,27 +218,55 @@ async cargarContadorProductos() {
 // Función cuando se presiona el botón de compra
 async Notificacioncompra() {
   try {
-    // Aquí deberías agregar el código para procesar la compra,
-    // como la lógica de pago y la actualización de la base de datos
+    // Suponiendo que los productos han sido cargados correctamente en 'productosConvertidos'
+    const productos: Compra[] = this.productosConvertidos.map(producto => {
+      // Calculamos el subtotal para cada producto
+      const subtotal = this.calcularSubtotal(producto);
+      const total = this.calcularTotalAPagar(); // Total global (se calcula fuera de cada producto)
 
-    // Enviar una notificación local
-    await LocalNotifications.requestPermissions(); // Solicita permisos
-    await LocalNotifications.schedule({
-      notifications: [
-        {
-          title: 'Compra Confirmada',
-          body: 'Tu compra se ha procesado con éxito.',
-          id: 1,
-          schedule: { at: new Date(Date.now() + 1000) }, // Se mostrará 1 segundo después
-          sound: 'default',
-          // El campo `attachments` se ha eliminado ya que no lo necesitas
-          actionTypeId: '',
-          extra: null
-        }
-      ]
+      // Crear un objeto Compra con todos los datos necesarios
+      return {
+        id_prod: producto.id_prod,            // ID del producto
+        cantidad: producto.cantidad_detalle,   // Cantidad del producto en el carrito
+        subtotal: subtotal,                    // Subtotal por cantidad
+        total: total,                          // Total por producto
+        id_compra: 0,                          // ID de la compra (debería ser asignado después si es necesario)
+        v_venta: producto.precio,              // Valor de la venta: se puede obtener del precio del producto
+        total_compra: this.calcularTotalAPagar(),  // Total de la compra global (cálculo total)
+        correo_usuario: '',                    // El correo será gestionado directamente por la función guardarCompra
+      };
     });
+
+    // Suponiendo que el total de la compra se calcula correctamente con la función 'calcularTotalAPagar'
+    const totalCompra: number = this.calcularTotalAPagar(); // Total de la compra global
+    const vVenta: number = this.productosConvertidos.reduce((total, producto) => total + producto.precio, 0); // Sumar el valor de la venta
+
+    // Llamar a la función que guarda la compra en la base de datos
+    const compraGuardada = await this.bdService.guardarCompra(productos, vVenta, totalCompra);
+
+    if (compraGuardada) {
+      // Solicitar permisos para mostrar notificaciones
+      await LocalNotifications.requestPermissions();
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Compra Confirmada',
+            body: 'Tu compra se ha procesado con éxito.',
+            id: 1,
+            schedule: { at: new Date(Date.now() + 1000) },
+            sound: 'default',
+            actionTypeId: '',
+            extra: null
+          }
+        ]
+      });
+    } else {
+      // Si no se pudo guardar la compra, mostrar alerta
+      this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+    }
   } catch (error) {
     console.error('Error al procesar la compra y mostrar notificación:', error);
+    this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
   }
 }
 
