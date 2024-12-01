@@ -13,10 +13,13 @@
 
 <ion-content [fullscreen]="true">
   <!-- Mostrar un mensaje si no hay compras -->
-<div *ngIf="compras.length === 0">
-  <ion-text color="primary">
-    <h2>No tienes compras registradas</h2>
-  </ion-text>
+<div *ngIf="compras.length === 0" class="mensaje-historial-compras-vacio">
+  <h2 class="titulo-sin-compras">
+    <span>No</span>
+    <span>Tienes</span>
+    <span>Compras</span>
+    <span>Realizadas</span>
+  </h2>
 </div>
 
 <!-- Mostrar las compras cuando existan -->

@@ -66,5 +66,29 @@ ion-card {
     color: #333;
   }
   
+  .mensaje-historial-compras-vacio {
+    position: absolute; /* Posiciona el div en toda la pantalla */
+    top: 0; /* Ajusta la posición superior */
+    left: 0; /* Ajusta la posición izquierda */
+    width: 100%; /* Ocupa el 100% del ancho */
+    height: 70%; /* Ocupa el 70% de la altura */
+    display: flex; /* Usa flexbox para centrar el contenido */
+    flex-direction: column; /* Alinea los elementos de forma vertical */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
+    z-index: 10; /* Asegura que el mensaje esté por encima de otros elementos */
+  }
+  
+  .titulo-sin-compras {
+    font-size: 24px; /* Ajusta el tamaño de la fuente */
+    font-weight: bold; /* Hace que el texto sea negrita */
+    color: black;
+    text-align: center; /* Alinea el texto al centro */
+  }
+  .titulo-sin-compras span {
+    display: block; /* Hace que cada palabra esté en una línea separada */
+    font-size: 32px; /* Ajusta el tamaño de cada palabra */
+    line-height: 1.5; /* Ajusta la separación entre las líneas */
+  }  
   
 
