@@ -23,8 +23,8 @@
 </div>
 
 <!-- Mostrar las compras cuando existan -->
-<ion-list *ngIf="compras.length > 0">
-  <ion-item *ngFor="let compra of compras">
+<ion-list *ngIf="compras.length > 0" class="lista-compras">
+  <ion-item *ngFor="let compra of compras" class="lista">
     <ion-card>
       <ion-card-header>
         <ion-card-title>Compra #{{ compra.id_compra }}</ion-card-title>
