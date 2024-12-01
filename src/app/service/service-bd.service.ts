@@ -959,12 +959,6 @@ async obtenerCompras(): Promise<void> {
         const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
 
         if (producto) {
-          // Mostrar alerta con los detalles del producto
-          this.presentAlert(
-            'Producto obtenido',
-            `ID Producto: ${detalle.id_prod}\nNombre: ${producto.nombre_prod}\nFoto: ${producto.foto_prod ? 'Disponible' : 'No disponible'}`
-          );
-
           productosCompra.push({
             id_prod: detalle.id_prod,
             nombre_prod: producto.nombre_prod,
