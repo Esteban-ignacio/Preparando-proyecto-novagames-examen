@@ -943,13 +943,42 @@ async obtenerCompras(): Promise<void> {
       const compra = resultadoCompras.rows.item(i);
 
       // Obtener los detalles de la compra (productos y cantidades)
-      const productosCompra: { id_prod: number, cantidad: number, subtotal: number }[] = [];
+      const productosCompra: { id_prod: number, nombre_prod: string, foto_prod: string | null, cantidad: number, subtotal: number }[] = [];
       const resultadoDetalleCompra = await this.database.executeSql(
         'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
         [compra.id_compra]
       );
       for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
-        productosCompra.push(resultadoDetalleCompra.rows.item(j));
+        const detalle = resultadoDetalleCompra.rows.item(j);
+        
+        // Obtener el nombre y foto del producto
+        const resultadoProducto = await this.database.executeSql(
+          'SELECT nombre_prod, foto_prod FROM producto WHERE id_prod = ?',
+          [detalle.id_prod]
+        );
+        const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
+
+        if (producto) {
+          // Mostrar alerta con los detalles del producto
+          this.presentAlert(
+            'Producto obtenido',
+            `ID Producto: ${detalle.id_prod}\nNombre: ${producto.nombre_prod}\nFoto: ${producto.foto_prod ? 'Disponible' : 'No disponible'}`
+          );
+
+          productosCompra.push({
+            id_prod: detalle.id_prod,
+            nombre_prod: producto.nombre_prod,
+            foto_prod: producto.foto_prod,
+            cantidad: detalle.cantidad,
+            subtotal: detalle.subtotal
+          });
+        } else {
+          // Alerta si no se encuentra el producto
+          this.presentAlert(
+            'Error al obtener producto',
+            `No se encontró el producto con ID: ${detalle.id_prod}.`
+          );
+        }
       }
 
       // Obtener el correo del usuario asociado a la compra
