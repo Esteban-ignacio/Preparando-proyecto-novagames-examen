@@ -913,85 +913,84 @@ async guardarCompra(
 
 async obtenerCompras(): Promise<void> {
   try {
-    let correoUsuario: string | null = null;
+    // Usamos la suscripción directa para obtener el correo del usuario
+    this.listadatoslogin.subscribe(async (datos) => {
+      // Verificamos si se obtuvieron los datos correctamente
+      const correoUsuario = datos?.[0]?.correologin;
 
-    // Nos suscribimos al observable para obtener el correo del usuario en sesión
-    this.listadatoslogin.subscribe(datos => {
-      if (datos && datos.length > 0) {
-        correoUsuario = datos[0]?.correologin; // Obtener el correo del usuario
+      if (!correoUsuario) {
+        throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
       }
-    });
 
-    // Verificar si se obtuvo el correo del usuario
-    if (!correoUsuario) {
-      throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
-    }
-
-    // Obtener el id_user basado en el correo del usuario
-    const resultadoIdUser = await this.database.executeSql(
-      'SELECT id_user FROM usuario WHERE correo_user = ?',
-      [correoUsuario]
-    );
-
-    const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
-
-    if (!idUser) {
-      throw new Error('No se encontró el usuario con ese correo.');
-    }
-
-    // Consultar las compras del usuario, filtrando por el id_user
-    const resultadoCompras = await this.database.executeSql(
-      'SELECT * FROM compra WHERE id_user = ?',
-      [idUser]
-    );
-
-    const compras: any[] = [];
-    for (let i = 0; i < resultadoCompras.rows.length; i++) {
-      const compra = resultadoCompras.rows.item(i);
-
-      // Obtener los detalles de la compra (productos y cantidades)
-      const productosCompra: { id_prod: number, nombre_prod: string, foto_prod: string | null, cantidad: number, subtotal: number }[] = [];
-      const resultadoDetalleCompra = await this.database.executeSql(
-        'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
-        [compra.id_compra]
+      // Obtener el id_user basado en el correo del usuario
+      const resultadoIdUser = await this.database.executeSql(
+        'SELECT id_user FROM usuario WHERE correo_user = ?',
+        [correoUsuario]
       );
-      for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
-        const detalle = resultadoDetalleCompra.rows.item(j);
-        
-        // Obtener el nombre y foto del producto
-        const resultadoProducto = await this.database.executeSql(
-          'SELECT nombre_prod, foto_prod FROM producto WHERE id_prod = ?',
-          [detalle.id_prod]
-        );
-        const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
 
-        if (producto) {
-          productosCompra.push({
-            id_prod: detalle.id_prod,
-            nombre_prod: producto.nombre_prod,
-            foto_prod: producto.foto_prod,
-            cantidad: detalle.cantidad,
-            subtotal: detalle.subtotal
-          });
-        } else {
-          // Alerta si no se encuentra el producto
-          this.presentAlert(
-            'Error al obtener producto',
-            `No se encontró el producto con ID: ${detalle.id_prod}.`
-          );
-        }
+      const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
+
+      if (!idUser) {
+        throw new Error('No se encontró el usuario con ese correo.');
       }
 
-      compras.push({
-        id_compra: compra.id_compra,
-        total_compra: compra.total_compra,
-        v_venta: compra.v_venta,
-        productos: productosCompra // Agregar los productos de la compra
-      });
-    }
+      // Consultar las compras del usuario, filtrando por el id_user
+      const resultadoCompras = await this.database.executeSql(
+        'SELECT * FROM compra WHERE id_user = ?',
+        [idUser]
+      );
 
-    // Actualizar la lista de compras
-    this.listacompras.next(compras);
+      const compras: any[] = [];
+      for (let i = 0; i < resultadoCompras.rows.length; i++) {
+        const compra = resultadoCompras.rows.item(i);
+
+        // Obtener los detalles de la compra (productos y cantidades)
+        const productosCompra: { id_prod: number, nombre_prod: string, foto_prod: string | null, cantidad: number, subtotal: number }[] = [];
+        const resultadoDetalleCompra = await this.database.executeSql(
+          'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
+          [compra.id_compra]
+        );
+        for (let j = 0; j < resultadoDetalleCompra.rows.length; j++) {
+          const detalle = resultadoDetalleCompra.rows.item(j);
+          
+          // Obtener el nombre y foto del producto
+          const resultadoProducto = await this.database.executeSql(
+            'SELECT nombre_prod, foto_prod FROM producto WHERE id_prod = ?',
+            [detalle.id_prod]
+          );
+          const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
+
+          if (producto) {
+            productosCompra.push({
+              id_prod: detalle.id_prod,
+              nombre_prod: producto.nombre_prod,
+              foto_prod: producto.foto_prod,
+              cantidad: detalle.cantidad,
+              subtotal: detalle.subtotal
+            });
+          } else {
+            // Alerta si no se encuentra el producto
+            this.presentAlert(
+              'Error al obtener producto',
+              `No se encontró el producto con ID: ${detalle.id_prod}.`
+            );
+          }
+        }
+
+        compras.push({
+          id_compra: compra.id_compra,
+          total_compra: compra.total_compra,
+          v_venta: compra.v_venta,
+          productos: productosCompra // Agregar los productos de la compra
+        });
+      }
+
+      // Actualizar la lista de compras
+      this.listacompras.next(compras);
+    }, (error) => {
+      console.error('Error al obtener el correo del usuario:', error);
+      this.presentAlert('Error', 'Hubo un problema al obtener los datos de sesión.');
+    });
   } catch (error) {
     // Si el error es un objeto, extraemos el mensaje de error
     const mensajeError = error instanceof Error ? error.message : 'Hubo un problema inesperado.';
