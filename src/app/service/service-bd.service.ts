@@ -735,15 +735,20 @@ async obtenerCorreoUsuario(correo: string): Promise<void> {
   }
 }
 
-// Función para limpiar el carrito al cerrar sesión
+// Función para limpiar el carrito y las compras del usuario en sesión
 async limpiarCarrito(): Promise<void> {
   try {
     // Eliminar todos los productos del carrito en localStorage
     localStorage.removeItem('carrito');
-
     console.log('Carrito limpiado exitosamente');
+
+    // Limpiar las compras del usuario en sesión (quitar las compras en sesión, no eliminar de la base de datos)
+    this.listacompras.next([]); // Esto limpia la lista de compras que está en memoria
+
+    console.log('Compras del usuario en sesión eliminadas.');
+
   } catch (error) {
-    console.error('Error al limpiar el carrito:', error);
+    console.error('Error al limpiar el carrito o las compras:', error);
   }
 }
 
@@ -908,14 +913,16 @@ async guardarCompra(
 
 async obtenerCompras(): Promise<void> {
   try {
-    // Obtener el correo del usuario desde el observable
     let correoUsuario: string | null = null;
+
+    // Nos suscribimos al observable para obtener el correo del usuario en sesión
     this.listadatoslogin.subscribe(datos => {
-      if (datos.length > 0) {
-        correoUsuario = datos[0]?.correologin; // Obtener el correo desde el observable
+      if (datos && datos.length > 0) {
+        correoUsuario = datos[0]?.correologin; // Obtener el correo del usuario
       }
     });
 
+    // Verificar si se obtuvo el correo del usuario
     if (!correoUsuario) {
       throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
     }
@@ -932,7 +939,7 @@ async obtenerCompras(): Promise<void> {
       throw new Error('No se encontró el usuario con ese correo.');
     }
 
-    // Consultar las compras del usuario
+    // Consultar las compras del usuario, filtrando por el id_user
     const resultadoCompras = await this.database.executeSql(
       'SELECT * FROM compra WHERE id_user = ?',
       [idUser]
@@ -975,22 +982,11 @@ async obtenerCompras(): Promise<void> {
         }
       }
 
-      // Obtener el correo del usuario asociado a la compra
-      const resultadoCorreoUsuario = await this.database.executeSql(
-        'SELECT correo_user FROM usuario WHERE id_user = ?',
-        [compra.id_user]
-      );
-
-      const correoUsuarioCompra = resultadoCorreoUsuario.rows.length > 0 
-        ? resultadoCorreoUsuario.rows.item(0).correo_user 
-        : null;
-
       compras.push({
         id_compra: compra.id_compra,
         total_compra: compra.total_compra,
         v_venta: compra.v_venta,
-        productos: productosCompra, // Agregar los productos de la compra
-        correo_usuario: correoUsuarioCompra // Agregar el correo del usuario
+        productos: productosCompra // Agregar los productos de la compra
       });
     }
 
