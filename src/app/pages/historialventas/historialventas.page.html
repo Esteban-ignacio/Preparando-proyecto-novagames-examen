@@ -27,20 +27,31 @@
         <ion-card-title>Compra #{{ compra.id_compra }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <p><strong>Correo del usuario:</strong> {{ compra.correo_usuario }}</p>
-
+        
         <!-- Iterar sobre los productos asociados a la compra -->
-        <ion-list>
-          <ion-item *ngFor="let producto of compra.productos">
-            <p><strong>ID del producto:</strong> {{ producto.id_prod }}</p>
-            <p><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
-            <p><strong>Total:</strong> {{ producto.subtotal | currency }}</p>
-          </ion-item>
-        </ion-list>
+        <div *ngFor="let producto of compra.productos" class="producto-item">
+          <!-- Mostrar el nombre del producto -->
+          <p class="producto-nombre"><strong>{{ producto.nombre_prod }}</strong></p>
+
+          <!-- Mostrar la foto del producto (si existe) -->
+          <div class="producto-imagen">
+            <img *ngIf="producto.foto_prod" [src]="producto.foto_prod" alt="Foto del producto">
+          </div>
+
+          <!-- Mostrar la cantidad del producto -->
+          <p class="producto-cantidad"><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
+
+          <!-- Mostrar el correo del usuario -->
+          <p class="correo-usuario"><strong>Correo:</strong> {{ compra.correo_usuario }}</p>
+
+          <!-- Mostrar el total pagado por el producto -->
+          <p class="producto-total"><strong>Total pagado:</strong> {{ producto.subtotal | currency }}</p>
+        </div>
       </ion-card-content>
     </ion-card>
   </ion-item>
 </ion-list>
+
 
 </ion-content>
 

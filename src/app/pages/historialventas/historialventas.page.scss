@@ -13,3 +13,58 @@ ion-content{
     font-weight: bold;
 }
 
+  /* Estilos generales para la compra */
+ion-card {
+    margin-bottom: 20px;
+  }
+  
+  .producto-item {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc; /* Línea separadora entre productos */
+  }
+  
+  .producto-nombre {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .producto-imagen {
+    text-align: center;
+    margin-bottom: 15px;
+  
+    img {
+      max-width: 100%; /* Para que no se desborde */
+      height: auto;
+    }
+  }
+  
+  .producto-cantidad,
+  .correo-usuario,
+  .producto-total {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .producto-cantidad strong,
+  .producto-total strong,
+  .correo-usuario strong {
+    font-weight: bold;
+  }
+  
+  /* Estilo adicional para los títulos */
+  ion-card-header {
+    background-color: #f8f8f8;
+    padding: 10px;
+  }
+  
+  ion-card-title {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+  }
+  
+  
+

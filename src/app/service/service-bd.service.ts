@@ -974,8 +974,11 @@ async obtenerCompras(): Promise<void> {
     // Actualizar la lista de compras
     this.listacompras.next(compras);
   } catch (error) {
+    // Si el error es un objeto, extraemos el mensaje de error
+    const mensajeError = error instanceof Error ? error.message : 'Hubo un problema inesperado.';
     console.error('Error al obtener las compras:', error);
-    this.presentAlert('Error', 'Hubo un problema al obtener tus compras. Intenta nuevamente.');
+    // Mostrar alerta con el mensaje específico
+    this.presentAlert('Error', `Hubo un problema al obtener tus compras: ${mensajeError}. Intenta nuevamente.`);
   }
 }
 
