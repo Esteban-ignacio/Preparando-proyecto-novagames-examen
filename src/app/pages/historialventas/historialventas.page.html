@@ -27,12 +27,10 @@
   <ion-item *ngFor="let compra of compras" class="lista">
     <ion-card>
       <ion-card-header>
-        <ion-card-title>Compra #{{ compra.id_compra }}</ion-card-title>
+        <ion-card-title>Comprado el</ion-card-title>
+        <ion-card-title>{{ compra.fecha_compra | date: 'dd/MM/yyyy' }}</ion-card-title>
       </ion-card-header>
       <ion-card-content>
-
-        <!-- Mostrar la fecha de la compra -->
-        <p class="fecha-compra"><strong>Fecha de la compra:</strong> {{ compra.fecha_compra | date: 'dd/MM/yyyy' }}</p>
         
         <!-- Iterar sobre los productos asociados a la compra -->
         <div *ngFor="let producto of compra.productos" class="producto-item">
