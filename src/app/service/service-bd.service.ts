@@ -167,6 +167,7 @@ createBD() {
       this.crearTablas().then(() => {
         // Llamar a la verificación de columnas después de crear las tablas
         this.verificarColumnas();
+        this.verificarColumnaFechaCompra();
         this.verificarColumnasUsuario();
       });
     }).catch(e => {
@@ -222,6 +223,33 @@ verificarColumnas() {
     }
   }).catch(e => {
     this.presentAlert('Base de Datos', 'Error al verificar columnas en detalle: ' + JSON.stringify(e));
+  });
+}
+
+// Función para verificar si la columna 'fecha_compra' ya existe en la tabla 'compra'
+verificarColumnaFechaCompra() {
+  const verificarSQL = "PRAGMA table_info(compra);";
+
+  this.database.executeSql(verificarSQL, []).then((result) => {
+    // Verificamos si la columna 'fecha_compra' ya existe
+    const columnaExiste = Array.from({ length: result.rows.length }, (_, i) => result.rows.item(i))
+                               .some(row => row.name === 'fecha_compra');
+
+    if (!columnaExiste) {
+      // Si no existe, agregamos la columna 'fecha_compra'
+      const alterTableSQL = "ALTER TABLE compra ADD COLUMN fecha_compra TEXT;";
+
+      this.database.executeSql(alterTableSQL, []).then(() => {
+        console.log("Columna 'fecha_compra' añadida exitosamente a la tabla 'compra'");
+      }).catch(e => {
+        this.presentAlert('Base de Datos', 'Error al añadir la columna "fecha_compra": ' + JSON.stringify(e));
+      });
+    } else {
+      // Mostrar alerta indicando que la columna ya existe
+      console.log("La columna 'fecha_compra' ya existe en la tabla 'compra'");
+    }
+  }).catch(e => {
+    this.presentAlert('Base de Datos', 'Error al verificar columnas en "compra": ' + JSON.stringify(e));
   });
 }
 
