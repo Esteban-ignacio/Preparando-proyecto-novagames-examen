@@ -50,8 +50,8 @@ export class LoginPage implements OnInit {
         return; // Salir de la función si algún campo está vacío
       }
     
-      // Validar nombre, correo y contraseña con alertas específicas
-      if (!this.isUsuarioLoginValido() || !this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
+      // Validar correo y contraseña con alertas específicas
+      if (!this.isCorreoLoginValido() || !this.isContrasenaLoginValida()) {
         return; // Si alguno de los campos es inválido, no continuar
       }
     
@@ -102,22 +102,8 @@ export class LoginPage implements OnInit {
       }
     }
 
-  // Validación para el nombre y el apellido
-  isUsuarioLoginValido(): boolean {
-  const regexUsuarioLoginValido = /^[a-zA-Z]{2,9}$/; // Letras de 2 a 9 caracteres
-  let isValid = true;
-
-  // Validar nombre
-  if (!regexUsuarioLoginValido.test(this.usuariologin)) {
-    this.presentAlert('Error', 'El nombre debe contener entre 2 y 9 letras, ademas solo puede contener caracteres alfabéticos.');
-    isValid = false;
-    }
-
-    return isValid;
-  }
-
   // Validación para el correo
-  isCorreoLoginValido(): boolean {
+isCorreoLoginValido(): boolean {
   const regexCorreoLoginValido = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
   if (!regexCorreoLoginValido.test(this.correologin)) {
     this.presentAlert('Error', 'El correo debe tener un formato válido. Ejemplo: nombre@gmail.com');
@@ -126,8 +112,8 @@ export class LoginPage implements OnInit {
   return true;
 }
 
- // Validación para la contraseña
- isContrasenaLoginValida(): boolean {
+// Validación para la contraseña
+isContrasenaLoginValida(): boolean {
   const regexContrasenaLoginValido = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con al menos una mayúscula, un número y un símbolo
 
   if (!regexContrasenaLoginValido.test(this.contrasenalogin)) {
@@ -137,25 +123,19 @@ export class LoginPage implements OnInit {
   return true;
 }
 
-  isFormValid(): boolean {
-    const regex = /^[a-zA-Z]+$/; // Solo letras
-    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
-    const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con mayúscula, número y símbolo
+isFormValid(): boolean {
+  const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
+  const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con mayúscula, número y símbolo
 
-    return (
-      this.usuariologin.trim() !== '' && // No debe estar vacío
-      this.usuariologin.length >= 2 &&
-      this.usuariologin.length <= 10 &&
-      regex.test(this.usuariologin) &&
+  return (
+    this.usuariologin.trim() !== '' && // No debe estar vacío
+    this.correologin.trim() !== '' && // Correo no debe estar vacío
+    regexEmail.test(this.correologin) && // Validación del correo
+    this.contrasenalogin.trim() !== '' && // Contraseña no debe estar vacía
+    regexPassword.test(this.contrasenalogin) // Validación de la contraseña
+  );
+}
 
-      this.correologin.trim() !== '' && // Correo no debe estar vacío
-      regexEmail.test(this.correologin) && // Validación del correo
-
-
-      this.contrasenalogin.trim() !== '' && // Contraseña no debe estar vacía
-      regexPassword.test(this.contrasenalogin) // Validación de la contraseña
-    );
-  }
   async presentAlert(titulo: string, msj: string) {
     const alert = await this.alertController.create({
       header: titulo,
