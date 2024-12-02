@@ -14,6 +14,7 @@ export class Compra {
         nombre_prod: string,  // Nombre del producto
         foto_prod: string     // Foto del producto
     }[]; // Propiedad para los productos
+    fecha_compra!: string;      // Agregar la propiedad fecha_compra
 }
 
 

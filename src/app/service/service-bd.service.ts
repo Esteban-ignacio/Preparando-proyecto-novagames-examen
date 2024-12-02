@@ -840,8 +840,9 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
 async guardarCompra(
   productos: Compra[],  // Usando la clase Compra directamente
   vVenta: number, 
-  totalCompra: number
-): Promise<boolean> {  // Cambié el tipo de retorno a booleano
+  totalCompra: number,
+  fechaCompra: string // Agregar el parámetro para la fecha de la compra
+): Promise<boolean> { 
   try {
     // Obtener el correo del usuario desde el observable
     let correoUsuario: string | null = null;
@@ -871,16 +872,16 @@ async guardarCompra(
     // Determinar el valor de la compra
     const valorCompra = productos.length === 1 ? vVenta : totalCompra;
 
-    // Insertar la compra en la tabla 'compra' usando el id_user
+    // Insertar la compra en la tabla 'compra' usando el id_user y la fecha de la compra
     const resCompra = await this.database.executeSql(
-      'INSERT INTO compra (id_user, total_compra, v_venta) VALUES (?, ?, ?)',
-      [idUser, valorCompra, valorCompra]
+      'INSERT INTO compra (id_user, total_compra, v_venta, fecha_compra) VALUES (?, ?, ?, ?)', // Insertamos la fecha
+      [idUser, valorCompra, valorCompra, fechaCompra]
     );
 
     if (resCompra.insertId) {
       const idCompra = resCompra.insertId;
 
-      // Insertar los detalles de la compra en la tabla 'detalle', ahora usando la clase 'Compra'
+      // Insertar los detalles de la compra en la tabla 'detalle'
       for (const producto of productos) {
         // Validar que la cantidad del producto sea mayor a 0
         if (producto.cantidad <= 0 || !producto.cantidad) {
@@ -902,40 +903,23 @@ async guardarCompra(
           );
         } catch (error: any) {
           console.error('Error al guardar el detalle del producto:', error);
-          
-          // Crear un mensaje de error detallado
-          const errorMessage = error.message || 'Hubo un problema al guardar los detalles del producto.';
-          
-          // Mostrar alerta con el error específico
-          this.presentAlert('Error en los detalles', `Hubo un problema al guardar los detalles de los productos. Error: ${errorMessage}`);
-          return false;  // Retorna false en caso de error al guardar los detalles
+          this.presentAlert('Error en los detalles', `Hubo un problema al guardar los detalles de los productos. Error: ${error.message || 'Desconocido'}`);
+          return false;
         }
       }
 
       console.log('Compra y detalles guardados correctamente');
-      // Solo mostrar alerta de éxito si no hubo error
       this.presentAlert('Éxito', 'Compra procesada correctamente');
 
-      // Aquí llamamos a la función obtenerCompra para actualizar el observable con la compra guardada
-      this.obtenerCompras();
-      return true;  // Retorna true si todo se procesó correctamente
+      this.obtenerCompras();  // Actualizar compras
+      return true;
     } else {
       throw new Error('No se pudo obtener el ID de la compra');
     }
-  } catch (e: any) { 
+  } catch (e: any) {
     console.error('Error al guardar la compra:', e);
-
-    // Alertas específicas según el tipo de error
-    if (e.message.includes('correo')) {
-      this.presentAlert('Error en el correo', 'No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
-    } else if (e.message.includes('usuario')) {
-      this.presentAlert('Error en el usuario', 'No se encontró el usuario con ese correo. Verifica tus credenciales.');
-    } else if (e.message.includes('ID de la compra')) {
-      this.presentAlert('Error en la compra', 'Hubo un problema al registrar tu compra. Intenta nuevamente.');
-    } else {
-      this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
-    }
-    return false;  // Retorna false en caso de cualquier error
+    this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+    return false;
   }
 }
 
@@ -970,6 +954,9 @@ async obtenerCompras(): Promise<void> {
       const compras: any[] = [];
       for (let i = 0; i < resultadoCompras.rows.length; i++) {
         const compra = resultadoCompras.rows.item(i);
+
+        // Obtener la fecha de la compra
+        const fechaCompra = compra.fecha_compra;
 
         // Obtener los detalles de la compra (productos y cantidades)
         const productosCompra: { id_prod: number, nombre_prod: string, foto_prod: string | null, cantidad: number, subtotal: number }[] = [];
@@ -1009,6 +996,7 @@ async obtenerCompras(): Promise<void> {
           total_compra: compra.total_compra,
           v_venta: compra.v_venta,
           correo_usuario: correoUsuario, // Incluimos el correo del usuario
+          fecha_compra: fechaCompra, // Agregar la fecha de la compra
           productos: productosCompra // Agregar los productos de la compra
         });
       }

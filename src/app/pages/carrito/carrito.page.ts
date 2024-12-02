@@ -233,13 +233,16 @@ async Notificacioncompra() {
         {
           text: 'Comprar',
           handler: async () => {
+            // Obtener la fecha de la compra
+            const fechaCompra = new Date().toISOString(); // Fecha actual en formato ISO
+
             // Suponiendo que los productos han sido cargados correctamente en 'productosConvertidos'
             const productos: Compra[] = this.productosConvertidos.map(producto => {
               // Calculamos el subtotal para cada producto
               const subtotal = this.calcularSubtotal(producto);
               const total = this.calcularTotalAPagar(); // Total global (se calcula fuera de cada producto)
 
-              // Crear un objeto Compra con todos los datos necesarios
+              // Crear un objeto Compra con todos los datos necesarios, incluyendo la fecha
               return {
                 id_prod: producto.id_prod,            // ID del producto
                 cantidad: producto.cantidad_detalle,   // Cantidad del producto en el carrito
@@ -249,6 +252,7 @@ async Notificacioncompra() {
                 v_venta: producto.precio,              // Valor de la venta: se puede obtener del precio del producto
                 total_compra: this.calcularTotalAPagar(),  // Total de la compra global (cálculo total)
                 correo_usuario: '',                    // El correo será gestionado directamente por la función guardarCompra
+                fecha_compra: fechaCompra              // Fecha de la compra (en formato ISO)
               };
             });
 
@@ -257,7 +261,7 @@ async Notificacioncompra() {
             const vVenta: number = this.productosConvertidos.reduce((total, producto) => total + producto.precio, 0); // Sumar el valor de la venta
 
             // Llamar a la función que guarda la compra en la base de datos
-            const compraGuardada = await this.bdService.guardarCompra(productos, vVenta, totalCompra);
+            const compraGuardada = await this.bdService.guardarCompra(productos, vVenta, totalCompra, fechaCompra);
 
             if (compraGuardada) {
               // Solicitar permisos para mostrar notificaciones
@@ -266,7 +270,7 @@ async Notificacioncompra() {
                 notifications: [
                   {
                     title: 'Compra Confirmada',
-                    body: 'Tu compra se ha procesado con éxito.',
+                    body: `Tu compra se ha procesado con éxito. Fecha de la compra: ${new Date(fechaCompra).toLocaleString()}`,
                     id: 1,
                     schedule: { at: new Date(Date.now() + 1000) },
                     sound: 'default',
