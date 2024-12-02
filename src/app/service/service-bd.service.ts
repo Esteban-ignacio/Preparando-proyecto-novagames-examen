@@ -913,9 +913,8 @@ async guardarCompra(
 
 async obtenerCompras(): Promise<void> {
   try {
-    // Usamos la suscripción directa para obtener el correo del usuario
+    // Suscribirse a los datos del usuario en sesión para obtener el correo
     this.listadatoslogin.subscribe(async (datos) => {
-      // Verificamos si se obtuvieron los datos correctamente
       const correoUsuario = datos?.[0]?.correologin;
 
       if (!correoUsuario) {
@@ -981,6 +980,7 @@ async obtenerCompras(): Promise<void> {
           id_compra: compra.id_compra,
           total_compra: compra.total_compra,
           v_venta: compra.v_venta,
+          correo_usuario: correoUsuario, // Incluimos el correo del usuario
           productos: productosCompra // Agregar los productos de la compra
         });
       }
