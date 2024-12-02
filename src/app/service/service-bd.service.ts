@@ -93,6 +93,8 @@ export class ServiceBDService {
 
   listacompras = new BehaviorSubject <Compra[]>([]);
 
+  listaventasadmin = new BehaviorSubject<any[]>([]);
+
   //variable para el status de la Base de datos
   private isDBReady: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -146,6 +148,10 @@ fetchCorreousuario(): Observable<Correousuario[]>{
 
 fetchCompra(): Observable<Compra[]>{
   return this.listacompras.asObservable();
+}
+
+fetchVentas(): Observable<any[]> {
+  return this.listaventasadmin.asObservable(); 
 }
 
 dbState(){
@@ -911,7 +917,10 @@ async guardarCompra(
       console.log('Compra y detalles guardados correctamente');
       this.presentAlert('Éxito', 'Compra procesada correctamente');
 
-      this.obtenerCompras();  // Actualizar compras
+      // Llamar a la función obtenerCompras() para guardar las compras del usuario actual
+      await this.obtenerCompras();
+      // Llamar a la función obtenerVentasAdmin() para obtener todas las ventas de los administradores
+      await this.obtenerVentasAdmin();
       return true;
     } else {
       throw new Error('No se pudo obtener el ID de la compra');
@@ -1013,6 +1022,85 @@ async obtenerCompras(): Promise<void> {
     console.error('Error al obtener las compras:', error);
     // Mostrar alerta con el mensaje específico
     this.presentAlert('Error', `Hubo un problema al obtener tus compras: ${mensajeError}. Intenta nuevamente.`);
+  }
+}
+
+async obtenerVentasAdmin(): Promise<void> {
+  try {
+    // Consultar todas las compras de todos los usuarios
+    const resultadoVentas = await this.database.executeSql(
+      'SELECT * FROM compra',
+      []
+    );
+
+    const ventas: any[] = [];
+    for (let i = 0; i < resultadoVentas.rows.length; i++) {
+      const venta = resultadoVentas.rows.item(i);
+
+      // Obtener el id_user basado en la compra
+      const idUser = venta.id_user;
+
+      // Obtener el correo del usuario que realizó la compra
+      const resultadoCorreoUsuario = await this.database.executeSql(
+        'SELECT correo_user FROM usuario WHERE id_user = ?',
+        [idUser]
+      );
+
+      const correoUsuario = resultadoCorreoUsuario.rows.length > 0 ? resultadoCorreoUsuario.rows.item(0).correo_user : null;
+
+      if (!correoUsuario) {
+        continue; // Si no se encuentra el correo, saltamos esta compra
+      }
+
+      // Obtener los detalles de la compra (productos y cantidades)
+      const productosVenta: { nombre_prod: string, cantidad: number, subtotal: number }[] = [];
+      const resultadoDetalleVenta = await this.database.executeSql(
+        'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
+        [venta.id_compra]
+      );
+
+      for (let j = 0; j < resultadoDetalleVenta.rows.length; j++) {
+        const detalle = resultadoDetalleVenta.rows.item(j);
+
+        // Obtener el nombre del producto
+        const resultadoProducto = await this.database.executeSql(
+          'SELECT nombre_prod FROM producto WHERE id_prod = ?',
+          [detalle.id_prod]
+        );
+        const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
+
+        if (producto) {
+          productosVenta.push({
+            nombre_prod: producto.nombre_prod,
+            cantidad: detalle.cantidad,
+            subtotal: detalle.subtotal
+          });
+        } else {
+          // Alerta si no se encuentra el producto
+          this.presentAlert(
+            'Error al obtener producto',
+            `No se encontró el producto con ID: ${detalle.id_prod}.`
+          );
+        }
+      }
+
+      ventas.push({
+        id_compra: venta.id_compra,
+        total_compra: venta.total_compra,
+        v_venta: venta.v_venta,
+        correo_usuario: correoUsuario, // Correo del usuario
+        productos: productosVenta // Productos de la venta
+      });
+    }
+
+    // Actualizar la lista de ventas para el admin
+    this.listaventasadmin.next(ventas);
+  } catch (error) {
+    // Si el error es un objeto, extraemos el mensaje de error
+    const mensajeError = error instanceof Error ? error.message : 'Hubo un problema inesperado.';
+    console.error('Error al obtener las ventas del admin:', error);
+    // Mostrar alerta con el mensaje específico
+    this.presentAlert('Error', `Hubo un problema al obtener las ventas: ${mensajeError}. Intenta nuevamente.`);
   }
 }
 

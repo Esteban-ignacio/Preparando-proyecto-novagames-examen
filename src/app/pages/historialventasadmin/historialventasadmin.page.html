@@ -12,5 +12,37 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  
+  <!-- Se muestra un mensaje si no hay ventas -->
+  <div *ngIf="!(ventasAdmin$ | async)?.length">
+    <p>No hay ventas disponibles</p>
+  </div>
+
+  <!-- Lista de ventas -->
+  <ion-list *ngIf="ventasAdmin$ | async as ventas; else noVentas">
+    <ion-item *ngFor="let venta of ventas">
+      <ion-label>
+        <h2>Compra ID: {{ venta.id_compra }}</h2>
+        <p><strong>Correo del Usuario:</strong> {{ venta.correo_usuario }}</p>
+        <p><strong>Total de la Compra:</strong> ${{ venta.total_compra }}</p>
+        <p><strong>Fecha de Venta:</strong> {{ venta.v_venta }}</p>
+        <ion-list>
+          <ion-item *ngFor="let producto of venta.productos">
+            <ion-label>
+              <p><strong>Producto:</strong> {{ producto.nombre_prod }}</p>
+              <p><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
+              <p><strong>Subtotal:</strong> ${{ producto.subtotal }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <!-- Si no hay ventas, se muestra el siguiente mensaje -->
+  <ng-template #noVentas>
+    <div>
+      <p>No se encontraron ventas.</p>
+    </div>
+  </ng-template>
 </ion-content>
+
