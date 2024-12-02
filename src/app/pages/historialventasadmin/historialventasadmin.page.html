@@ -12,37 +12,59 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <!-- Se muestra un mensaje si no hay ventas -->
-  <div *ngIf="!(ventasAdmin$ | async)?.length">
-    <p>No hay ventas disponibles</p>
+  <!-- Mostrar un mensaje si no hay ventas -->
+  <div *ngIf="!(ventasAdmin$ | async)?.length" class="mensaje-historial-ventas-vacio">
+    <h2 class="titulo-sin-ventas">
+      <span>No</span>
+      <span>Hay</span>
+      <span>Ventas</span>
+      <span>Realizadas</span>
+    </h2>
   </div>
 
-  <!-- Lista de ventas -->
-  <ion-list *ngIf="ventasAdmin$ | async as ventas; else noVentas">
-    <ion-item *ngFor="let venta of ventas">
-      <ion-label>
-        <h2>Compra ID: {{ venta.id_compra }}</h2>
-        <p><strong>Correo del Usuario:</strong> {{ venta.correo_usuario }}</p>
-        <p><strong>Total de la Compra:</strong> ${{ venta.total_compra }}</p>
-        <p><strong>Fecha de Venta:</strong> {{ venta.v_venta }}</p>
-        <ion-list>
-          <ion-item *ngFor="let producto of venta.productos">
-            <ion-label>
-              <p><strong>Producto:</strong> {{ producto.nombre_prod }}</p>
-              <p><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
-              <p><strong>Subtotal:</strong> ${{ producto.subtotal }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-label>
+  <!-- Mostrar las ventas cuando existan -->
+  <ion-list *ngIf="ventasAdmin$ | async as ventas" class="lista-ventas">
+    <ion-item *ngFor="let venta of ventas" class="lista">
+      <ion-card>
+        <ion-card-header>
+          <!-- Mostrar el número de la venta como título -->
+          <ion-card-title>Nro Venta: {{ venta.id_compra }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          
+          <!-- Iterar sobre los productos asociados a la venta -->
+          <div *ngFor="let producto of venta.productos" class="venta-item">
+            <!-- Mostrar el nombre del producto -->
+            <p class="venta-producto-nombre"><strong>{{ producto.nombre_prod }}</strong></p>
+
+            <!-- Mostrar la foto del producto (si existe) -->
+            <div class="venta-producto-imagen">
+              <img *ngIf="producto.foto_prod" [src]="producto.foto_prod" alt="Foto del producto" class="foto-producto">
+            </div>
+
+            <!-- Mostrar la cantidad del producto -->
+            <p class="venta-cantidad"><strong>Cantidad:</strong> {{ producto.cantidad }}</p>
+
+            <!-- Mostrar el correo del usuario -->
+            <p class="venta-correo-usuario"><strong>Correo:</strong> {{ venta.correo_usuario }}</p>
+
+            <!-- Mostrar la fecha de la venta debajo del correo -->
+            <p class="fecha-venta"><strong>Fecha de Venta:</strong> {{ venta.fecha_compra | date: 'dd/MM/yyyy' }}</p>
+
+            <!-- Mostrar el total pagado por el producto -->
+            <p class="venta-total"><strong>Total pagado:</strong> {{ producto.subtotal }}</p>
+          </div>
+        </ion-card-content>
+      </ion-card>
     </ion-item>
   </ion-list>
 
-  <!-- Si no hay ventas, se muestra el siguiente mensaje -->
-  <ng-template #noVentas>
-    <div>
-      <p>No se encontraron ventas.</p>
-    </div>
-  </ng-template>
 </ion-content>
+
+
+
+
+
+
+
 

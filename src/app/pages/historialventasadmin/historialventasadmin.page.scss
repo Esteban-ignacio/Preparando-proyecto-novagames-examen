@@ -12,3 +12,89 @@ ion-toolbar{
 ion-content{
     --background: #a8f6c6;
 }
+
+.lista-ventas{
+    background-color: #a8f6c6;
+  }
+  .lista{
+    --background: #a8f6c6;
+  }
+  /* Estilos generales para la compra */
+  ion-card {
+    margin-bottom: 20px;
+    --background: #a8f6c6;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .venta-item {
+    margin-bottom: 15px;
+    padding: 10px;
+  }
+  
+  .venta-producto-nombre {
+    font-weight: bold;
+    font-size: 18px;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .venta-producto-imagen {
+    text-align: center;
+    margin-bottom: 15px;
+  
+    img {
+      max-width: 100%; /* Para que no se desborde */
+      height: auto;
+    }
+  }
+  
+  .venta-cantidad,
+  .venta-correo-usuario,
+  .venta-total {
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  
+  .venta-cantidad strong,
+  .venta-total strong,
+  .venta-correo-usuario strong {
+    font-weight: bold;
+  }
+  
+  /* Estilo adicional para los títulos */
+  ion-card-header {
+    padding: 10px;
+  }
+  
+  ion-card-title {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    color: black
+  }
+    
+    .mensaje-historial-ventas-vacio {
+      position: absolute; /* Posiciona el div en toda la pantalla */
+      top: 0; /* Ajusta la posición superior */
+      left: 0; /* Ajusta la posición izquierda */
+      width: 100%; /* Ocupa el 100% del ancho */
+      height: 70%; /* Ocupa el 70% de la altura */
+      display: flex; /* Usa flexbox para centrar el contenido */
+      flex-direction: column; /* Alinea los elementos de forma vertical */
+      justify-content: center; /* Centra horizontalmente */
+      align-items: center; /* Centra verticalmente */
+      z-index: 10; /* Asegura que el mensaje esté por encima de otros elementos */
+    }
+    
+    .titulo-sin-ventas {
+      font-size: 24px; /* Ajusta el tamaño de la fuente */
+      font-weight: bold; /* Hace que el texto sea negrita */
+      color: black;
+      text-align: center; /* Alinea el texto al centro */
+    }
+    .titulo-sin-ventas span {
+      display: block; /* Hace que cada palabra esté en una línea separada */
+      font-size: 32px; /* Ajusta el tamaño de cada palabra */
+      line-height: 1.5; /* Ajusta la separación entre las líneas */
+    }  

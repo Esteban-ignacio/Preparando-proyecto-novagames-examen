@@ -740,7 +740,6 @@ async guardarProducto(producto: Productos, cantidad: number): Promise<void> {
 }
 
 // Obtiene los correos de los usuarios
-//usar para la compra
 async obtenerCorreoUsuario(correo: string): Promise<void> {
   try {
     // Hacemos la verificación usando la base de datos local (si usas fetch para API, cambia esto)
@@ -1053,7 +1052,7 @@ async obtenerVentasAdmin(): Promise<void> {
       }
 
       // Obtener los detalles de la compra (productos y cantidades)
-      const productosVenta: { nombre_prod: string, cantidad: number, subtotal: number }[] = [];
+      const productosVenta: { nombre_prod: string, cantidad: number, subtotal: number, foto_prod: string }[] = [];
       const resultadoDetalleVenta = await this.database.executeSql(
         'SELECT id_prod, cantidad_detalle AS cantidad, subtotal_detalle AS subtotal FROM detalle WHERE id_compra = ?',
         [venta.id_compra]
@@ -1062,9 +1061,9 @@ async obtenerVentasAdmin(): Promise<void> {
       for (let j = 0; j < resultadoDetalleVenta.rows.length; j++) {
         const detalle = resultadoDetalleVenta.rows.item(j);
 
-        // Obtener el nombre del producto
+        // Obtener el nombre del producto y foto
         const resultadoProducto = await this.database.executeSql(
-          'SELECT nombre_prod FROM producto WHERE id_prod = ?',
+          'SELECT nombre_prod, foto_prod FROM producto WHERE id_prod = ?',
           [detalle.id_prod]
         );
         const producto = resultadoProducto.rows.length > 0 ? resultadoProducto.rows.item(0) : null;
@@ -1073,7 +1072,8 @@ async obtenerVentasAdmin(): Promise<void> {
           productosVenta.push({
             nombre_prod: producto.nombre_prod,
             cantidad: detalle.cantidad,
-            subtotal: detalle.subtotal
+            subtotal: detalle.subtotal,
+            foto_prod: producto.foto_prod // Foto del producto
           });
         } else {
           // Alerta si no se encuentra el producto
@@ -1089,6 +1089,7 @@ async obtenerVentasAdmin(): Promise<void> {
         total_compra: venta.total_compra,
         v_venta: venta.v_venta,
         correo_usuario: correoUsuario, // Correo del usuario
+        fecha_compra: venta.fecha_compra, // Fecha de la compra
         productos: productosVenta // Productos de la venta
       });
     }
