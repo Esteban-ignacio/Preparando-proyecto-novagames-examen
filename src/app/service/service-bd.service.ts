@@ -1157,6 +1157,13 @@ async contarProductosGuardados(): Promise<number> {
   }
 }
 
+
+// Nueva función para resetear el contador de productos en `localStorage`
+resetearContadorProductos() {
+  localStorage.removeItem('productosEnCarrito'); // Borra los productos del carrito
+  localStorage.removeItem('productosGuardados'); // Borra el contador de productos
+}
+
 //elimina roles duplicados
 async eliminarDuplicados() {
   try {
@@ -1228,12 +1235,6 @@ async obtenerRoles() {
   } catch (e) {
     console.error('Error al obtener roles:', e);
   }
-}
-
-// Nueva función para resetear el contador de productos en `localStorage`
-resetearContadorProductos() {
-  localStorage.removeItem('productosEnCarrito'); // Borra los productos del carrito
-  localStorage.removeItem('productosGuardados'); // Borra el contador de productos
 }
 
 //para obtener los productos y la categoria de estos, que estan guardados en la base de datos.
