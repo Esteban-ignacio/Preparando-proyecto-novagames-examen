@@ -57,18 +57,28 @@ export class ModificarperfilPage implements OnInit {
       this.presentAlert('Error', 'No se encontró información del perfil.');
       return; // Salir si datosPerfil es undefined
     }
-  
+
     if (!this.datosPerfil.correo_user) {
       this.presentAlert('Error', 'El correo del usuario no está disponible.');
       return; // Salir si correo_user es undefined
     }
-  
+
     // Verificar si no se realizaron cambios en ningún campo
     const nombreCambiado = this.nombremodificarperfil !== this.datosPerfil.nombreuser;
     const apellidoCambiado = this.apellidomodificarperfil !== this.datosPerfil.apellidouser;
     const telefonoCambiado = this.telefonomodificarperfil !== this.datosPerfil.telefono_user;
     const imagencambiada = this.imagenmodificarperfil !== this.datosPerfil.imagen_user;
-  
+
+    // Validación para el nombre y apellido
+    if ((nombreCambiado || apellidoCambiado) && !this.isNombreApellidoModificarPerfilValido()) {
+      return; // Si la validación del nombre o apellido falla, se detiene la ejecución
+    }
+
+    // Validación para el teléfono
+    if (telefonoCambiado && !this.isTelefonoModificarPerfilValido()) {
+      return; // Si la validación del teléfono falla, se detiene la ejecución
+    }
+
     // Verificar que los campos no estén vacíos si se desea hacer un cambio
     if ((nombreCambiado && !this.nombremodificarperfil.trim()) || 
         (apellidoCambiado && !this.apellidomodificarperfil.trim()) ||
@@ -76,13 +86,13 @@ export class ModificarperfilPage implements OnInit {
       this.presentAlert('Error', 'Los campos de nombre, apellido y teléfono no pueden estar vacíos.');
       return; // Salir si algún campo es vacío cuando se intenta modificarlo
     }
-  
+
     if (!nombreCambiado && !apellidoCambiado && !telefonoCambiado && !imagencambiada) {
       this.presentAlert('Información', 'No se realizaron cambios en el perfil.');
       this.VolveralPerfil(); // Redirigir a la página de perfil
       return; // Salir si no se modificó ningún campo
     }
-  
+
     // Preparar los datos para actualizar
     const usuarioActualizar: Extraerdatosusuario = {
       iduser: this.datosPerfil.iduser,
@@ -93,7 +103,7 @@ export class ModificarperfilPage implements OnInit {
       telefono_user: telefonoCambiado ? this.telefonomodificarperfil : this.datosPerfil.telefono_user,
       imagen_user: imagencambiada ? this.imagenmodificarperfil : this.datosPerfil.imagen_user // Aquí se corrigió
     };
-  
+
     // Actualizar en la base de datos
     try {
       await this.bdService.actualizarUsuario(usuarioActualizar);
@@ -103,7 +113,7 @@ export class ModificarperfilPage implements OnInit {
       console.error('Error al actualizar el perfil:', error);
       this.presentAlert('Error', 'No se pudo modificar el perfil. Inténtalo de nuevo más tarde.');
     }
-  }   
+}  
   
    // Validación para el nombre y el apellido
    isNombreApellidoModificarPerfilValido(): boolean {
@@ -135,43 +145,6 @@ isTelefonoModificarPerfilValido(): boolean {
   return true;
 }
 
-isFormValid(): boolean {
-  const regex = /^[a-zA-Z]+$/; // Solo letras
-  const regexPhone = /^\d{9}$/; // Solo números y exactamente 9 dígitos
-
-  let isValid = true;
-
-  if (this.nombremodificarperfil.trim() !== '') {
-    if (
-      this.nombremodificarperfil.length < 2 || 
-      this.nombremodificarperfil.length > 10 || 
-      !regex.test(this.nombremodificarperfil)
-    ) {
-      this.presentAlert('Error', 'El nombre debe tener entre 2 y 10 letras y solo puede contener caracteres alfabéticos.');
-      isValid = false;
-    }
-  }
-
-  if (this.apellidomodificarperfil.trim() !== '') {
-    if (
-      this.apellidomodificarperfil.length < 2 || 
-      this.apellidomodificarperfil.length > 10 || 
-      !regex.test(this.apellidomodificarperfil)
-    ) {
-      this.presentAlert('Error', 'El apellido debe tener entre 2 y 10 letras y solo puede contener caracteres alfabéticos.');
-      isValid = false;
-    }
-  }
-
-  if (this.telefonomodificarperfil.trim() !== '') {
-    if (!regexPhone.test(this.telefonomodificarperfil)) {
-      this.presentAlert('Error', 'El teléfono debe contener exactamente 9 dígitos.');
-      isValid = false;
-    }
-  }
-
-  return isValid;
-}
 
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({

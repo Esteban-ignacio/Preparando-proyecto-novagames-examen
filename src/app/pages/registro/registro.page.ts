@@ -160,38 +160,6 @@ isConfirmarContrasenaValida(): boolean {
   return true;
 }
 
-  isFormValid(): boolean {
-    const regex = /^[a-zA-Z]+$/; // Solo letras
-    const regexPhone = /^\d{1,9}$/; // Solo números y hasta 9 dígitos
-    const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/; // Expresión regular para el correo electrónico
-    const regexPassword = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[\W_]).{5,10}$/; // Contraseña con mayúscula, número y símbolo
-
-    return (
-      this.nombre.trim() !== '' && // No debe estar vacío
-      this.nombre.length >= 2 &&
-      this.nombre.length <= 10 &&
-      regex.test(this.nombre) &&
-
-      this.apellido.trim() !== '' && // Apellido no debe estar vacío
-      this.apellido.length >= 2 && 
-      this.apellido.length <= 10 && 
-      regex.test(this.apellido) && // Validación del apellido
-
-      this.telefono.trim() !== '' && // Teléfono no debe estar vacío
-      regexPhone.test(this.telefono) && // Validación del teléfono
-
-      this.correo.trim() !== '' && // Correo no debe estar vacío
-      regexEmail.test(this.correo) && // Validación del correo
-
-      this.contrasena.trim() !== '' && // Contraseña no debe estar vacía
-      regexPassword.test(this.contrasena) && // Validación de la contraseña
-
-      this.confirmarContrasena.trim() !== '' && // Confirmar contraseña no debe estar vacía
-      this.confirmarContrasena === this.contrasena // Debe coincidir con la contraseña
-
-    );
-  }
-
   async presentAlert(titulo:string, msj:string) {
     const alert = await this.alertController.create({
       header: titulo,
