@@ -842,6 +842,30 @@ async eliminarProductoDelCarrito(producto: Productos): Promise<void> {
   }
 }
 
+// Función para eliminar un producto del carrito desde localStorage
+async eliminarProductoDelacompra(producto: Productos): Promise<void> {
+  try {
+    // Obtener el carrito actual desde localStorage
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+
+    // Filtrar los productos, eliminando el producto seleccionado
+    const carritoActualizado = carrito.filter((item: Productos) => item.id_prod !== producto.id_prod);
+
+    // Guardar el carrito actualizado en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carritoActualizado));
+
+    // Refrescar la lista de productos del carrito
+    await this.obtenerProductos(); // Obtener productos actualizados desde localStorage
+
+    // Actualizar el contador de productos en el carrito
+    this.cargarContadorProductos();
+
+  } catch (error) {
+    console.error('Error al eliminar el producto:', error);
+    this.presentAlert('Error', 'Error al eliminar el producto: ' + JSON.stringify(error));
+  }
+}
+
 async guardarCompra(
   productos: Compra[],  // Usando la clase Compra directamente
   vVenta: number, 

@@ -232,57 +232,9 @@ async Notificacioncompra() {
         },
         {
           text: 'Comprar',
-          handler: async () => {
-            // Obtener la fecha de la compra
-            const fechaCompra = new Date().toISOString(); // Fecha actual en formato ISO
-
-            // Suponiendo que los productos han sido cargados correctamente en 'productosConvertidos'
-            const productos: Compra[] = this.productosConvertidos.map(producto => {
-              // Calculamos el subtotal para cada producto
-              const subtotal = this.calcularSubtotal(producto);
-              const total = this.calcularTotalAPagar(); // Total global (se calcula fuera de cada producto)
-
-              // Crear un objeto Compra con todos los datos necesarios, incluyendo la fecha
-              return {
-                id_prod: producto.id_prod,            // ID del producto
-                cantidad: producto.cantidad_detalle,   // Cantidad del producto en el carrito
-                subtotal: subtotal,                    // Subtotal por cantidad
-                total: total,                          // Total por producto
-                id_compra: 0,                          // ID de la compra (debería ser asignado después si es necesario)
-                v_venta: producto.precio,              // Valor de la venta: se puede obtener del precio del producto
-                total_compra: this.calcularTotalAPagar(),  // Total de la compra global (cálculo total)
-                correo_usuario: '',                    // El correo será gestionado directamente por la función guardarCompra
-                fecha_compra: fechaCompra              // Fecha de la compra (en formato ISO)
-              };
-            });
-
-            // Suponiendo que el total de la compra se calcula correctamente con la función 'calcularTotalAPagar'
-            const totalCompra: number = this.calcularTotalAPagar(); // Total de la compra global
-            const vVenta: number = this.productosConvertidos.reduce((total, producto) => total + producto.precio, 0); // Sumar el valor de la venta
-
-            // Llamar a la función que guarda la compra en la base de datos
-            const compraGuardada = await this.bdService.guardarCompra(productos, vVenta, totalCompra, fechaCompra);
-
-            if (compraGuardada) {
-              // Solicitar permisos para mostrar notificaciones
-              await LocalNotifications.requestPermissions();
-              await LocalNotifications.schedule({
-                notifications: [
-                  {
-                    title: 'Compra Confirmada',
-                    body: `Tu compra se ha procesado con éxito. Fecha de la compra: ${new Date(fechaCompra).toLocaleString()}`,
-                    id: 1,
-                    schedule: { at: new Date(Date.now() + 1000) },
-                    sound: 'default',
-                    actionTypeId: '',
-                    extra: null
-                  }
-                ]
-              });
-            } else {
-              // Si no se pudo guardar la compra, mostrar alerta
-              this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
-            }
+          handler: () => {
+            // No se utiliza await aquí para evitar errores con el flujo asíncrono
+            this.procesarCompra();
           }
         }
       ]
@@ -290,10 +242,95 @@ async Notificacioncompra() {
 
     // Mostrar la alerta de confirmación
     await alert.present();
-    
+
   } catch (error) {
     console.error('Error al procesar la compra y mostrar notificación:', error);
     this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+  }
+}
+
+// Función para manejar la compra, de forma separada
+async procesarCompra() {
+  try {
+    // Obtener la fecha de la compra
+    const fechaCompra = new Date().toISOString(); // Fecha actual en formato ISO
+
+    // Suponiendo que los productos han sido cargados correctamente en 'productosConvertidos'
+    const productos: Compra[] = this.productosConvertidos.map(producto => {
+      // Calculamos el subtotal para cada producto
+      const subtotal = this.calcularSubtotal(producto);
+      const total = this.calcularTotalAPagar(); // Total global (se calcula fuera de cada producto)
+
+      // Crear un objeto Compra con todos los datos necesarios, incluyendo la fecha
+      return {
+        id_prod: producto.id_prod,            // ID del producto
+        cantidad: producto.cantidad_detalle,   // Cantidad del producto en el carrito
+        subtotal: subtotal,                    // Subtotal por cantidad
+        total: total,                          // Total por producto
+        id_compra: 0,                          // ID de la compra (debería ser asignado después si es necesario)
+        v_venta: producto.precio,              // Valor de la venta: se puede obtener del precio del producto
+        total_compra: this.calcularTotalAPagar(),  // Total de la compra global (cálculo total)
+        correo_usuario: '',                    // El correo será gestionado directamente por la función guardarCompra
+        fecha_compra: fechaCompra              // Fecha de la compra (en formato ISO)
+      };
+    });
+
+    // Suponiendo que el total de la compra se calcula correctamente con la función 'calcularTotalAPagar'
+    const totalCompra: number = this.calcularTotalAPagar(); // Total de la compra global
+    const vVenta: number = this.productosConvertidos.reduce((total, producto) => total + producto.precio, 0); // Sumar el valor de la venta
+
+    // Llamar a la función que guarda la compra en la base de datos
+    const compraGuardada = await this.bdService.guardarCompra(productos, vVenta, totalCompra, fechaCompra);
+
+    if (compraGuardada) {
+      // Solicitar permisos para mostrar notificaciones
+      await LocalNotifications.requestPermissions();
+      await LocalNotifications.schedule({
+        notifications: [
+          {
+            title: 'Compra Confirmada',
+            body: `Tu compra se ha procesado con éxito. Fecha de la compra: ${new Date(fechaCompra).toLocaleString()}`,
+            id: 1,
+            schedule: { at: new Date(Date.now() + 1000) },
+            sound: 'default',
+            actionTypeId: '',
+            extra: null
+          }
+        ]
+      });
+
+      // Limpiar el carrito eliminando todos los productos
+      for (let producto of this.productosConvertidos) {
+        await this.eliminarProductocompra(producto);
+      }
+
+      // Actualizar el contador de productos
+      this.cargarContadorProductos();
+
+    } else {
+      // Si no se pudo guardar la compra, mostrar alerta
+      this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+    }
+  } catch (error) {
+    console.error('Error al procesar la compra:', error);
+    this.presentAlert('Error', 'Hubo un problema al procesar tu compra. Intenta nuevamente.');
+  }
+}
+
+// Función para eliminar un producto del carrito sin confirmación
+async eliminarProductocompra(producto: any) {
+  try {
+    // Llamamos directamente al servicio para eliminar el producto
+    await this.bdService.eliminarProductoDelacompra(producto);  // Llamamos a la función modificada para eliminar
+
+    // Actualizamos los productos del carrito después de eliminar
+    await this.obtenerProductosCarrito(); // Actualizamos la UI o el estado del carrito
+
+    // Llamamos a cargarContadorProductos para actualizar el contador
+    this.cargarContadorProductos();
+  } catch (error) {
+    console.error('Error al eliminar producto del carrito:', error);
+    this.presentAlert('Error', 'Hubo un problema al eliminar el producto del carrito. Intenta nuevamente.');
   }
 }
 
