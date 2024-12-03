@@ -301,7 +301,7 @@ async procesarCompra() {
 
       // Limpiar el carrito eliminando todos los productos
       for (let producto of this.productosConvertidos) {
-        await this.eliminarProductocompra(producto);
+        await this.eliminarProductodespuesdelacompra(producto);
       }
 
       // Actualizar el contador de productos
@@ -317,8 +317,8 @@ async procesarCompra() {
   }
 }
 
-// Función para eliminar un producto del carrito sin confirmación
-async eliminarProductocompra(producto: any) {
+// Función para eliminar un producto del carrito cuando se termina de realizar la compra
+async eliminarProductodespuesdelacompra(producto: any) {
   try {
     // Llamamos directamente al servicio para eliminar el producto
     await this.bdService.eliminarProductoDelacompra(producto);  // Llamamos a la función modificada para eliminar
