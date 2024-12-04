@@ -52,7 +52,14 @@
             <p class="fecha-venta"><strong>Fecha de Venta:</strong> {{ venta.fecha_compra | date: 'dd/MM/yyyy' }}</p>
 
             <!-- Mostrar el total pagado por el producto -->
-            <p class="venta-total"><strong>Total pagado:</strong> {{ producto.subtotal }}</p>
+            <p class="venta-total">
+              <strong>Total pagado:</strong> 
+              <span *ngIf="producto.subtotal % 1 !== 0">
+                {{ producto.subtotal | number:'1.2-2' }}
+              </span>
+              <span *ngIf="producto.subtotal % 1 === 0">
+                $ {{ producto.subtotal }}
+              </span>
           </div>
         </ion-card-content>
       </ion-card>
