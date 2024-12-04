@@ -20,4 +20,21 @@ describe('CambiarclavePage', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  //Prueba unitaria 2, limpiar campos correo, contraseña y confirmacontra
+  it('limpiar campos al cambiar la clave', () => {
+    // Asignar valores a los campos
+    component.correocambiarclave = 'test@example.com';
+    component.contrasenacambiarclave = 'Test123!';
+    component.confirmarContrasenacambiarclave = 'Test123!';
+
+    // Llamar al método limpiarCampos
+    component.limpiarCampos();
+
+    // Verificar que los campos se han limpiado
+    expect(component.correocambiarclave).toBe('');
+    expect(component.contrasenacambiarclave).toBe('');
+    expect(component.confirmarContrasenacambiarclave).toBe('');
+  });
+
 });
