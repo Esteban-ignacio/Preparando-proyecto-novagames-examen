@@ -1265,6 +1265,28 @@ async obtenerProductosParaAdmin() {
   }
 }
 
+// Función para actualizar el stock de un producto por su ID
+async actualizarStockProducto(id_prod: number, nuevoStock: number): Promise<void> {
+  try {
+    // Ejecutar la consulta SQL para actualizar el stock del producto con el ID especificado
+    await this.database.executeSql(`
+      UPDATE producto
+      SET stock_prod = ?
+      WHERE id_prod = ?
+    `, [nuevoStock, id_prod]);
+
+    // Confirmar que la actualización fue exitosa
+    console.log(`Stock del producto con ID ${id_prod} actualizado a ${nuevoStock}`);
+
+    // Mostrar una alerta de éxito si lo deseas
+    this.presentAlert('Éxito', `El stock del producto ha sido actualizado a ${nuevoStock}`);
+  } catch (error) {
+    // Mostrar una alerta si ocurre un error
+    console.error('Error al actualizar el stock:', error);
+    this.presentAlert('Error', 'Hubo un error al actualizar el stock del producto.');
+  }
+}
+
 async obtenerProductosPlayStation(): Promise<any[]> {
   try {
     // Consulta para obtener los productos de PlayStation de categoría supervivencia

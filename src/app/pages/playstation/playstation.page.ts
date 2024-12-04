@@ -49,11 +49,13 @@ export class PlaystationPage implements OnInit {
   }
 
   // Función para reducir el stock local y guardar el producto en la base de datos
-  guardarProductoEnBD(producto: any): void {
-    if (producto.cantidad > 0 && producto.stock > 0) {
-      // Reducir el stock en 1 de forma local
-      producto.stock -= 1;
-  
+guardarProductoEnBD(producto: any): void {
+  if (producto.cantidad > 0 && producto.stock > 0) {
+    // Reducir el stock en 1 de forma local
+    producto.stock -= 1;
+
+    // Llamar a la función para actualizar el stock en la base de datos
+    this.bdService.actualizarStockProducto(producto.id, producto.stock).then(() => {
       // Crear el objeto que se enviará a la base de datos
       const productoAGuardar: Productos = {
         id_prod: producto.id,
@@ -64,7 +66,7 @@ export class PlaystationPage implements OnInit {
         descripcion: producto.descripcion,
         cantidad: producto.cantidad,
       };
-  
+
       // Intentar guardar el producto en la base de datos (carrito)
       this.bdService.guardarProducto(productoAGuardar, producto.cantidad)
         .then(() => {
@@ -75,15 +77,19 @@ export class PlaystationPage implements OnInit {
         .catch((error: any) => {
           console.error('Error al guardar el producto en la base de datos', error);
           this.mostrarAlerta('No se pudo agregar el producto al carrito.');
-  
+
           // Revertir la reducción de stock si ocurre un error
           producto.stock += 1;
         });
-    } else {
-      // Mensaje de error si no hay stock suficiente
-      this.mostrarAlerta('No hay suficiente stock para agregar este producto al carrito.');
-    }
-  }  
+    }).catch((error) => {
+      console.error('Error al actualizar el stock en la base de datos', error);
+      this.mostrarAlerta('No se pudo actualizar el stock en la base de datos.');
+    });
+  } else {
+    // Mensaje de error si no hay stock suficiente
+    this.mostrarAlerta('No hay suficiente stock para agregar este producto al carrito.');
+  }
+}
 
   irAlCarrito() {
     this.router.navigate(['/carrito']);
