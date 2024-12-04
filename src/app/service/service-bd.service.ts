@@ -915,10 +915,10 @@ async guardarCompra(
     // Determinar el valor de la compra
     const valorCompra = productos.length === 1 ? vVenta : totalCompra;
 
-    // Insertar la compra en la tabla 'compra' usando el id_user y la fecha de la compra
+    // Insertar la compra en la tabla 'compra' usando el id_user, la fecha de la compra y el correo del usuario
     const resCompra = await this.database.executeSql(
-      'INSERT INTO compra (id_user, total_compra, v_venta, fecha_compra) VALUES (?, ?, ?, ?)', // Insertamos la fecha
-      [idUser, valorCompra, valorCompra, fechaCompra]
+      'INSERT INTO compra (id_user, correo_usuario, total_compra, v_venta, fecha_compra) VALUES (?, ?, ?, ?, ?)', // Insertamos el correo_usuario también
+      [idUser, correoUsuario, valorCompra, valorCompra, fechaCompra]
     );
 
     if (resCompra.insertId) {
@@ -979,22 +979,10 @@ async obtenerCompras(): Promise<void> {
         throw new Error('No se ha encontrado tu correo en sesión. Asegúrate de estar logueado.');
       }
 
-      // Obtener el id_user basado en el correo del usuario
-      const resultadoIdUser = await this.database.executeSql(
-        'SELECT id_user FROM usuario WHERE correo_user = ?',
-        [correoUsuario]
-      );
-
-      const idUser = resultadoIdUser.rows.length > 0 ? resultadoIdUser.rows.item(0).id_user : null;
-
-      if (!idUser) {
-        throw new Error('No se encontró el usuario con ese correo.');
-      }
-
-      // Consultar las compras del usuario, filtrando por el id_user
+      // Consultar las compras del usuario, filtrando por el correo_usuario
       const resultadoCompras = await this.database.executeSql(
-        'SELECT * FROM compra WHERE id_user = ?',
-        [idUser]
+        'SELECT * FROM compra WHERE correo_usuario = ?',
+        [correoUsuario]
       );
 
       const compras: any[] = [];
@@ -1041,7 +1029,7 @@ async obtenerCompras(): Promise<void> {
           id_compra: compra.id_compra,
           total_compra: compra.total_compra,
           v_venta: compra.v_venta,
-          correo_usuario: correoUsuario, // Incluimos el correo del usuario
+          correo_usuario: compra.correo_usuario, // Incluimos el correo guardado en la compra
           fecha_compra: fechaCompra, // Agregar la fecha de la compra
           productos: productosCompra // Agregar los productos de la compra
         });
@@ -1066,7 +1054,7 @@ async obtenerVentasAdmin(): Promise<void> {
   try {
     // Consultar todas las compras de todos los usuarios
     const resultadoVentas = await this.database.executeSql(
-      'SELECT * FROM compra',
+      'SELECT * FROM compra', // Seleccionamos todas las compras
       []
     );
 
@@ -1077,7 +1065,7 @@ async obtenerVentasAdmin(): Promise<void> {
       // Obtener el id_user basado en la compra
       const idUser = venta.id_user;
 
-      // Obtener el correo del usuario que realizó la compra
+      // Obtener el correo del usuario que realizó la compra desde la tabla usuario
       const resultadoCorreoUsuario = await this.database.executeSql(
         'SELECT correo_user FROM usuario WHERE id_user = ?',
         [idUser]
@@ -1086,7 +1074,7 @@ async obtenerVentasAdmin(): Promise<void> {
       const correoUsuario = resultadoCorreoUsuario.rows.length > 0 ? resultadoCorreoUsuario.rows.item(0).correo_user : null;
 
       if (!correoUsuario) {
-        continue; // Si no se encuentra el correo, saltamos esta compra
+        continue; // Si no se encuentra el correo, se salta esta compra
       }
 
       // Obtener los detalles de la compra (productos y cantidades)
@@ -1096,10 +1084,11 @@ async obtenerVentasAdmin(): Promise<void> {
         [venta.id_compra]
       );
 
+      // Iterar sobre los detalles de la compra
       for (let j = 0; j < resultadoDetalleVenta.rows.length; j++) {
         const detalle = resultadoDetalleVenta.rows.item(j);
 
-        // Obtener el nombre del producto y foto
+        // Obtener el nombre y la foto del producto
         const resultadoProducto = await this.database.executeSql(
           'SELECT nombre_prod, foto_prod FROM producto WHERE id_prod = ?',
           [detalle.id_prod]
@@ -1122,17 +1111,18 @@ async obtenerVentasAdmin(): Promise<void> {
         }
       }
 
+      // Agregar la venta con el correo asociado y los productos
       ventas.push({
         id_compra: venta.id_compra,
         total_compra: venta.total_compra,
         v_venta: venta.v_venta,
-        correo_usuario: correoUsuario, // Correo del usuario
+        correo_usuario: correoUsuario, // Correo del usuario asociado a la compra
         fecha_compra: venta.fecha_compra, // Fecha de la compra
-        productos: productosVenta // Productos de la venta
+        productos: productosVenta // Productos asociados a la compra
       });
     }
 
-    // Actualizar la lista de ventas para el admin
+    // Actualizar la lista de ventas para el administrador
     this.listaventasadmin.next(ventas);
   } catch (error) {
     // Si el error es un objeto, extraemos el mensaje de error
