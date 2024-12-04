@@ -76,4 +76,24 @@ export class GestionproductosPage implements OnInit {
     await alert.present();
   }  
   
+ // Función para agregar el stock al producto
+ agregarStock(producto: any) {
+  const cantidad = producto.cantidad;
+  const stockMaximo = this.getStockMaximo(producto.id_prod);
+
+  // Limpiar el campo de cantidad en caso de error
+  producto.cantidad = '';
+
+  // Verificar si la cantidad es válida antes de proceder
+  if (cantidad <= 0 || isNaN(cantidad)) {
+    this.presentAlert('Error', 'Por favor, ingresa un valor válido (solo números) mayor a 0.');
+  } else if (cantidad > stockMaximo) {
+    this.presentAlert('Error', `No puedes ingresar más de ${stockMaximo} unidades.`);
+  } else {
+    // Lógica para agregar el stock
+    console.log(`Se agregaron ${cantidad} unidades al producto ${producto.nombre_prod}`);
+  }
+}
+
+
 }

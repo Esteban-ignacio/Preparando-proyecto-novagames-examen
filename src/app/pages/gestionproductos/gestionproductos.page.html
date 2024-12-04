@@ -24,11 +24,14 @@
         <!-- Caja de texto y botón debajo de los datos -->
         <div class="datos-productos-admin">
           <ion-input 
+            [(ngModel)]="producto.cantidad" 
             type="number" 
             placeholder="Insertar cantidad:" 
-            class="input-agregar-stock">
+            class="input-agregar-stock" 
+            min="1" 
+            [max]="getStockMaximo(producto.id_prod)">
           </ion-input>
-          <ion-button class="boton-agregar-stock" color="primary">
+          <ion-button class="boton-agregar-stock" color="primary" (click)="agregarStock(producto)">
             Agregar Stock
           </ion-button>
         </div>
