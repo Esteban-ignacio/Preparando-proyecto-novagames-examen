@@ -1052,7 +1052,7 @@ async obtenerCompras(): Promise<void> {
 
 async obtenerVentasAdmin(): Promise<void> {
   try {
-    // Consultar todas las compras de todos los usuarios
+    // Consultar todas las compras de la tabla 'compra'
     const resultadoVentas = await this.database.executeSql(
       'SELECT * FROM compra', // Seleccionamos todas las compras
       []
@@ -1061,21 +1061,6 @@ async obtenerVentasAdmin(): Promise<void> {
     const ventas: any[] = [];
     for (let i = 0; i < resultadoVentas.rows.length; i++) {
       const venta = resultadoVentas.rows.item(i);
-
-      // Obtener el id_user basado en la compra
-      const idUser = venta.id_user;
-
-      // Obtener el correo del usuario que realizó la compra desde la tabla usuario
-      const resultadoCorreoUsuario = await this.database.executeSql(
-        'SELECT correo_user FROM usuario WHERE id_user = ?',
-        [idUser]
-      );
-
-      const correoUsuario = resultadoCorreoUsuario.rows.length > 0 ? resultadoCorreoUsuario.rows.item(0).correo_user : null;
-
-      if (!correoUsuario) {
-        continue; // Si no se encuentra el correo, se salta esta compra
-      }
 
       // Obtener los detalles de la compra (productos y cantidades)
       const productosVenta: { nombre_prod: string, cantidad: number, subtotal: number, foto_prod: string }[] = [];
@@ -1116,7 +1101,7 @@ async obtenerVentasAdmin(): Promise<void> {
         id_compra: venta.id_compra,
         total_compra: venta.total_compra,
         v_venta: venta.v_venta,
-        correo_usuario: correoUsuario, // Correo del usuario asociado a la compra
+        correo_usuario: venta.correo_usuario, // Ahora el correo ya está en la tabla 'compra'
         fecha_compra: venta.fecha_compra, // Fecha de la compra
         productos: productosVenta // Productos asociados a la compra
       });
