@@ -49,7 +49,15 @@
           <p class="correo-usuario"><strong>Correo:</strong> {{ compra.correo_usuario }}</p>
 
           <!-- Mostrar el total pagado por el producto -->
-          <p class="producto-total"><strong>Total pagado:</strong> {{ producto.subtotal }}</p>
+          <p class="producto-total">
+            <strong>Total pagado:</strong> 
+            <span *ngIf="producto.subtotal % 1 !== 0">
+              {{ producto.subtotal | number:'1.2-2' }}
+            </span>
+            <span *ngIf="producto.subtotal % 1 === 0">
+              $ {{ producto.subtotal }}
+            </span>
+          </p>
         </div>
       </ion-card-content>
     </ion-card>
