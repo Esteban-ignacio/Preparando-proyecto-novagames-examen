@@ -1359,6 +1359,44 @@ async obtenerProductosXbox(): Promise<any[]> {
   }
 }
 
+// Función para agregar stock a un producto por su ID
+async agregarStockProducto(id_prod: number, stockAdicional: number): Promise<void> {
+  try {
+    // Primero, obtenemos el stock actual del producto
+    const resultado = await this.database.executeSql(`
+      SELECT stock_prod FROM producto WHERE id_prod = ?
+    `, [id_prod]);
+
+    if (resultado.rows.length > 0) {
+      // Obtenemos el stock actual del producto
+      const stockActual = resultado.rows.item(0).stock_prod;
+
+      // Calculamos el nuevo stock sumando el stock adicional
+      const nuevoStock = stockActual + stockAdicional;
+
+      // Ejecutamos la actualización del stock en la base de datos
+      await this.database.executeSql(`
+        UPDATE producto
+        SET stock_prod = ?
+        WHERE id_prod = ?
+      `, [nuevoStock, id_prod]);
+
+      // Confirmar que la actualización fue exitosa
+      console.log(`Stock del producto con ID ${id_prod} actualizado a ${nuevoStock}`);
+
+      // Mostrar una alerta de éxito
+      this.presentAlert('Éxito', `El stock del producto ha sido actualizado a ${nuevoStock}`);
+    } else {
+      // Si no se encuentra el producto con ese ID, mostrar un mensaje de error
+      console.error(`Producto con ID ${id_prod} no encontrado.`);
+      this.presentAlert('Error', 'Producto no encontrado.');
+    }
+  } catch (error) {
+    // Mostrar una alerta si ocurre un error
+    console.error('Error al agregar stock al producto:', error);
+    this.presentAlert('Error', 'Hubo un error al agregar el stock al producto.');
+  }
+}
 
 }
 

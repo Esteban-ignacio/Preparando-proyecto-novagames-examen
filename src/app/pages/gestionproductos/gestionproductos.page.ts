@@ -75,9 +75,8 @@ export class GestionproductosPage implements OnInit {
   
     await alert.present();
   }  
-  
- // Función para agregar el stock al producto
- agregarStock(producto: any) {
+
+async agregarStock(producto: any) {
   const cantidad = producto.cantidad;
   const stockMaximo = this.getStockMaximo(producto.id_prod);
 
@@ -90,10 +89,22 @@ export class GestionproductosPage implements OnInit {
   } else if (cantidad > stockMaximo) {
     this.presentAlert('Error', `No puedes ingresar más de ${stockMaximo} unidades.`);
   } else {
-    // Lógica para agregar el stock
-    console.log(`Se agregaron ${cantidad} unidades al producto ${producto.nombre_prod}`);
+    try {
+      // Llamamos a la función de agregar stock del servicio
+      await this.serviceBD.agregarStockProducto(producto.id_prod, cantidad);
+
+      // Presentamos un mensaje de éxito
+      this.presentAlert('Éxito', `Se agregaron ${cantidad} unidades al producto ${producto.nombre_prod}`);
+
+      // Recargamos los productos para obtener los datos actualizados
+      await this.obtenerProductosParaAdmin();
+
+    } catch (error) {
+      console.error('Error al agregar stock:', error);
+      this.presentAlert('Error', 'Hubo un error al agregar el stock al producto.');
+    }
   }
-}
+}  
 
 
 }
