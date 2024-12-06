@@ -76,6 +76,41 @@ export class GestionproductosPage implements OnInit {
     await alert.present();
   }  
 
+  validarCantidad(cantidad: number, producto: any): boolean {
+    const stockMaximo = this.getStockMaximo(producto.id_prod); // Stock máximo permitido
+    const stockActual = producto.stock_prod; // Stock actual del producto
+  
+    // Validar si la cantidad es inválida o vacía
+    if (!cantidad || cantidad <= 0) {
+      this.presentAlert('Error', 'Por favor, ingresa un valor válido mayor a 0.');
+      producto.cantidad = ''; // Limpiar el campo de cantidad
+      return false;
+    }
+  
+    // Validar si el stock actual ya alcanzó el máximo permitido
+    if (stockActual >= stockMaximo) {
+      this.presentAlert('Error', 'El stock ya está al máximo. No se puede agregar más.');
+      producto.cantidad = ''; // Limpiar el campo de cantidad
+      return false;
+    }
+  
+    // Validar si la cantidad ingresada supera la cantidad máxima permitida
+    const cantidadMaximaPermitida = stockMaximo - stockActual;
+    if (cantidad > cantidadMaximaPermitida) {
+      this.presentAlert('Error', `Solo puedes agregar hasta ${cantidadMaximaPermitida} unidades.`);
+      producto.cantidad = ''; // Limpiar el campo de cantidad
+      return false;
+    }
+  
+    // Si todo es válido, muestra un mensaje de éxito
+    producto.stock_prod += cantidad; // Actualiza el stock del producto
+    this.presentAlert('Éxito', `Se han agregado ${cantidad} unidades correctamente.`);
+    producto.cantidad = ''; // Limpia el campo de cantidad después de agregar
+    return true;
+  }  
+
+
+
 async agregarStock(producto: any) {
   const cantidad = producto.cantidad;
   const stockMaximo = this.getStockMaximo(producto.id_prod);

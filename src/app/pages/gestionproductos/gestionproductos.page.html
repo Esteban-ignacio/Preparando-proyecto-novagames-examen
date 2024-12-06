@@ -21,7 +21,6 @@
         <p class="datos-productos-admin">Stock máximo: {{ getStockMaximo(producto.id_prod) }}</p><!-- Stock máximo -->
         <p class="datos-productos-admin">Stock actual: {{ producto.stock_prod }}</p> <!-- Stock actual -->
   
-        <!-- Caja de texto y botón debajo de los datos -->
         <div class="datos-productos-admin">
           <ion-input 
             [(ngModel)]="producto.cantidad" 
@@ -31,10 +30,13 @@
             min="1" 
             [max]="getStockMaximo(producto.id_prod)">
           </ion-input>
-          <ion-button class="boton-agregar-stock" color="primary" (click)="agregarStock(producto)">
+          <ion-button 
+            class="boton-agregar-stock" 
+            color="primary" 
+            (click)="validarCantidad(producto.cantidad, producto)">
             Agregar Stock
           </ion-button>
-        </div>
+        </div>                
       </ion-label>
     </ion-item>
   </ion-list> 
