@@ -1279,7 +1279,6 @@ async actualizarStockProducto(id_prod: number, nuevoStock: number): Promise<void
     console.log(`Stock del producto con ID ${id_prod} actualizado a ${nuevoStock}`);
 
     // Mostrar una alerta de éxito si lo deseas
-    this.presentAlert('Éxito', `El stock del producto ha sido actualizado a ${nuevoStock}`);
   } catch (error) {
     // Mostrar una alerta si ocurre un error
     console.error('Error al actualizar el stock:', error);
