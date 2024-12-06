@@ -76,70 +76,49 @@ export class GestionproductosPage implements OnInit {
     await alert.present();
   }  
 
-  validarCantidad(cantidad: number, producto: any): boolean {
+  async validarCantidad(cantidad: number, producto: any): Promise<boolean> {
     const stockMaximo = this.getStockMaximo(producto.id_prod); // Stock máximo permitido
     const stockActual = producto.stock_prod; // Stock actual del producto
   
-    // Validar si la cantidad es inválida o vacía
-    if (!cantidad || cantidad <= 0) {
-      this.presentAlert('Error', 'Por favor, ingresa un valor válido mayor a 0.');
-      producto.cantidad = ''; // Limpiar el campo de cantidad
-      return false;
-    }
-  
-    // Validar si el stock actual ya alcanzó el máximo permitido
-    if (stockActual >= stockMaximo) {
-      this.presentAlert('Error', 'El stock ya está al máximo. No se puede agregar más.');
-      producto.cantidad = ''; // Limpiar el campo de cantidad
-      return false;
-    }
-  
-    // Validar si la cantidad ingresada supera la cantidad máxima permitida
-    const cantidadMaximaPermitida = stockMaximo - stockActual;
-    if (cantidad > cantidadMaximaPermitida) {
-      this.presentAlert('Error', `Solo puedes agregar hasta ${cantidadMaximaPermitida} unidades.`);
-      producto.cantidad = ''; // Limpiar el campo de cantidad
-      return false;
-    }
-  
-    // Si todo es válido, muestra un mensaje de éxito
-    producto.stock_prod += cantidad; // Actualiza el stock del producto
-    this.presentAlert('Éxito', `Se han agregado ${cantidad} unidades correctamente.`);
-    producto.cantidad = ''; // Limpia el campo de cantidad después de agregar
-    return true;
-  }  
-
-
-
-async agregarStock(producto: any) {
-  const cantidad = producto.cantidad;
-  const stockMaximo = this.getStockMaximo(producto.id_prod);
-
-  // Limpiar el campo de cantidad en caso de error
-  producto.cantidad = '';
-
-  // Verificar si la cantidad es válida antes de proceder
-  if (cantidad <= 0 || isNaN(cantidad)) {
-    this.presentAlert('Error', 'Por favor, ingresa un valor válido (solo números) mayor a 0.');
-  } else if (cantidad > stockMaximo) {
-    this.presentAlert('Error', `No puedes ingresar más de ${stockMaximo} unidades.`);
-  } else {
     try {
-      // Llamamos a la función de agregar stock del servicio
-      await this.serviceBD.agregarStockProducto(producto.id_prod, cantidad);
-
-      // Presentamos un mensaje de éxito
-      this.presentAlert('Éxito', `Se agregaron ${cantidad} unidades al producto ${producto.nombre_prod}`);
-
-      // Recargamos los productos para obtener los datos actualizados
+      // Validar si la cantidad es inválida o vacía
+      if (!cantidad || cantidad <= 0) {
+        this.presentAlert('Error', 'Por favor, ingresa un valor válido mayor a 0.');
+        producto.cantidad = ''; // Limpiar el campo de cantidad
+        return false;
+      }
+  
+      // Validar si el stock actual ya alcanzó el máximo permitido
+      if (stockActual >= stockMaximo) {
+        this.presentAlert('Error', 'El stock ya está al máximo. No se puede agregar más.');
+        producto.cantidad = ''; // Limpiar el campo de cantidad
+        return false;
+      }
+  
+      // Validar si la cantidad ingresada supera la cantidad máxima permitida
+      const cantidadMaximaPermitida = stockMaximo - stockActual;
+      if (cantidad > cantidadMaximaPermitida) {
+        this.presentAlert('Error', `Solo puedes agregar hasta ${cantidadMaximaPermitida} unidades mas.`);
+        producto.cantidad = ''; // Limpiar el campo de cantidad
+        return false;
+      }
+  
+      // Si todo es válido, actualizamos el stock en la base de datos
+      await this.serviceBD.agregarStockProducto(producto.id_prod, cantidad); // Llamada al servicio
+  
+      // Recargamos los productos para reflejar los cambios
       await this.obtenerProductosParaAdmin();
-
+  
+      // Mostrar mensaje de éxito
+      this.presentAlert('Éxito', `Se han agregado ${cantidad} unidades correctamente.`);
+      producto.cantidad = ''; // Limpiar el campo de cantidad después de agregar
+      return true;
+  
     } catch (error) {
       console.error('Error al agregar stock:', error);
       this.presentAlert('Error', 'Hubo un error al agregar el stock al producto.');
+      return false;
     }
-  }
-}  
-
+  }  
 
 }
