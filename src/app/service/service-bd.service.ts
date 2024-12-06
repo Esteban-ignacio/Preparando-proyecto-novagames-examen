@@ -1325,17 +1325,16 @@ async obtenerProductosPlayStation(): Promise<any[]> {
 
 async obtenerProductosXbox(): Promise<any[]> {
   try {
-    // Consulta para obtener los productos de Xbox de categoría Deportes
+    // Consulta para obtener los productos de Xbox de categoría Deportes sin considerar la plataforma
     const resultado = await this.database.executeSql(`
       SELECT p.id_prod, p.nombre_prod, p.precio_prod, p.stock_prod, p.foto_prod, p.descripcion_prod, p.id_cat, c.nombre_cat
       FROM producto p
       JOIN categoria c ON p.id_cat = c.id_cat
-      WHERE c.nombre_cat = 'Deportes' AND p.plataforma = 'Xbox'
+      WHERE c.nombre_cat = 'Deportes'
     `, []);
 
     const productos: any[] = [];
 
-    // Iterar sobre los resultados y almacenarlos en un array
     for (let i = 0; i < resultado.rows.length; i++) {
       const producto = resultado.rows.item(i);
       productos.push({
@@ -1352,9 +1351,14 @@ async obtenerProductosXbox(): Promise<any[]> {
 
     return productos;
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error al obtener los productos de Xbox:', error);
-    this.presentAlert('Error', 'Hubo un error al obtener los productos de Xbox de la base de datos.');
+
+    const errorDescripcion = error instanceof Error
+      ? error.message
+      : JSON.stringify(error, null, 2);
+
+    this.presentAlert('Error', `Hubo un error al obtener los productos de Xbox de la base de datos. Detalles: ${errorDescripcion}`);
     return [];
   }
 }
