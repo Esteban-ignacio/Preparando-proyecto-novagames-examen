@@ -1289,12 +1289,12 @@ async actualizarStockProducto(id_prod: number, nuevoStock: number): Promise<void
 
 async obtenerProductosPlayStation(): Promise<any[]> {
   try {
-    // Consulta para obtener los productos de PlayStation de categoría supervivencia
+    // Consulta para obtener los productos de PlayStation de categoría Supervivencia
     const resultado = await this.database.executeSql(`
       SELECT p.id_prod, p.nombre_prod, p.precio_prod, p.stock_prod, p.foto_prod, p.descripcion_prod, p.id_cat, c.nombre_cat
       FROM producto p
       JOIN categoria c ON p.id_cat = c.id_cat
-      WHERE c.nombre_cat = 'Supervivencia' AND p.plataforma = 'PlayStation'
+      WHERE c.nombre_cat = 'Supervivencia'
     `, []);
 
     const productos: any[] = [];
@@ -1316,9 +1316,17 @@ async obtenerProductosPlayStation(): Promise<any[]> {
 
     return productos;
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error al obtener los productos de PlayStation:', error);
-    this.presentAlert('Error', 'Hubo un error al obtener los productos de PlayStation de la base de datos.');
+
+    const errorDescripcion = error instanceof Error
+      ? error.message
+      : JSON.stringify(error, null, 2);
+
+    this.presentAlert(
+      'Error',
+      `Hubo un error al obtener los productos de PlayStation de la base de datos. Detalles: ${errorDescripcion}`
+    );
     return [];
   }
 }

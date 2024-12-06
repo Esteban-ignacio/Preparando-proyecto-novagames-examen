@@ -16,13 +16,7 @@ export class PlaystationPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
-    // Recuperar el stock modificado de productos desde localStorage
-    const productosGuardados = localStorage.getItem('productosPlayStation');
-    if (productosGuardados) {
-      this.productosPlayStation = JSON.parse(productosGuardados);
-    } else {
-      this.cargarProductosPlayStation();
-    }
+    this.cargarProductosPlayStation();
   }  
 
   async cargarProductosPlayStation() {
@@ -35,7 +29,7 @@ export class PlaystationPage implements OnInit {
       nombre: producto.nombre_prod,
       imagenUrl: producto.foto_prod, // URL de la imagen
       precio: producto.precio_prod,
-      stock: producto.stock,
+      stock: producto.stock_prod,
       descripcion: producto.descripcion_prod,
       cantidad: 1, // Se inicializa la cantidad
     }));

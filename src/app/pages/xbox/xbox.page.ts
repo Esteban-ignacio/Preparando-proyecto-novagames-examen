@@ -16,7 +16,7 @@ export class XboxPage implements OnInit {
   constructor(private bdService: ServiceBDService, private alertController: AlertController, private router: Router) { }
 
   ngOnInit() {
-        this.cargarProductosXbox();
+    this.cargarProductosXbox();
   }
 
   async cargarProductosXbox() {
