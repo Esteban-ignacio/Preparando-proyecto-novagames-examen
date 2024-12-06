@@ -81,7 +81,7 @@ guardarProductoEnBD(producto: any): void {
     });
   } else {
     // Mensaje de error si no hay stock suficiente
-    this.mostrarAlerta('No hay suficiente stock para agregar este producto al carrito.');
+    this.mostrarAlerta('Producto no disponible, no existe el suficiente stock como para agregar el producto al carrito.');
   }
 }
 
